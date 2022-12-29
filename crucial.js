@@ -1051,6 +1051,7 @@ async function updateToSignedIn(response) {
   }
 	if (getParam("gift") != null) {
 		(await getModule("gift"))(getParam("gift"));
+		modifyParams("gift");
 	}
   if (getParam("connect") == null) {
     refreshPage();
@@ -1862,7 +1863,7 @@ async function updateChatting(posts) {
               thisEmbed.querySelector(".embedUser").id = "post" + post._id + user._id;
               thisEmbed.querySelector(".embedProfilePic").src = decideProfilePic(user);
               thisEmbed.querySelector(".embedUsername").innerHTML = getRoleHTML(user) + user.User;
-              thisEmbed.querySelector(".embedTimestamp").textContent = timeSince(post.Timestamp, true);
+              thisEmbed.querySelector(".embedTimestamp").innerHTML = `${timeSince(post.Timestamp, true)} ${post.Edited ? `<span title="${formatFullDate(post.Edited)}">(edited)</span>` : ""}`;
               thisEmbed.querySelector(".embedTimestamp").title = formatFullDate(post.Timestamp);
               thisEmbed.querySelector(".embedText").innerHTML = formatText(post.Text);
               thisEmbed.setAttribute("type", "postlink");
@@ -1890,7 +1891,7 @@ async function updateChatting(posts) {
               thisChatEmbed.querySelector(".chatPfp").src = decideProfilePic(user);
               thisChatEmbed.querySelector(".chatUser").innerHTML = getRoleHTML(user) + user.User;
               thisChatEmbed.querySelector(".chatTime").title = formatFullDate(chat.Timestamp);
-              thisChatEmbed.querySelector(".chatTime").textContent = timeSince(chat.Timestamp, false);
+              thisChatEmbed.querySelector(".chatTime").innerHTML = `${timeSince(chat.Timestamp, false)} ${chat.Edited ? `<span title="${formatFullDate(chat.Edited)}">(edited)</span>` : ""}`
               thisChatEmbed.querySelector(".chatText").innerHTML = formatText(chat.Text);
               let thisChatOverlay = createElement("profileChatOverlay", "div", thisChatEmbed);
               thisChatOverlay.setAttribute("type", "chatlink");
