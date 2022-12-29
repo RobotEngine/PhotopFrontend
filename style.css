@@ -313,6 +313,44 @@ button:active {
   background-color: var(--premiumColor);
 }
 
+.shine {
+  width: calc(35% - 15px);
+  padding: 10px;
+  border-radius: 30px;
+  border: 5px solid rgba(255, 255, 255, 0.5);
+  margin-bottom: 8px;
+  min-width: fit-content;
+  position: relative;
+}
+
+.shine:before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  content: "";
+  background: linear-gradient(135deg, transparent 25%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.2) 50%, transparent 75%);
+  transition: 0.2s;
+}
+
+.shine:hover {
+  filter: brightness(110%);
+  transform: scale(1.05);
+}
+
+.shine:active {
+  filter: brightness(90%);
+  transform: scale(0.95);
+}
+.shine:hover:before {
+  left: 20px;
+}
+.shine:active:before {
+  left: -20px;
+}
+
 .accountInfoAction {
   display: flex;
   width: 24px;
@@ -499,20 +537,116 @@ button:active {
   color: #999;
 }
 
+#premiumLogo {
+  width: 100%;
+  margin: auto;
+  display: block;
+}
+
+#premiumBannerText {
+  text-align: center;
+  color: var(--fontColor);
+  font-size: 25px;
+  font-weight: bold;
+  margin: 10px;
+}
+
+#premiumBanner {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#premiumPage {
+  padding: 15px 0;
+  background: var(--contentColor2);
+  border-radius: 16px;
+  position: relative;
+  margin-top: -10px;
+}
+
+#premiumInfo {
+  z-index: 10;
+  position: relative;
+}
+
 #premiumBenefits {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  padding: 0px 0px 12px 0px;
-  background: var(--contentColor2);
-  border-radius: 0px 0px 16px 16px;
 }
 
+.planSelector {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  align-content: stretch;
+  justify-content: space-around;
+}
+.plan {
+	background: var(--pageColor2);
+  padding: 8px;
+  border-radius: 8px;
+  flex-direction: row;
+  flex: 1;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.planGift {
+  padding: 8px;
+}
+.planImg {
+	width: 50px;
+  height: 50px;
+  display: block;
+}
+.planPriceInfo {
+  display: block;
+}
+.planPrice {
+	color: var(--fontColor);
+  font-size: 20px;
+  font-family: var(--secondFont);
+  font-weight: bold;
+}
+.planInterval {
+	color: gray;
+  font-size: 15px;
+  font-family: var(--secondFont);
+  font-weight: bold;
+}
+.planSave {
+  color: var(--premiumColor);
+  font-family: var(--secondFont);
+  font-weight: bold;
+  font-size: 13px;
+  display: block;
+  text-align: left;
+}
+.checkout {
+  display: block;
+  margin-left: auto;
+  min-width: fit-content;
+  border-radius: 30px;
+  box-shadow: 0 0 0 0px var(--premiumColor);
+  padding: 10px;
+}
+
+.checkout:active {
+  box-shadow: 0 0 0 20px transparent;
+}
 .premiumBenefitTitle {
   margin: 6px 0px 4px 0px;
   color: var(--fontColor);
-  font-size: 24px;
+  font-family: var(--secondFont);
+  font-size: 22px;
   font-weight: 600;
+  line-height: 26px;
 }
 .premiumBenefitDesc {
   font-size: 16px;
@@ -520,13 +654,20 @@ button:active {
   color: #999;
 }
 
-#premiumButtonWrapper {
+.premiumButtonWrapper {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
   padding: 8px 0px;
   width: 100%;
   flex-wrap: wrap;
+  margin: 15px 0;
+}
+
+#premiumTop {
+  border-radius: 16px;
+  margin: 8px 16px 32px 16px;
+  padding: 8px;
 }
 
 .premiumBenefit {
@@ -538,7 +679,8 @@ button:active {
   padding: 8px;
   margin: 4px;
   text-align: center;
-  background: var(--pageColor2);
+  background: rgba(21, 22, 23, .9);
+  backdrop-filter: blur(2px);
   border-radius: 12px;
 }
 
@@ -600,30 +742,6 @@ button:active {
   background-color: var(--contentColor);
 }
 
-.shine {
-  animation: shine 1s ease-in-out infinite;
-  width: calc(35% - 15px);
-  padding: 10px;
-  border-radius: 30px;
-  border: 5px solid var(--pageColor2);
-  margin-bottom: 8px;
-  min-width: fit-content;
-}
-
-.shine:after {
-  position: absolute;
-  top: 0;
-  left: 0;
-  content: "";
-  transform: rotate(180deg);
-  background: linear-gradient(to right, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.15) 80%, rgba(255,255,255,0.4) 90%, rgba(255, 255, 255, 0));
-}
-
-.shine:hover:after {
-  transition-property: left, top, opacity;
-  transition-duration: 0.7s, 0.7s, 0.15s;
-  transition-timing-function: ease;
-}
 
 .standardScroll::webkit-scrollbar {
   background-color: #151617;
@@ -924,10 +1042,11 @@ button:active {
 }
 
 .minifyChat {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 2px 4px 2px 4px;
   margin: -2px 0px 2px 0px;
   border-radius: 8px;
-  padding: 2px 4px 2px 4px;
-  display: flex;
   font-size: 14px;
   transition: all .25s ease;
 }
@@ -981,7 +1100,7 @@ button:active {
 }
 .chatText {
   display: block;
-  width: calc(100% - 39px);
+  width: 95%;
   overflow-wrap: break-word;
   white-space: pre-wrap;
   border-radius: 2px;
@@ -993,7 +1112,7 @@ button:active {
 }
 .chatMinfiyText {
   display: block;
-  width: calc(100% - 39px);
+  width: calc(99% - 39px);
   overflow-wrap: break-word;
   white-space: pre-wrap;
   border-radius: 2px;
@@ -1214,7 +1333,7 @@ button:active {
 .profilePreview {
   position: fixed;
   width: 280px;
-  min-height: 271px;
+  min-height: 265px;
   background: var(--contentColor2);
   box-shadow: 0px 6px 5px var(--pageColor2);
   padding: 0;
@@ -1568,6 +1687,7 @@ button:active {
 input[type="radio"], input[type="checkbox"] {
   display: none;
 }
+
 .radioLabel {
   display: block;
   padding: 6px;
@@ -1627,7 +1747,7 @@ input[type="radio"]:checked + .radioLabel:before, input[type="checkbox"]:checked
 }
 #profileDescription {
   flex: 1;
-  height: 220px;
+  height: 165px;
   margin-top: 4px;
   font-size: 16px;
   line-height: 16px;
@@ -1650,6 +1770,25 @@ input[type="radio"]:checked + .radioLabel:before, input[type="checkbox"]:checked
 }
 .settingsPfpHolder {
   margin: -50px 0px 0px 12px;
+}
+#settingsNewUrl {
+	display:inline-block;
+	margin:auto 0px auto 0px;
+	width:176px;
+}
+#settingsUsername {
+	display:inline-block;
+	margin:auto 0px auto 0px;
+}
+#saveURL {
+	display:inline;
+	margin:auto 0px auto 6px;
+	width:63.62px;
+}
+#saveBasic {
+	display:inline;
+	margin:auto 0px auto 6px;
+	width:80px;
 }
 
 #exotekAccount {
@@ -2507,22 +2646,26 @@ td {
 }
 
 #premTopShowcase {
-  display: flex;
-  box-sizing: border-box;
-  width: 100%;
-  background-color: var(--contentColor2);
+  background: url(../Images/PremiumBanner.png),linear-gradient(315deg, #7132a8, #FF42A7);
   padding: 20px;
   margin-top: 8px;
   border-radius: 16px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .premTopShowcase {
   width: 290px;
-  margin-top: 75px;
+  margin: auto;
+  display: block;
+  margin-top: 20px;
 }
 
 #premiumHeader {
-  font-size: 30px;
+  font-size: 25px;
+  font-weight: bold;
+  text-shadow: 0 3px 5px rgb(0 0 0 / 50%);
 }
 
 #premiumCardFlexData {
@@ -2547,11 +2690,8 @@ td {
 }
 
 #premTopSupport {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  margin-left: 10px;
+  text-align: center;
+  margin-top: 10px;
 }
 
 #premiumButtonWrapper2 {
@@ -2559,6 +2699,11 @@ td {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+}
+#premiumBannerSub {
+  display: block;
+  margin: auto;
+  margin-top: 10px;
 }
 
 .inventorySection {
@@ -2636,7 +2781,7 @@ td {
 #editPost {
   background: var(--contentColor2);
   padding: 4px;
-  border-radius: 4px;
+  border-radius: 7px;
 }
 .particle-snow {
   position: fixed;
@@ -2677,4 +2822,227 @@ td {
   to{
     background-position-y: 100%;
   }
+}
+
+.editChatButton{
+  background-color: transparent;
+  font: var(--mainFont);
+}
+
+.saveEditButton{
+  font-weight:bold;
+  color: var(--themeColor);
+  padding: 0;
+  left: 30px;
+}
+.saveEditButton[minified="defined"] {
+	margin-left:35px;
+}
+
+.cancelEditButton{
+  color: #aaa;
+  float: right;
+  padding: 0;
+  margin-left: auto;
+}
+
+.editChatButtons{
+	width:100%;
+  padding: 0;
+  margin-top: 6px;
+  display: flex;
+}
+
+.chatEditedTitle {
+	color:grey;
+	font-size:10px;
+	user-select:none;
+}
+
+#editPostCharCount {
+	margin:2px 0px 0px auto;
+	color:grey;
+	font-size:12px;
+	font-weight:bold;
+}
+
+#premiumStats {
+	padding:6px;
+	margin:2px 0px 2px 0px;
+	background-color:var(--contentColor2);
+	border-radius:10px;
+}
+.premiumSection {
+	display:flex;
+	margin-bottom:6px;
+}
+
+#giftDivFlex1 {
+  display: flex;
+  flex-direction: horizontal;
+}
+#giftCount {
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	height:45px;
+	font-size:45px;
+	background-image:linear-gradient(260deg, var(--premiumColor), purple);
+	text-shadow: 0px -3px var(--premiumColor);
+	font-weight:800;
+	color: transparent;
+	-webkit-background-clip: text;
+	transition: all 0s ease 0s;
+}
+
+.managePremiumBtn {
+  width: 100%;
+  margin: 4px 4px 4px 2px;
+}
+
+.lightBlue {
+  background: var(--themeColor);
+}
+
+.premiumColor {
+  background: var(--premiumColor);
+}
+
+#claimPremiumPopup{
+  overflow: hidden;
+  text-align: center;
+  position: relative; 
+  padding: 10px;
+}
+
+#claimPremiumSolving{
+  color: var(--premiumColor);
+}
+
+#claimPremiumPopup iframe{
+  padding: 10px;
+}
+
+#claimPremiumButton{
+  width: 100%;
+}
+
+.giftAnimBackground{
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  backdrop-filter: blur(10px);
+}
+
+.giftAnimBackgroundHide{
+  animation: scale-anim 1s ease reverse;
+  backdrop-filter: blur(0);
+}
+
+.giftAnimContainer{
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  display: block;
+}
+
+.giftAnim{
+  line-height: 0;
+  cursor: pointer;
+  width: 340px;
+  margin-bottom: 25px;
+  transition: scale .5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.giftAnimTop{
+  transition: margin-bottom 2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.giftAnim[open="false"]{
+  animation: shake-gift 2s ease infinite;
+}
+
+.giftAnim[open="false"]:active{
+  scale: 0.9;
+}
+
+.giftAnimLabel{
+  color: var(--premiumColor);
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.giftAnimGem{
+  height: 120px;
+  position: absolute;
+  width: 100%;
+  object-fit: contain;
+  top: 235px;
+  z-index: -1;
+  scale: 1;
+  filter: drop-shadow(0 0 10px var(--premiumColor));
+  animation: scale-anim 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  user-select: none;
+}
+
+.giftAnimShine{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0.5;
+  z-index: -1;
+  animation: rotate-shine 5s linear infinite;
+  user-select: none;
+}
+
+@keyframes rotate-shine{
+  to{
+    rotate: 360deg;
+  }
+}
+
+@keyframes scale-anim{
+  from{
+    scale: 0;
+  }
+}
+
+@keyframes shake-gift{
+  10%{
+    rotate: 5deg;
+  }
+  20%{
+    rotate: -5deg;
+  }
+  30%{
+    rotate: 10deg;
+  }
+  40%{
+    rotate: -10deg;
+  }
+  50%{
+    rotate: 0deg;
+  }
+}
+
+.activeGiftIcon{
+  animation: shake-gift 2s ease infinite;
+  width:45px;
+  height:45px;
+}
+
+.solvingTicker{
+  overflow-y: hidden;
+  display: inline-block;
+  height: 17px;
+}
+
+.solvingCounter{
+  font-weight: bold;
 }

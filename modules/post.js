@@ -5,7 +5,8 @@ modules.post = function(parent, post, user, props, embeds) {
       <img src="${decideProfilePic(user)}" class="postProfilePic" type="user" tabindex="0">
       <div class="postInfo">
         <div class="postUsername" type="user">${getRoleHTML(user)}${user.User}</div>
-        <div class="postTimestamp" title="` + formatFullDate(post.Timestamp) + `">${timeSince(post.Timestamp, true)} ${(props.isPinned == true ? "(Pinned)" : "")}</div>
+        <div class="postTimestamp" title="` + formatFullDate(post.Timestamp) + `">${timeSince(post.Timestamp, true)} 
+${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>` : ""} ${(props.isPinned == true ? "(pinned)" : "")}</div>
       </div>
     </div>
     <div class="postContent">
@@ -68,7 +69,6 @@ modules.post = function(parent, post, user, props, embeds) {
   newPost.setAttribute("text", post.Text);
   newPost.innerHTML = postHTML;
   newPost.querySelector(".postText").innerHTML = formatText(post.Text);
-  /*
   let links = newPost.querySelector(".postText").querySelectorAll(".link");
   let arrayOfLinks = [];
   for (let i = 0; i < links.length; i++) {
@@ -88,10 +88,9 @@ modules.post = function(parent, post, user, props, embeds) {
       returnHTML += `<iframe src="${arrayOfLinks[i].replace("https://youtu.be/", "https://youtube.com/embed/")}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen" class="embed"></iframe>`;
     } else if (arrayOfLinks[i].startsWith("https://twitch.tv/") && account.Settings.Display["Embed Twitch Streams"]) {
       returnHTML += `<iframe src="https://player.twitch.tv/?channel=${arrayOfLinks[i].replace("https://twitch.tv/", "")}&parent=app.photop.live&parent=photoprevamp.robotengine.repl.co" allowfullscreen class="embed"></iframe>`;
-    }
+    } 
   }
   newPost.querySelector(".postText").innerHTML += returnHTML;
-  */
   if (post.Media != null && post.Media.ImageCount > 0) {
     let postImages = createElement("postImages", "div", newPost.querySelector(".postContent"));
     for (let i = 0; i < post.Media.ImageCount; i++) {

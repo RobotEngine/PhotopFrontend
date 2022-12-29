@@ -11,6 +11,9 @@ function updateProfileSub() {
   } else {
     userUpdateSub = socket.subscribe(query, async function(data) {
       let user = recentUsers[data._id];
+      if (data.popup != null) {
+        showPopUp(data.popup[0], data.popup[1], [ ["Okay", "var(--themeColor)"] ]);
+      }
       if (data.type == null) {
         if (data._id == userID) {
           user = account;
@@ -97,6 +100,12 @@ function updateProfileSub() {
           } else if (data.data.Affiliate != null && findC("settingsAffiliateStats") != null) {
             findI("settingsAffiliateStatClicks").textContent = ((account.Affiliate || {}).Clicks || 0) + " Clicks";
             findI("settingsAffiliateStatSignUps").textContent = ((account.Affiliate || {}).SignUps || 0) + " Sign Ups";
+          } else if (data.data.Premium != null && data.data.Premium.GiftMonths != null) {
+						if (findI("giftLengthInput") != null) {
+	            findI("giftLengthInput").placeholder = account.Premium.GiftMonths || 0;
+							findI("currentGifts").innerText = account.Premium.GiftMonths || 0;
+						}
+						findI("giftCount").innerText = account.Premium.GiftMonths || 0;
           }
         }
       } else {

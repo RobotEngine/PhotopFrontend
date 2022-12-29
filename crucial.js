@@ -26,7 +26,7 @@ let roleTypes = {
   "Partner": ["📷", {}, "#395568"],
   "Tester": ["🧪", {}, "#288887"],
   "Bot": ["🤖", {}, "#8B3945"],
-  "Premium": ["🌟", {}, "#A8A87B"]
+  "Premium": ["⭐", {}, "#d94abe", "background: linear-gradient(315deg, #ec24ae 25%, #d90d9a 50%, #f929b9 50%, #f16dc8 75%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"]
 };
 let roleKeyTypes = Object.keys(roleTypes);
 
@@ -599,7 +599,15 @@ function setPostUpdateSub() {
           post.remove();
           break;
         case "edit":
-          console.log(post);
+					post.style.opacity = "1";
+					post.setAttribute('text', data.text);
+					
+					const postElem = post.querySelector(".postPost");
+					const postText = postElem.querySelector(".postContent").querySelector('.postText');
+					const postTime = postElem.querySelector(".postUser").querySelector(".postInfo").querySelector(".postTimestamp");
+					postText.innerHTML = formatText(data.text);
+					postTime.innerHTML = `${timeSince(post.getAttribute("time"), true)} <span title="${formatFullDate(data.edited)}">(edited)</span>`;
+					break;
       }
     });
   }
@@ -683,6 +691,10 @@ async function init() {
   if (getParam("connect") != null && userID == null) {
     openLoginModal("signin", "Sign In");
   }
+
+	if (getParam("gift") != null && userID == null) {
+		openLoginModal("signin", "Sign In");
+	}
   
   if (userID != null) {
     if (currentPage == "") {
@@ -692,7 +704,7 @@ async function init() {
         showPost(getParam("post"));
       } else if (getParam("chat") != null) {
         showChat(null, getParam("chat"));
-      } else if (getParam("user") != null) {
+      }  else if (getParam("user") != null) {
         setPage("profile");
       } else if (getParam("j") != null) {
         setPage("group");
@@ -885,6 +897,7 @@ window.addEventListener("message", async (event) => {
                 let data = JSON.parse(response);
                 account.Email = data.Email;
                 account.Exotek = data.Exotek;
+                account.Premium = data.Premium;
                 refreshPage();
                 showPopUp("Trasfered Accounts", "You will now use your Exotek account:</br><b>" + account.Exotek.user + "</b> <i>(" + account.Email + ")</i></br>when logging into Photop.", [["Okay", "var(--grayColor)"]]);
               } else {
@@ -901,7 +914,7 @@ window.addEventListener("message", async (event) => {
 
 
 function hasPremium() {
-  if (account.Premium != null && Date.parse(new Date(getEpoch()).toISOString()) < Date.parse(account.Premium.Expires)) {
+  if (account.Premium != null && Math.floor(getEpoch() / 1000) < account.Premium.Expires) {
     if (!supportedImageTypes.includes("gif")) {
       supportedImageTypes.push("gif");
     }
@@ -970,7 +983,7 @@ async function updateToSignedIn(response) {
         let file = e.target.files[0];
         if (file.type.substring(0, 6) == "image/") {
           if (supportedImageTypes.includes(file.type.replace(/image\//g, "")) == true) {
-            let premium = hasPremium()
+            let premium = hasPremium();
             if (file.size < 2097153 || (file.size < 2097153 * 2 && premium)) { // 2 MB
               if (imageHolder.src != null) {
                 URL.revokeObjectURL(imageHolder.src);
@@ -1036,6 +1049,9 @@ async function updateToSignedIn(response) {
       groupnotif({ ...group, _id: groupsArr[i] });
     }
   }
+	if (getParam("gift") != null) {
+		(await getModule("gift"))(getParam("gift"));
+	}
   if (getParam("connect") == null) {
     refreshPage();
   } else if (currentPage != "settings") {
@@ -1111,6 +1127,7 @@ let bb = function(isPost) {
     'TEXT': '(.*?)',
     'SIMPLETEXT': '[a-zA-Z0-9-_ ]\b',
     'HEX': '([0-9abcdef]+)',
+		'PREM': '([a-z0-9]+)'
   };
   let hddmatches = [];
   let hdtpls = [];
@@ -1186,6 +1203,7 @@ let bb = function(isPost) {
   o7.ad('(-{TEXT})', '<strike>{TEXT}</strike>');
   o7.ad('(`{TEXT})', '<span style="font-family: monospace;">{TEXT}</span>');
   o7.ad('(^{TEXT})', '<sup>{TEXT}</sup>');
+  o7.ad('https://app.photop.live/?gift={PREM}', '<span type="giftlink" giftid="{PREM}" class="gift-link" tabindex="0">Claim Gift!</span>');
   o7.ad('{URL}', '<a href="{URL}" target="_blank" class="link" title="{URL}">{URL}</a>');
   o7.ad('@{HEX}"{TEXT}" ', '<span type="user" userid="{HEX}" class="mention" tabindex="0">@{TEXT}</span> ');
   o7.ad('@{HEX}"{TEXT}"\n', '<span type="user" userid="{HEX}" class="mention" tabindex="0">@{TEXT}</span>\n');
@@ -1193,6 +1211,8 @@ let bb = function(isPost) {
   o7.ad('/Post_{HEX}\n', '<span type="postlink" postid="{HEX}" class="post-embed" tabindex="0">/Post_{HEX}</span>\n');
   o7.ad('/Chat_{HEX} ', '<span type="chatlink" chatid="{HEX}" class="chat-embed" tabindex="0">/Chat_{HEX}</span> ');
   o7.ad('/Chat_{HEX}\n', '<span type="chatlink" chatid="{HEX}" class="chat-embed" tabindex="0">/Chat_{HEX}</span>\n');
+  o7.ad('/Gift_{PREM} ', '<span type="giftlink" giftid="{PREM}" class="gift-link" tabindex="0">Claim Gift!</span> ');
+  o7.ad('/Gift_{PREM}\n', '<span type="giftlink" giftid="{PREM}" class="gift-link" tabindex="0">Claim Gift!</span>\n');
   //o7.ad('#{TEXT} ', '<span type="hashtag" hashtag="{TEXT}" class="hashtag" tabindex="0">#{TEXT}</span> ');
   //o7.ad('#{TEXT}\n', '<span type="hashtag" hashtag="{TEXT}" class="hashtag" tabindex="0">#{TEXT}</span>\n');
 };
@@ -1221,6 +1241,7 @@ let formating = {
   "/Post_": '<span type="post" class="post-embed">{TEXT}</span>',
   "/Chat_": '<span type="chat" class="chat-embed">{TEXT}</span>',
   "/User_": '<span type="user" class="user-embed">{TEXT}</span>',
+  "/Gift_": '<span type="gift" class="gift-embed">{TEXT}</span>',
 
   "(!": "<b>{TEXT}</b>",
   "(*": "<i>{TEXT}</i>",
@@ -1667,6 +1688,54 @@ async function setupPostChats() {
     }
   }
 }
+let includePremiumEmbedCode;
+let premiumSubscribe;
+function processGiftLinks() {
+  let premiumEmbeds = pageHolder.querySelectorAll(".gift-link");
+  let premiumEmbedCodes = [];
+  for (let i = 0; i < premiumEmbeds.length; i++) {
+    premiumEmbedCodes.push(premiumEmbeds[i].getAttribute("giftid"));
+  }
+  if (includePremiumEmbedCode != null && premiumEmbedCodes.includes(includePremiumEmbedCode) == false) {
+    premiumEmbedCodes.push(includePremiumEmbedCode);
+  }
+  let query = { task: "gift", code: premiumEmbedCodes };
+  if (premiumSubscribe != null) {
+    premiumSubscribe.edit(query);
+  } else {
+    premiumSubscribe = socket.subscribe(query, async function(data) {
+      switch (data.type) {
+        case "claim":
+          // Update embed to show claimed (data.code)
+					const embedElem = document.querySelector(`.embed[giftCode="${data.code}"]`);
+					if (embedElem) {
+						embedElem.innerHTML = `
+							<div style="display:flex;">
+								<img style="width:45px;height:45px;filter:grayscale(100%);" src="./icons/gift.svg">
+								<div style="margin:auto 0px auto 8px;">
+									<div style="font-weight:bold;font-size:16px;">This Gift was Claimed!</div>
+									<div style="margin-top:4px;">Sorry slowpoke, someone got this gift!</div>
+								</div>
+							</div>
+						`
+					}
+          break;
+        case "solve":
+          const solvingText = document.querySelector(`#claimPremiumSolving[giftid="${data.code}"]`);
+          if(solvingText){
+						const counter = solvingText.querySelector(".solvingCounter");
+						const userIden = solvingText.querySelector(".usersIdentify");
+						if (data.solving == 1) {
+							userIden.innerText = "user is";
+						} else {
+							userIden.innerText = "users are";
+						}
+            changeCounter(counter, data.solving);
+          }
+      }
+    });
+  }
+}
 async function updateChatting(posts) {
   if (posts.length > 0) {
     async function chattingThread() {
@@ -1689,7 +1758,7 @@ async function updateChatting(posts) {
     chattingThread();
   }
 
-  let foundEmbeds = pageHolder.querySelectorAll(".post-embed:not([embeding='']), .chat-embed:not([embeding='']), .link:not([embeding=''])");
+  let foundEmbeds = pageHolder.querySelectorAll(".post-embed:not([embeding='']), .chat-embed:not([embeding='']), .link:not([embeding='']), .gift-link:not([embeding=''])");
   let requestEmbeds = [];
   let linkEmbeds = [];
   for (let i = 0; i < foundEmbeds.length; i++) {
@@ -1705,6 +1774,10 @@ async function updateChatting(posts) {
           requestEmbeds.push({ type: "chat", value: embed.getAttribute("chatid") });
           embed.setAttribute("embeding", "");
           break;
+        case "giftlink":
+          requestEmbeds.push({ type: "premium", value: embed.getAttribute("giftid") });
+					embed.setAttribute("embeding", "");
+					break;
         default:
           let link = embed.textContent.replace('"', "");
           let videoEmbed;
@@ -1761,6 +1834,7 @@ async function updateChatting(posts) {
     }
   }
   if (requestEmbeds.length > 0) {
+    processGiftLinks();
     let endpoint = "posts/embeds";
     let groupID = getParam("group");
     if (groupID) {
@@ -1821,7 +1895,39 @@ async function updateChatting(posts) {
               let thisChatOverlay = createElement("profileChatOverlay", "div", thisChatEmbed);
               thisChatOverlay.setAttribute("type", "chatlink");
               thisChatOverlay.setAttribute("chatid", chat._id);
-          }
+							break;
+						case "giftlink":
+							let gift = embeds[embed.getAttribute("giftid")];
+              if (gift == null) {
+                continue;
+              }
+							let thisGiftEmbed = createElement("embed", "div", postContent);
+							thisGiftEmbed.setAttribute("giftCode", embed.getAttribute("giftid"))
+							user = users[gift.UserID];
+							if (gift.Claimed) {
+								thisGiftEmbed.innerHTML = `
+									<div style="display:flex;">
+										<img style="width:45px;height:45px;filter:grayscale(100%);" src="./icons/gift.svg">
+										<div style="margin:auto 0px auto 8px;">
+											<div style="font-weight:bold;font-size:16px;">This Gift was Claimed!</div>
+											<div style="margin-top:4px;">Sorry slowpoke, someone got this gift!</div>
+										</div>
+									</div>
+								`;
+							} else {
+								thisGiftEmbed.innerHTML = `
+								<div style="display:flex;">
+									<img class="activeGiftIcon" src="./icons/gift.svg">
+									<div style="margin:auto 0px auto 8px;">
+											<div style="font-weight:800;">Claim this Premium Gift!</div>
+											<div style="font-size:14px;margin-top:4px;"><b>${user.User}</b> has sent a <b>${gift.Length} month</b> gift!</div>
+									</div>
+									<button class="embedClaimButton shine" type="claimgift" giftid=${embed.getAttribute("giftid")} style="padding:8px;margin:auto 0px auto auto;background-color:var(--premiumColor);overflow:hidden;width:40px;">Claim</button>
+								<div>
+								`;
+							}
+              break; 
+					}
         }
       }
     }
@@ -1956,13 +2062,20 @@ socket.remotes.stream = async function(data) {
       delChat.remove();
       break;
     case "chatedit":
-      // console.log(data)
-      let chatElement = findI(data.chatID);
-      console.log(chatElement);
+      const chatElement = findI(data.chatID);
       if (chatElement) {
-        let spanChildren = chatElement.querySelectorAll("span");
-        let text = spanChildren[spanChildren.length - 1];
-        text.innerText = data.text
+        const text = chatElement.querySelector(".chatText, .chatMinfiyText");
+				chatElement.setAttribute('text', data.text);
+        text.innerHTML = `${formatText(data.text)} <span class="chatEditedTitle" title="${formatFullDate(data.edited)}">(edited)</span>`
+
+				const post = findI(chatElement.closest('.post').id);
+        
+				if (post) {
+					const replies = Array.from(document.querySelectorAll(`.chatReplyHolder[replyid="${data.chatID}"]`));
+          for(let i = 0; i < replies.length; i++){
+            replies[i].lastChild.innerText = data.text.replace(/@([^"]+)"([^"]+)"/g, "@$1");
+          }
+				}
       }
       break;
   }
@@ -2020,7 +2133,7 @@ function getRoleHTML(roleUser, max) {
       roles = [roles];
     }
     roles = [...roles];
-    if (roleUser.Premium != null && Date.parse(new Date(getEpoch()).toISOString()) < Date.parse(roleUser.Premium.Expires)) {
+    if (roleUser.Premium != null && Date.parse(new Date(getEpoch()).toISOString())/1000 < roleUser.Premium.Expires) {
       roles.push("Premium");
     }
     switch (roleUser._id) {
@@ -2029,7 +2142,7 @@ function getRoleHTML(roleUser, max) {
         break;*/
     }
     for (let i = 0; i < Math.min(roles.length, maxRoles); i++) {
-      roleHTML += `<span class="roleEmoji" style="background: linear-gradient(315deg, #505068, ${roleTypes[roles[i]][2]})" title="${roles[i]}">${roleTypes[roles[i]][0]}</span> `;
+      roleHTML += `<span class="roleEmoji" style="background: linear-gradient(315deg, #505068, ${roleTypes[roles[i]][2]})" title="${roles[i]}"><span style="${roleTypes[roles[i]][3] || ""}">${roleTypes[roles[i]][0]}</span></span> `;
       /*
       roleHTML += `<span class="roleEmoji" title="${roles[i]}"><img src = "../Images/RoleIcons/${roles[i]
         }.png" class = "profileRole"></span> `;
@@ -2184,7 +2297,7 @@ function reportContent(id, name, userid, type) {
   popUpText.innerHTML += `<div class="reportContextTitle">Additional Context <i>(Optional):</i></div><div id="reportContext" contenteditable="true" placeholder="200 Max Characters" class="textArea"></div>`;
 }
 function formatDate(time) {
-  let d = new Date(time);
+  let d = new Date(time + epochOffset);
   return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 }
 

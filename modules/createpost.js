@@ -233,11 +233,10 @@ modules.createpost = function(holder) {
                 });
               } else {
                 if (file.size > 5242881 && !hasPremium()) {
-                  //showPopUp("Too Big!", "Your image must be under 5MB. However, with Photop Premium you can upload up too 10MB!", [["Okay", "var(--grayColor)"]]);
-                  showPopUp("Too Big!", "Your image must be under 5MB.", [["Okay", "var(--grayColor)"]]);
+                  showPopUp("Too Big!", "Your image must be under 5MB. However, with Photop Premium you can upload up too 10MB!", [["Premium", "var(--premiumColor)", function() { setPage("premium"); }], ["Okay", "var(--grayColor)"]]);
                 } else {
                   if (file.size > 5242881 * 2 && hasPremium()) {
-                    showPopUp("Too Big!", "Your image file size must be under 10MB.", [["Okay", "var(--grayColor)"]]);
+                    console.log("test")
                   }
                 }
               }
@@ -260,7 +259,7 @@ modules.createpost = function(holder) {
   });
   */
   let posting = false;
-  // let limit = premium ? 800 : 400
+  let limit = premium ? 800 : 400
   findI("createPostButton").addEventListener("click", async function() {
     if (posting == true) {
       return;
@@ -272,8 +271,7 @@ modules.createpost = function(holder) {
     }
     if ((newPostArea.innerText.length > 400 && !premium) || (newPostArea.innerText.length > 400 * 2 && premium)) {
       if (!premium) {
-        //showPopUp("That's Too Long", `Please keep your posts to under ${lim} characters. However, with Photop Premium, you can send posts up to 800 characters long!`, [["Premium", "var(--premiumColor)", function() { setPage("premium"); }], ["Okay", "var(--grayColor)"]]);
-        showPopUp("That's Too Long", `Please keep your posts to under ${lim} characters.`, [["Okay", "var(--grayColor)"]]);
+        showPopUp("That's Too Long", `Please keep your posts to under ${lim} characters. However, with Photop Premium, you can send posts up to 800 characters long!`, [["Premium", "var(--premiumColor)", function() { setPage("premium"); }], ["Okay", "var(--grayColor)"]]);
       } else {
         showPopUp("That's Too Long", `Please keep your posts to under ${lim} characters.`, [["Okay", "var(--grayColor)"]]);
       }
@@ -304,6 +302,8 @@ modules.createpost = function(holder) {
         recentUserPostID = response;
         fetchNewPosts();
       }
+    } else {
+      showPopUp("An Error Occured", response, [["OK", "var(--grayColor)"]]);
     }
     if (newPost != null) {
       newPost.style.borderBottomStyle = "none";

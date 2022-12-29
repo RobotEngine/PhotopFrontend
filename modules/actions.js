@@ -183,20 +183,25 @@ modules.actions = function() {
           }]);
         }
         function editPost() {
-          let postUI = `<div contenteditable="true" id="editPost">${post.getAttribute("text")}</div>`
+					let postText = post.getAttribute("text").replace(/@([A-Za-z0-9]+)"([^"]+)"/g, "@$2")
+          let postUI = `<div style="display:flex;flex-direction:column;"><div contenteditable="true" id="editPost" onpaste="clipBoardRead(event)">${postText.replaceAll("\n", "<br>")}</div><span id="editPostCharCount">${postText.replaceAll("\n", "").length}/800</span></div>`
           showPopUp("Edit Post", postUI, [["Save", "var(--premiumColor)", async function() {
             post.style.opacity = "0.5";
             let sendFormData = new FormData();
-          sendFormData.append("data", JSON.stringify({ text: findI("editPost").textContent }));
+	          sendFormData.append("data", JSON.stringify({ text: findI("editPost").innerText.replace(/@([\w-]+)/g, "@$1 ") }));
             let [code, response] = await sendRequest("POST", `posts/edit?postid=${post.id} `, sendFormData, true);
            
-            if (code == 200) {
-              post.setAttribute("text", editedText);
-            } else {
+            if (code != 200) {
               showPopUp("An Error Occured", response, [["OK", "var(--grayColor)"]]);
+							post.style.opacity = "1";
             }
-            post.style.opacity = "1";
           }], ["Cancel", "var(--grayColor)"]]);
+          const editPostCharCount = findI('editPostCharCount');
+          const editPost = findI('editPost');
+					editPost.focus();
+          editPost.addEventListener('input', function(){
+            editPostCharCount.innerText = `${editPost.textContent.length}/800`;
+          });
         }
         function deletePost() {
           showPopUp("Delete Post?", "Are you sure you want to <b>permanently</b> delete this post?", [["Delete", "#FF5C5C", async function() {
@@ -277,7 +282,7 @@ modules.actions = function() {
         }
         if (text.length > limit) {
           if (limit == 200) {
-            //showPopUp("That's Too Long", `Please keep your chats to under ${limit} characters. However, with Photop Premium, you can send chats with up to 400 characters!`, [["Premium", "var(--premiumColor)", function() { setPage("premium"); }], ["Okay", "var(--grayColor)"]]);
+            showPopUp("That's Too Long", `Please keep your chats to under ${limit} characters. However, with Photop Premium, you can send chats with up to 400 characters!`, [["Premium", "var(--premiumColor)", function() { setPage("premium"); }], ["Okay", "var(--grayColor)"]]);
             showPopUp("That's Too Long", `Please keep your chats to under ${limit} characters.`, [["Okay", "var(--grayColor)"]]);
           } else {
             showPopUp("That's Too Long", `Please keep your chats to under ${limit} characters.`, [["Okay", "var(--grayColor)"]]);
@@ -337,6 +342,7 @@ modules.actions = function() {
 
       // Chat Actions:
       chat: async function(chat, post) {
+        if(chat.getAttribute('editing') == "true")return;
         let dropdownButtons = [
           ["Copy Text", "var(--themeColor)", function() {
             copyClipboardText(chat.getAttribute("text"));
@@ -347,30 +353,64 @@ modules.actions = function() {
         ];
         let mainElement;
         function editChat() {
-          let spanChildren = chat.querySelectorAll("span");
-          mainElement = spanChildren[spanChildren.length - 1];
-          mainElement.setAttribute("contenteditable", "true");
-          mainElement.focus();
-          const oldText = mainElement.textContent;
-          
-          const editButton = createElement("editChatButton", 'button', mainElement.parentElement);
-          editButton.innerText = "Save";
-          tempListen(editButton, 'click', saveChat);
-
-          tempListen(mainElement, 'keypress', async event => {
-            if (event.key == "Enter") {
-              saveChat();
+          let currentEditing = document.querySelector(".chatText[contenteditable='true'], .chatMinfiyText[contenteditable='true']");
+          if (currentEditing) {
+            currentEditing.setAttribute("contenteditable", "false");
+            currentEditing.innerHTML = formatText(currentEditing.getAttribute('originalText'));
+            if(currentEditing.className == 'chatText'){
+              currentEditing.parentElement.parentElement.setAttribute('editing', "false");
+            }else{
+              currentEditing.parentElement.setAttribute('editing', "false");
             }
+            
+            currentEditing.parentElement.querySelector('.editChatButtons').remove();
+          }
+          chat.setAttribute('editing', "true");
+          mainElement = chat.querySelector(".chatText, .chatMinfiyText");
+          mainElement.setAttribute("contenteditable", "true");
+					mainElement.setAttribute("onpaste", "clipBoardRead(event)")
+          mainElement.focus();
+          const oldText = chat.getAttribute('text');
+					const oldHTML = mainElement.innerHTML;
+					mainElement.innerHTML = chat.getAttribute('text').replace(/@([^"]+)"([^"]+)"/g, "@$2");
+          mainElement.setAttribute('originalText', oldText);
+
+          const editButtonsContainer = createElement("editChatButtons", 'div', mainElement.parentElement);
+          editButtonsContainer.innerHTML = `<button class="editChatButton saveEditButton" ${chat.className == "minifyChat"? "minified=\"defined\"":""}>Save</button><button class="editChatButton cancelEditButton" ${chat.className == "minifyChat"? "minified=\"defined\"":""}>Cancel</button>`;
+          const editButtons = editButtonsContainer.querySelectorAll('.editChatButton');
+          tempListen(editButtons[0], 'click', saveChat);
+          tempListen(editButtons[1], 'click', () => {
+            editButtonsContainer.remove();
+            mainElement.setAttribute("contenteditable", "false");
+            chat.setAttribute('editing', "false");
+            chat.removeAttribute('originalText');
+            mainElement.innerHTML = oldHTML;
           });
 
+          tempListen(mainElement, 'keypress', enterChat);
+
+          function enterChat(event){
+            if (event.key == "Enter") {
+              event.preventDefault();
+              saveChat();
+            }
+          }
+    
           async function saveChat(){
+              mainElement.removeEventListener('keypress', enterChat);
+              mainElement.style = 'color: #bbb';
+              mainElement.setAttribute("contenteditable", "false");
+              editButtonsContainer.remove();
+              chat.setAttribute("type", "chat");
+              chat.setAttribute("editing", "false");
               let [code, response] = await sendRequest("POST", `chats/edit?chatid=${chat.id} `, { text: mainElement.textContent });
-              if (code == 200) {
-                mainElement.setAttribute("contenteditable", "false");
-                chat.setAttribute("type", "chat");
-              } else {
-                showPopUp("Oops! Something happened!", response, [["Okay", "var(--themeColor)"]])
+              if (code != 200) {
+                showPopUp("Error Editing Chat", response, [["Okay", "var(--themeColor)"]]);
+                mainElement.textContent = oldText;
+                editChat(chat, post);
               }
+              mainElement.style = 'color: inherit;';
+              chat.removeAttribute('originalText');
           }
         }
 
@@ -486,6 +526,14 @@ modules.actions = function() {
         } else {
           inviteTile.style.opacity = 1;
         }
+      },
+
+      //Premium:
+      giftlink: async function(elem) {
+        (await getModule("gift"))(elem.getAttribute('giftid'));
+      },
+      claimgift: async function(elem){
+        (await getModule("gift"))(elem.getAttribute("giftid"));
       }
     };
     if (actions[type] != null) {

@@ -49,10 +49,12 @@ modules.chat = function (parent, chat, user, reply, isSending, extra) {
   if (newChat.querySelector(".chatReplyText") != null) {
     newChat.querySelector(".chatReplyText").innerHTML = reply.Text;
   }
+
+	let editedHTML = chat.Edited ? `<span class="chatEditedTitle" title="${formatFullDate(chat.Edited)}">(edited)</span>` : "";
   if (className == "chat") {
-    newChat.querySelector(".chatText").innerHTML = formatText(chat.Text);
+    newChat.querySelector(".chatText").innerHTML = `${formatText(chat.Text)} ${editedHTML}`;
   } else {
-    newChat.querySelector(".chatMinfiyText").innerHTML = formatText(chat.Text);
+    newChat.querySelector(".chatMinfiyText").innerHTML = `${formatText(chat.Text)} ${editedHTML}`;
   }
   if (isSending == true) {
     newChat.style.color = "#bbb";

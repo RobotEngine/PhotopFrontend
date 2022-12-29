@@ -120,11 +120,11 @@ pages.profile = async function() {
   if (user.ProfileData.Description != null && user.ProfileData.Description.length > 1) {
     pageHolder.querySelector(".profileBio").innerHTML = formatText(user.ProfileData.Description).replace(/\n/g, "<br>");
   }
-  if (user.Premium == null) {
+  if (user.Premium == null || user.Premium.Bought == null || Math.floor(getEpoch() / 1000) > user.Premium.Expires) {
     findI("premiumDate").remove();
   } else {
-    findI("premiumDate").innerHTML = `${getSVG("premium")} <span class="profileDateSpan">Subscribed <b>${formatDate(Date.parse(user.Premium.Bought))}</b></span>`;
-    findI("premiumDate").setAttribute("title", formatFullDate(Date.parse(user.Premium.Bought)));
+    findI("premiumDate").innerHTML = `${getSVG("premium")} <span class="profileDateSpan">Subscribed <b>${formatDate(user.Premium.Bought*1000)}</b></span>`;
+    findI("premiumDate").setAttribute("title", formatFullDate(user.Premium.Bought*1000));
     if (user.CustomURL != null) {
       modifyParams("user", user.CustomURL);
     }
@@ -141,7 +141,20 @@ pages.profile = async function() {
       socialButton.setAttribute("href", socialInfo[2].replace(/USERID_GOES_HERE/g, keyInfo.splice(1).join("_")).replace(/USERNAME_GOES_HERE/g, value));
       socialButton.setAttribute("target", "_blank");
     } else {
-      socialButton.setAttribute("onmouseup", 'showPopUp("' + socialInfo[0] + '", "<i>' + cleanString(value) + '</i>", [ ["Done", "var(--grayColor)"] ])');
+			var buttons = [
+				["Done", "grey"]
+			]
+
+			const getExtras = function() {
+				switch (socialInfo[0].toLowerCase()) {
+					case 'discord':
+						const link = `https://discordapp.com/users/${keyInfo[1]}`
+						return '[ \'Account\',\'' + socialInfo[1] + '\',function() {window.open("' + link + '")} ]'
+						break;
+				}
+			}
+
+      socialButton.setAttribute("onmouseup", `showPopUp("${socialInfo[0]}", "<i>${cleanString(value)}</i>", [${getExtras()},['Done', 'grey']])`);
     }
   }
 
