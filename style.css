@@ -2740,6 +2740,7 @@ td {
   color: var(--premiumColor) !important;
   text-shadow: 0 0 3px var(--premiumColor);
   text-decoration: none;
+  cursor: pointer;
 }
 
 .profileRole {
