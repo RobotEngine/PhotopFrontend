@@ -430,7 +430,7 @@ pages.settings = function () {
 						} else {
 							// showPopUp("An Error Occured", "Your banner is too large. Please upload a smaller banner.", [["Okay", "var(--grayColor)"]]);
 							if (file.size > 5242881 && !premium) {
-								showPopUp("Too big!", "Your image must be under 5MB. However, with Photop Premium, you can upload up to 10Mb", [
+								showPopUp("Too big!", "Your image must be under 5MB. However, with Photop Premium, you can upload up to 10MB", [
 									["Premium", "var(--premiumColor)", function () {
 										setPage("premium");
 									}],
@@ -482,9 +482,12 @@ pages.settings = function () {
 							]);
 							if (file.size > 2097153 && !hasPremium()) {
 								// alert("I think we have a problem")
-								showPopUp("Too big!", "Your image must be under 2MB. However, with Photop Premium you can upload up too 4MB!", [
-									["Okay", "var(--grayColor)"]
-								]);
+                showPopUp("Too big!", `Your image must be under 2MB. However, with Photop Premium you can upload up too 4MB!`, [
+							["Premium", "var(--premiumColor)", function () {
+								setPage("premium");
+							}],
+							["Okay", "var(--grayColor)"]
+						]);
 							} else {
 								if (file.size > 2097153 * 2 && hasPremium()) {
 									showPopUp("Too big!", "Your image file size must be under 4MB.", [

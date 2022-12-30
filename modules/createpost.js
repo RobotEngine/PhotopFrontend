@@ -236,7 +236,7 @@ modules.createpost = function(holder) {
                   showPopUp("Too Big!", "Your image must be under 5MB. However, with Photop Premium you can upload up too 10MB!", [["Premium", "var(--premiumColor)", function() { setPage("premium"); }], ["Okay", "var(--grayColor)"]]);
                 } else {
                   if (file.size > 5242881 * 2 && hasPremium()) {
-                    console.log("test")
+                    showPopUp("Too Big!", "Your image must be under 10MB!", [["Okay", "var(--grayColor)"]]);
                   }
                 }
               }

@@ -2087,36 +2087,36 @@ function setUsernameRole(textHolder, userData, fontSize, limitSingleBadge) {
     return;
   }
   let fullString = "";
+  let roles = [];
   if (userData.Role != null) {
-    let roles = userData.Role;
-    if (Array.isArray(roles) == false) {
-      roles = [roles];
-    }
-    console.log(userData)
-    if (userData.Premium != null) {
-      roles.push("Premium");
-    }
-    if (fontSize != null) {
-      fullString += "<div style='display: flex; align-items: center; white-space: pre'>";
-    }
-    if (fontSize == null || limitSingleBadge == true) {
-      roles = [roles[0]];
-    }
-    for (let i = 0; i < roles.length; i++) {
-      let RoleName = roles[i];
-      let AddRole = roleTypes[RoleName];
-      if (AddRole != null) {
-        let SetString = "";
-        //let RoleIconURL = "./Images/RoleIcons/" + RoleName + ".png";
-        if (fontSize == null) {
-          //FontSize = getCSS(TextHolder, "font-size").replace(/px/g, "");
-          //SetString = "<span style='height: " + (FontSize-4) + "px; padding: 0px 2px 0px 2px; margin-right: 3px; border-radius: 6px; content: url(" + RoleIconURL + ")' title='" + RoleName + "'></span>";
-          SetString = "<span style='background-color: #505068; padding: 0px 2px 0px 2px; margin-right: 6px; border-radius: 6px' title='" + RoleName + "'>" + AddRole[0] + "</span>";
-        } else {
-          SetString = "<span style='background-color: #505068; padding: 0px 2px 0px 2px; margin-right: 6px; border-radius: 6px; font-size: " + fontSize + "' title='" + RoleName + "'>" + AddRole[0] + "</span>";
-        }
-        fullString += SetString;
+    roles = userData.Role;
+  }
+  if (Array.isArray(roles) == false) {
+    roles = [roles];
+  }
+  if (userData.Premium != null && Math.floor(getEpoch() / 1000) < userData.Premium.Expires) {
+    roles.push("Premium");
+  }
+  if (fontSize != null) {
+    fullString += "<div style='display: flex; align-items: center; white-space: pre'>";
+  }
+  if (fontSize == null || limitSingleBadge == true) {
+    roles = [roles[0]];
+  }
+  for (let i = 0; i < roles.length; i++) {
+    let RoleName = roles[i];
+    let AddRole = roleTypes[RoleName];
+    if (AddRole != null) {
+      let SetString = "";
+      //let RoleIconURL = "./Images/RoleIcons/" + RoleName + ".png";
+      if (fontSize == null) {
+        //FontSize = getCSS(TextHolder, "font-size").replace(/px/g, "");
+        //SetString = "<span style='height: " + (FontSize-4) + "px; padding: 0px 2px 0px 2px; margin-right: 3px; border-radius: 6px; content: url(" + RoleIconURL + ")' title='" + RoleName + "'></span>";
+        SetString = "<span style='background-color: #505068; padding: 0px 2px 0px 2px; margin-right: 6px; border-radius: 6px' title='" + RoleName + "'>" + AddRole[0] + "</span>";
+      } else {
+        SetString = "<span style='background-color: #505068; padding: 0px 2px 0px 2px; margin-right: 6px; border-radius: 6px; font-size: " + fontSize + "' title='" + RoleName + "'>" + AddRole[0] + "</span>";
       }
+      fullString += SetString;
     }
   }
   fullString += userData.User;
@@ -2127,28 +2127,24 @@ function setUsernameRole(textHolder, userData, fontSize, limitSingleBadge) {
 }
 function getRoleHTML(roleUser, max) {
   let roleHTML = "";
+  let roles = [];
+  let maxRoles = (max || 1);
   if (roleUser.Role != null) {
-    let maxRoles = (max || 1);
-    let roles = roleUser.Role;
-    if (Array.isArray(roles) == false) {
-      roles = [roles];
-    }
-    roles = [...roles];
-    if (roleUser.Premium != null && Date.parse(new Date(getEpoch()).toISOString())/1000 < roleUser.Premium.Expires) {
-      roles.push("Premium");
-    }
-    switch (roleUser._id) {
-      /*case "60bd0243edf9d8003785ad79":
-        roles.unshift("Owner");
-        break;*/
-    }
-    for (let i = 0; i < Math.min(roles.length, maxRoles); i++) {
-      roleHTML += `<span class="roleEmoji" style="background: linear-gradient(315deg, #505068, ${roleTypes[roles[i]][2]})" title="${roles[i]}"><span style="${roleTypes[roles[i]][3] || ""}">${roleTypes[roles[i]][0]}</span></span> `;
-      /*
-      roleHTML += `<span class="roleEmoji" title="${roles[i]}"><img src = "../Images/RoleIcons/${roles[i]
-        }.png" class = "profileRole"></span> `;
-      */
-    }
+    roles = roleUser.Role;
+  }
+  if (Array.isArray(roles) == false) {
+    roles = [roles];
+  }
+  roles = [...roles];
+  if (roleUser.Premium != null && Math.floor(getEpoch() / 1000) < roleUser.Premium.Expires) {
+    roles.push("Premium");
+  }
+  for (let i = 0; i < Math.min(roles.length, maxRoles); i++) {
+    roleHTML += `<span class="roleEmoji" style="background: linear-gradient(315deg, #505068, ${roleTypes[roles[i]][2]})" title="${roles[i]}"><span style="${roleTypes[roles[i]][3] || ""}">${roleTypes[roles[i]][0]}</span></span> `;
+    /*
+    roleHTML += `<span class="roleEmoji" title="${roles[i]}"><img src = "../Images/RoleIcons/${roles[i]
+      }.png" class = "profileRole"></span> `;
+    */
   }
   return roleHTML;
 }
