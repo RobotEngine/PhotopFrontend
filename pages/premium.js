@@ -66,8 +66,7 @@ wireframes.premium = `
       <button class = "subscribe shine" id = "premiumSub2">Subscribe</button>
       <button class = "gift shine" id = "premiumGift2">Gift</button>
     </div>
-</div>
-`;
+</div>`;
 
 pages.premium = async function() {
   let phrases = ["Support the platform you love", "Help us keep the lights on", "Help us keep the servers online", "GIVE US MONEY (please)", "Give the gift of happiness (and post editing)", "You wouldn't want it to take 3 billion years for the page to load, would you?"];
@@ -130,10 +129,10 @@ pages.premium = async function() {
   giftButton.onclick = function() {
     let popUpCode = showPopUp("Choose a Gift", giftForm, [["Cancel", "var(--grayColor)"]]);
     findI("giftMonth").addEventListener("click", function () {
-      window.open("https://exotek.co/checkout?product=63a275215a8c1a850aba7674&userid=" + account.AccountID + "&startBilling=" + account.Premium.Expires, "_self");
+      window.open("https://exotek.co/checkout?product=63a275215a8c1a850aba7674&userid=" + account.AccountID, "_self");
     });
     findI("gift6Month").addEventListener("click", function () {
-      window.open("https://exotek.co/checkout?product=63a277305a8c1a850aba7675&userid=" + account.AccountID + "&startBilling=" + account.Premium.Expires, "_self");
+      window.open("https://exotek.co/checkout?product=63a277305a8c1a850aba7675&userid=" + account.AccountID, "_self");
     });
     findI("giftYear").addEventListener("click", function () {
       window.open("https://exotek.co/checkout?product=63a277485a8c1a850aba7676&userid=" + account.AccountID, "_self");
