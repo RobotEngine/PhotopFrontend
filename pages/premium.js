@@ -76,7 +76,7 @@ pages.premium = async function() {
   const giftButton = findI("premiumGift");
   const subButton2 = findI("premiumSub2");
   const giftButton2 = findI("premiumGift2");
-  const subForm =  `
+  const subForm =  `<div class="planAlert">${hasPremium() ? "Hey there! Since you have an active plan until " + formatDate(account.Premium.Expires*1000) + `, you won't be charged until then and it will show up as a "free trial." `: ""}You're setting up a recurring subscription, which will automatically renew (and charge you) until you cancel.</div>
     <div class="planSelector">
       <div class="plan">
       	<img src="https://exotek.co/images/photop/premium.svg" class="planImg">
@@ -97,7 +97,7 @@ pages.premium = async function() {
       </div>
     </div>
   `;
-  const giftForm =  `
+  const giftForm =  `<div class="planAlert">Thanks for your interest in gifting! As the name implies, Premium Gifts can only be given to others—you can't gift yourself! If you want Premium perks for yourself, go back and choose "Subscribe". Oh, and don't worry—gifts are one-time purchases.</div>
     <div class="planSelector">
       <div class="plan planGift">
       	<img src="../icons/gift.svg" class="planImg">
@@ -130,10 +130,10 @@ pages.premium = async function() {
   giftButton.onclick = function() {
     let popUpCode = showPopUp("Choose a Gift", giftForm, [["Cancel", "var(--grayColor)"]]);
     findI("giftMonth").addEventListener("click", function () {
-      window.open("https://exotek.co/checkout?product=63a275215a8c1a850aba7674&userid=" + account.AccountID, "_self");
+      window.open("https://exotek.co/checkout?product=63a275215a8c1a850aba7674&userid=" + account.AccountID + "&startBilling=" + account.Premium.Expires, "_self");
     });
     findI("gift6Month").addEventListener("click", function () {
-      window.open("https://exotek.co/checkout?product=63a277305a8c1a850aba7675&userid=" + account.AccountID, "_self");
+      window.open("https://exotek.co/checkout?product=63a277305a8c1a850aba7675&userid=" + account.AccountID + "&startBilling=" + account.Premium.Expires, "_self");
     });
     findI("giftYear").addEventListener("click", function () {
       window.open("https://exotek.co/checkout?product=63a277485a8c1a850aba7676&userid=" + account.AccountID, "_self");

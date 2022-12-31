@@ -586,6 +586,13 @@ button:active {
   align-content: stretch;
   justify-content: space-around;
 }
+.planAlert {
+  background: var(--pageColor2);
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
 .plan {
 	background: var(--pageColor2);
   padding: 8px;

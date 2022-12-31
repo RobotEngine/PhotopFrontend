@@ -1703,7 +1703,7 @@ function processGiftLinks() {
   let query = { task: "gift", code: premiumEmbedCodes };
   if (premiumSubscribe != null) {
     premiumSubscribe.edit(query);
-  } else {
+  } else if (premiumEmbedCodes.length > 0) {
     premiumSubscribe = socket.subscribe(query, async function(data) {
       switch (data.type) {
         case "claim":
