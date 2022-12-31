@@ -69,7 +69,8 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
   newPost.setAttribute("text", post.Text);
   newPost.innerHTML = postHTML;
   newPost.querySelector(".postText").innerHTML = formatText(post.Text);
-  let links = newPost.querySelector(".postText").querySelectorAll(".link");
+	
+  /*let links = newPost.querySelector(".postText").querySelectorAll(".link");
   let arrayOfLinks = [];
   for (let i = 0; i < links.length; i++) {
     arrayOfLinks.push(links[i].href);
@@ -90,7 +91,8 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
       returnHTML += `<iframe src="https://player.twitch.tv/?channel=${arrayOfLinks[i].replace("https://twitch.tv/", "")}&parent=app.photop.live&parent=photoprevamp.robotengine.repl.co" allowfullscreen class="embed"></iframe>`;
     } 
   }
-  newPost.querySelector(".postText").innerHTML += returnHTML;
+  newPost.querySelector(".postText").innerHTML += returnHTML;*/
+	
   if (post.Media != null && post.Media.ImageCount > 0) {
     let postImages = createElement("postImages", "div", newPost.querySelector(".postContent"));
     for (let i = 0; i < post.Media.ImageCount; i++) {

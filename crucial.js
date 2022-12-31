@@ -1707,7 +1707,6 @@ function processGiftLinks() {
     premiumSubscribe = socket.subscribe(query, async function(data) {
       switch (data.type) {
         case "claim":
-          // Update embed to show claimed (data.code)
 					const embedElem = document.querySelector(`.embed[giftCode="${data.code}"]`);
 					if (embedElem) {
 						embedElem.innerHTML = `
@@ -2190,7 +2189,7 @@ let socialLinkData = {
   github: ["GitHub", "#4078C0", "https://github.com/USERNAME_GOES_HERE"]
 };
 
-window.addEventListener("keypress", function(e) {
+window.addEventListener("keydown", async function(e) {
   if (e.key == "Enter") {
     if (e.target.className == "postChatInput") {
       e.target.parentElement.querySelector(".postChatButton").click();
@@ -2200,7 +2199,17 @@ window.addEventListener("keypress", function(e) {
     } else if (e.target.id == "signInUsername") {
       findI("signInPassword").focus();
     }
-  }
+  } /*else if (e.keyCode == 38) {
+		if (e.target.className == "postChatInput") {
+			//finish if you want idk how to make the chat edit by using action.js - abooby
+			const mainEle = e.target.parentElement.parentElement
+			const chatHolder = mainEle.querySelector(".postChatHolder").querySelector(".chatHolder");
+			let chats = chatHolder.querySelectorAll(`.chat[userid="${userID}"], .minifyChat[userid="${userID}"]`);
+
+			let lastChat = chats[chats.length - 1];
+			lastChat.click();
+		}
+	}*/
 });
 function abbr(num) {
   let x;

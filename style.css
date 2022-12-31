@@ -1078,7 +1078,7 @@ button:active {
   overflow: hidden;
 }
 .chatTextArea .chatAttr {
-  margin: 3px 0px 1px 0px;
+  margin: 1px 0px 1px 0px;
 }
 .chatTime {
   font-size: 13px;

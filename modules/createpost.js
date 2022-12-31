@@ -117,7 +117,6 @@ modules.createpost = function(holder) {
     newPostCharCount.textContent = `${postText.textContent.length}/${lim}`;
   }
   postText.addEventListener("input", updateCharCount);
-  //postText.addEventListener("change", updatePostFormat);
   postText.addEventListener("paste", function(e) {
     processUpload((e.clipboardData || e.originalEvent.clipboardData || {}).items);
     clipBoardRead(e);

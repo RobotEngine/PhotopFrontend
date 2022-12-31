@@ -142,10 +142,18 @@ pages.premium = async function() {
   subButton.onclick = function() {
     let popUpCode = showPopUp("Choose a Plan", subForm, [["Cancel", "var(--grayColor)"]]);
     findI("subscribeMonth").addEventListener("click", function () {
-      window.open("https://exotek.co/checkout?product=63a1229772ad0876f1fef39f&userid=" + account.AccountID, "_self");
+			let link = "https://exotek.co/checkout?product=63a1229772ad0876f1fef39f&userid=" + account.AccountID;
+			if (hasPremium() == true) {
+				link += "&startBilling=" + account.Premium.Expires;
+			}
+      window.open(link, "_self");
     });
     findI("subscribeYear").addEventListener("click", function () {
-      window.open("https://exotek.co/checkout?product=63a274ea5a8c1a850aba7673&userid=" + account.AccountID, "_self");
+			let link = "https://exotek.co/checkout?product=63a274ea5a8c1a850aba7673&userid=" + account.AccountID;
+			if (hasPremium() == true) {
+				link += "&startBilling=" + account.Premium.Expires;
+			}
+      window.open(link, "_self");
     });
   }
   giftButton2.onclick = function() {
