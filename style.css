@@ -307,6 +307,7 @@ button:active {
 .gift {
   background-color: var(--themeColor);
   margin-left: 5px;
+  overflow: hidden;
 }
 
 .subscribe {
