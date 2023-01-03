@@ -774,7 +774,7 @@ async function init() {
 }
 
 async function openLoginModal(page, title) {
-  (await getModule("webmodal"))("https://exotek.co/login?client_id=62f8fac716d8eb8d2f6562ef&redirect_uri=https%3A%2F%2F" + window.location.host + "&response_type=code&scope=userinfo#" + page, title);
+  window.loginWindow = (await getModule("webmodal"))("https://exotek.co/login?client_id=62f8fac716d8eb8d2f6562ef&redirect_uri=https%3A%2F%2F" + window.location.host + "&response_type=code&scope=userinfo#" + page, title);
 }
 
 /*
@@ -864,47 +864,41 @@ function setCaptchaExpired() {
 */
 
 window.addEventListener("message", async (event) => {
-  if (event.source == window.loginWindow) {
-    if (event.data == "oauth_embed_integration") {
-      event.source.postMessage("subscribe_oauth_finish", "*");
-    } else if (event.origin === "https://exotek.co") {
-      let parsedData = JSON.parse(event.data);
-      if (parsedData.type == "oauth_finish") {
-        let authCode = parsedData.code;
-        let authState = parsedData.state;
-        findI("exotekBlur").style.opacity = 0;
-        findI("exotekBlur").children[0].style.transform = "scale(0.9)";
-        setTimeout(function () {
-          findI("exotekBlur").remove();
-        }, 200);
-        if (authCode != null) {
-          if (authState == null) {
-            let [code, response] = await sendRequest("POST", "auth?ss=" + socket.secureID, { code: authCode });
+  if (event.data == "oauth_embed_integration") {
+    event.source.postMessage("subscribe_oauth_finish", "*");
+  } else if (event.origin === "https://exotek.co") {
+    let parsedData = JSON.parse(event.data);
+    if (parsedData.type == "oauth_finish") {
+      let authCode = parsedData.code;
+      let authState = parsedData.state;
+      window.loginWindow.close();
+      if (authCode != null) {
+        if (authState == null) {
+          let [code, response] = await sendRequest("POST", "auth?ss=" + socket.secureID, { code: authCode });
+          if (code == 200) {
+            updateToSignedIn(response);
+          } else {
+            showPopUp("An Error Occured", response, [["Okay", "var(--grayColor)"]]);
+          }
+        } else if (authState == "transferlogin") {
+          window.transferLoginCode = authCode;
+          showPopUp("Complete Transfer", "To complete the process, login to the new Exotek account you wish to use when signing in.", [["Authenticate", "var(--themeColor)", async function() {
+            window.loginWindow = (await getModule("webmodal"))("https://exotek.co/login?client_id=62f8fac716d8eb8d2f6562ef&redirect_uri=https%3A%2F%2F" + window.location.host + "&response_type=code&scope=userinfo&state=transferfinish", "Transfer Exotek Account (New Account)");
+          }], ["Cancel", "var(--grayColor)"]]);
+        } else if (authState == "transferfinish") {
+          if (window.transferLoginCode) {
+            let [code, response] = await sendRequest("POST", "auth/transfer", { old: window.transferLoginCode, new: authCode });
             if (code == 200) {
-              updateToSignedIn(response);
+              let data = JSON.parse(response);
+              account.Email = data.Email;
+              account.Exotek = data.Exotek;
+              account.Premium = data.Premium;
+              refreshPage();
+              showPopUp("Trasfered Accounts", "You will now use your Exotek account:</br><b>" + account.Exotek.user + "</b> <i>(" + account.Email + ")</i></br>when logging into Photop.", [["Okay", "var(--grayColor)"]]);
             } else {
               showPopUp("An Error Occured", response, [["Okay", "var(--grayColor)"]]);
             }
-          } else if (authState == "transferlogin") {
-            window.transferLoginCode = authCode;
-            showPopUp("Complete Transfer", "To complete the process, login to the new Exotek account you wish to use when signing in.", [["Authenticate", "var(--themeColor)", async function() {
-              (await getModule("webmodal"))("https://exotek.co/login?client_id=62f8fac716d8eb8d2f6562ef&redirect_uri=https%3A%2F%2F" + window.location.host + "&response_type=code&scope=userinfo&state=transferfinish", "Transfer Exotek Account (New Account)");
-            }], ["Cancel", "var(--grayColor)"]]);
-          } else if (authState == "transferfinish") {
-            if (window.transferLoginCode) {
-              let [code, response] = await sendRequest("POST", "auth/transfer", { old: window.transferLoginCode, new: authCode });
-              if (code == 200) {
-                let data = JSON.parse(response);
-                account.Email = data.Email;
-                account.Exotek = data.Exotek;
-                account.Premium = data.Premium;
-                refreshPage();
-                showPopUp("Trasfered Accounts", "You will now use your Exotek account:</br><b>" + account.Exotek.user + "</b> <i>(" + account.Email + ")</i></br>when logging into Photop.", [["Okay", "var(--grayColor)"]]);
-              } else {
-                showPopUp("An Error Occured", response, [["Okay", "var(--grayColor)"]]);
-              }
-              delete window.transferLoginCode;
-            }
+            delete window.transferLoginCode;
           }
         }
       }

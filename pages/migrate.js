@@ -87,8 +87,8 @@ pages.migrate = function() {
 		    }
 				break;
 			case 1:
-				(await getModule("webmodal"))("https://exotek.co/login?client_id=62f8fac716d8eb8d2f6562ef&redirect_uri=https%3A%2F%2F" + window.location.host + "&response_type=code&scope=userinfo&state=migrate#signup", "Migrate Photop Account");
+				window.loginWindow = (await getModule("webmodal"))("https://exotek.co/login?client_id=62f8fac716d8eb8d2f6562ef&redirect_uri=https%3A%2F%2F" + window.location.host + "&response_type=code&scope=userinfo&state=migrate#signup", "Migrate Photop Account");
 				break;
 		}
-	})
+	});
 }

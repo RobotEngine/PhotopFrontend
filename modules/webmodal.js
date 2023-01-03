@@ -1,4 +1,9 @@
 modules.webmodal = function (url, title, width, height) {
+  width = width || 1000;
+  height = height || 650;
+  return window.open(url, "social_link_authenticate", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=" + width + ", height=" + height + ", top=" + ((screen.height / 2) - (height / 2) - 100) + ", left=" + ((screen.width / 2) - (width / 2)));
+
+  /*
   let modalID = Math.floor(Math.random()*100000000);
   let modalHTML = `<div class="modalTitle exotek" id="modalTitle${modalID}">${title}<span id="closeExotek${modalID}" class="closeModal">&times;</span></div><div class="modalTextExotek" id="modalText${modalID}"><iframe src="${url}" class="exotekIFrame"></iframe></div>`;
   let backBlur = createElement("backBlur", "div", "body");
@@ -25,4 +30,5 @@ modules.webmodal = function (url, title, width, height) {
     newModal.style.transform = "scale(1)";
   }, 16);
   return modalID;
+  */
 }

@@ -323,7 +323,7 @@ pages.settings = function () {
 	      });
 			});
 			tempListen(findI("managePremium"), "click", async function () {
-				(await getModule("webmodal"))("https://exotek.co/account?userid=" + account.AccountID, "Premium Management");
+				window.loginWindow = (await getModule("webmodal"))("https://exotek.co/account?userid=" + account.AccountID, "Premium Management");
 			});
 			tempListen(findI("buyGiftPremium"), "click", async function () {
 				setPage("premium").then(() => {
@@ -387,12 +387,12 @@ pages.settings = function () {
 			});
 
 			tempListen(findI("exotekManageButton"), "click", async function () {
-				(await getModule("webmodal"))("https://exotek.co/account?userid=" + account.AccountID, "Manage Exotek Account");
+				window.loginWindow = (await getModule("webmodal"))("https://exotek.co/account?userid=" + account.AccountID, "Manage Exotek Account");
 			});
 			tempListen(findI("exotekTransferButton"), "click", async function () {
 				showPopUp("Begin Transfer", "First, login to your current Exotek account to begin the transfer process.", [
 					["Sign In", "var(--themeColor)", async function () {
-						(await getModule("webmodal"))("https://exotek.co/login?client_id=62f8fac716d8eb8d2f6562ef&redirect_uri=https%3A%2F%2F" + window.location.host + "&response_type=code&scope=userinfo&state=transferlogin", "Transfer Exotek Account (Current Account)");
+						window.loginWindow = (await getModule("webmodal"))("https://exotek.co/login?client_id=62f8fac716d8eb8d2f6562ef&redirect_uri=https%3A%2F%2F" + window.location.host + "&response_type=code&scope=userinfo&state=transferlogin", "Transfer Exotek Account (Current Account)");
 					}],
 					["Cancel", "var(--grayColor)"]
 				]);
@@ -604,10 +604,8 @@ pages.settings = function () {
 				let [code, response] = await sendRequest("GET", "me/new/social?site=" + social);
 				if (code == 200) {
 					if (newWin == null) {
-						let left = (screen.width / 2) - (500 / 2);
-						let top = (screen.height / 2) - (600 / 2) - 100;
-						window.open(response, "social_link_authenticate", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=500, height=600, top=" + top + ", left=" + left);
-					} else {
+            (await getModule("webmodal"))(response, "Connect Social Media Account", 500, 600);
+          } else {
 						newWin.location = response;
 					}
 				} else {
@@ -651,7 +649,6 @@ pages.settings = function () {
 					let [code] = await sendRequest("DELETE", "me/remove/social?socialid=" + social);
 					if (code == 200) {
 						thisSocial.remove();
-						findI("connectionCount").textContent--;
 					} else {
 						thisSocial.style.opacity = 1;
 					}
