@@ -1200,6 +1200,7 @@ let bb = function(isPost) {
   o7.ad('(^{TEXT})', '<sup>{TEXT}</sup>');
   o7.ad('https://app.photop.live/?gift={PREM}', '<span type="giftlink" giftid="{PREM}" class="gift-link" tabindex="0">Claim Gift!</span>');
   o7.ad('{URL}', '<a href="{URL}" target="_blank" class="link" title="{URL}">{URL}</a>');
+  o7.ad(':{TEXT}:', '<img src="https://studio.code.org/v3/assets/HtjSipObnf9vMf4AmioKHVaJAzlEeAVVyWIYLdu6i1U/{TEXT}.png?" class="emoji">');
   o7.ad('@{HEX}"{TEXT}" ', '<span type="user" userid="{HEX}" class="mention" tabindex="0">@{TEXT}</span> ');
   o7.ad('@{HEX}"{TEXT}"\n', '<span type="user" userid="{HEX}" class="mention" tabindex="0">@{TEXT}</span>\n');
   o7.ad('/Post_{HEX} ', '<span type="postlink" postid="{HEX}" class="post-embed" tabindex="0">/Post_{HEX}</span> ');

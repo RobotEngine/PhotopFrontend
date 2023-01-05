@@ -69,6 +69,10 @@ wireframes.premium = `
 </div>`;
 
 pages.premium = async function() {
+  modifyParams("post");
+  modifyParams("chat");
+  modifyParams("group");
+  modifyParams("user");
   let phrases = ["Support the platform you love", "Help us keep the lights on", "Help us keep the servers online", "GIVE US MONEY (please)", "Give the gift of happiness (and post editing)", "You wouldn't want it to take 3 billion years for the page to load, would you?"];
   findI("premiumHeader").textContent = phrases[Math.floor(Math.random() * phrases.length)];
   const subButton = findI("premiumSub");

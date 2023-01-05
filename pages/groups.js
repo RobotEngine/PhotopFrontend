@@ -2,11 +2,12 @@ wireframes.groups = `
 <div class="stickyContainer groupsTabs" id="tabs">
 <span class="tab" type="groups" id="tab-groups" tabindex="0">Groups</span>
 <span class="tab" type="invites" id="tab-invites" tabindex="0">Invites</span>
+<span class="tab" type="discover" id="tab-discover" tabindex="0" hidden>Discover</span>
 <span class="tab" type="new" id="tab-new" tabindex="0">Create</span>
 </div>`;
 
 pages.groups = function() {
-  let groupsTabs = ["groups", "invites", "new"];
+  let groupsTabs = ["groups", "invites", "discover", "new"];
   let currentGroupsTab = "";
 
   modifyParams("post");
@@ -97,6 +98,19 @@ pages.groups = function() {
             }
           }
         }));
+      }
+    },
+    discover: function () {
+      modifyParams("view", "discover");
+      let loadingGroups = true;
+      pageDiscoverHolder = createElement("groupsHolder-discover", "div", "pageHolder");
+      function createTile(invite, group) {
+        let thisGroup = createElement("groupSection", "div", pageInviteHolder);
+        thisGroup.innerHTML = `${group.Icon != undefined ? `<img src="${assetURL}GroupImages/${group.Icon}" class="groupIcon">` : ""}<div class="groupInfo"><div class="groupName">${group.Name}</div><button class="inviteTileButtons">View</button>></div>`;
+        thisGroup.id = invite.Group;
+        thisGroup.setAttribute("type", "viewgroup");
+        thisGroup.setAttribute("time", invite.Timestamp);
+        return thisGroup;
       }
     },
     new: function() {

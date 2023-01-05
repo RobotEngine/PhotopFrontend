@@ -10,6 +10,10 @@ pages.settings = function () {
 	let settingsTabs = ["account", "display", "blocked"]; //inventory
 	let currentSettingsTab = "";
 
+  modifyParams("post");
+  modifyParams("chat");
+  modifyParams("group");
+  modifyParams("user");
 	let premium = hasPremium()
 	let limit = premium ? 600 : 300;
 

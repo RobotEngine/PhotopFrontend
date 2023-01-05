@@ -1565,6 +1565,10 @@ button:active {
   color: #FF4DD2;
   border-color: #FF4DD2;
 }
+.tab.selected[type="discover"] {
+  color: #635ee0;
+  border-color: #635ee0;
+}
 .tooltip {
   text-align: center;
   font-weight: bold;
@@ -3052,4 +3056,9 @@ td {
 
 .solvingCounter{
   font-weight: bold;
+}
+.emoji {
+  display: inline-block;
+  height: 1em;
+  margin: 0 0.1em;
 }
