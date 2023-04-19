@@ -1,4 +1,4 @@
-let themes = ["Dark", "Light", "Blood Moon", "Under The Sea", "Hacker", "Midnight Haze"];
+let themes = [["Dark", "#151617"], ["Light", "#E6E9EB"], ["Blood Moon", "linear-gradient(to bottom, #5c0701, black)"], ["Under The Sea", "linear-gradient(to bottom, #4ecbef, #0062fe)"], ["Hacker", "black"], ["Midnight Haze", "linear-gradient(135deg, #0c1762, #650f9b, #780f31)"], ["Moss Green", "radial-gradient(ellipse at bottom, #658d65, #0d2c0a)"], ["Ourple 😂", "#4638a1"], ["Peachy Mist", "linear-gradient(315deg, #f0b980, pink)"]];
 let dispOptions = ["Embed YouTube Videos", "Embed Twitch Streams", "Embed GIFs"];
 wireframes.settings = `<div class="stickyContainer settingsTabs" id="tabs">
   <span class="tab" type="account" id="tab-account" tabindex="0">Account</span>
@@ -754,7 +754,7 @@ pages.settings = function () {
         <div style="font-size: 16px; text-align: center;">©2022 Exotek LLC - All rights reserved</div>
       </div>`;
 			for (var i in themes) {
-				addThemeOption(themes[i]);
+				addThemeOption(i);
 			}
 			for (var i in dispOptions) {
 				addDispOption(dispOptions[i]);
@@ -855,28 +855,25 @@ pages.settings = function () {
 	changeSettingsTab("account");
 };
 
-function addThemeOption(name) {
-	let thisThemeOption = createElement("", "div", findI("themeSelector"));
-	thisThemeOption.innerHTML += `<input type="radio" name="theme" value="${name}" id="theme${name.replace(/\s/g,"")}"><label for="theme${name.replace(/\s/g,"")}" class="radioLabel">${name}</label>`;
-	findI("theme" + name.replace(/\s/g, "")).checked = (account.Settings.Display.Theme == name);
-	findI("theme" + name.replace(/\s/g, "")).addEventListener("change", async function () {
-		if (findI("theme" + name.replace(/\s/g, "")).checked) {
-			let updatedSettings = account.Settings.Display;
-			updatedSettings.Theme = name;
-			updateDisplay(name);
-			let [code, response] = await sendRequest("POST", "me/settings", {
-				update: "display",
-				value: updatedSettings
-			});
-			if (code != 200) {
-				showPopUp("Error Updating Theme", response, [
-					["Okay", "var(--grayColor)"]
-				]);
-				findI("theme" + account.Settings.Display.Theme).checked = true;
-				updateDisplay(account.Settings.Display.Theme);
-			}
-		}
-	});
+function addThemeOption(index) {
+	let thisThemeOption = createElement("themeOption", "div", findI("themeSelector"));
+  thisThemeOption.style.background = themes[index][1];
+  thisThemeOption.title = themes[index][0];
+  thisThemeOption.addEventListener("click", async function () {
+    let updatedSettings = account.Settings.Display;
+    updatedSettings.Theme = themes[index][0];
+    updateDisplay(themes[index][0]);
+    let [code, response] = await sendRequest("POST", "me/settings", {
+      update: "display",
+      value: updatedSettings
+    });
+    if (code != 200) {
+      showPopUp("Error Updating Theme", response, [
+        ["Okay", "var(--grayColor)"]
+      ]);
+      updateDisplay(account.Settings.Display.Theme);
+    }
+  });
 }
 
 function addDispOption(name) {

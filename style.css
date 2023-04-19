@@ -3447,3 +3447,16 @@ td {
 	margin-bottom:5px;
 	font-weight:bold;
 }
+
+#themeSelector {
+  text-align: center;
+}
+.themeOption {
+  border-radius: 18px;
+  height: 50px;
+  width: 50px;
+  display: inline-block;
+  margin: 4px;
+  border: 2px solid var(--fontColor);
+  cursor: pointer;
+}

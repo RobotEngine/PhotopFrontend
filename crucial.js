@@ -2535,6 +2535,45 @@ function updateDisplay(type) {
       setCSSVar("--themeColor", "#78ddd4");
       particles = null;
       break;
+    case "Moss Green":
+      setCSSVar("--leftSidebarColor", "black");
+      setCSSVar("--pageColor", "radial-gradient(ellipse at bottom, #658d65, #0d2c0a)");
+      setCSSVar("--pageColor2", "var(--pageColor)");
+      setCSSVar("--sidebarBG", isMobile ? "var(--pageColor)" : "transparent");
+      setCSSVar("--contentColor", "#334e33");
+      setCSSVar("--contentColor2", "#395839");
+      setCSSVar("--contentColor3", "#426042");
+      setCSSVar("--borderColor", "#2ea4fd");
+      setCSSVar("--fontColor", "white");
+      setCSSVar("--themeColor", "#78dd8a");
+      particles = null;
+      break;
+    case "Ourple 😂":
+      setCSSVar("--leftSidebarColor", "black");
+      setCSSVar("--pageColor", "#4638a1");
+      setCSSVar("--pageColor2", "var(--pageColor)");
+      setCSSVar("--sidebarBG", "var(--pageColor)");
+      setCSSVar("--contentColor", "#5a4cb1");
+      setCSSVar("--contentColor2", "#6459ab");
+      setCSSVar("--contentColor3", "#6c62af");
+      setCSSVar("--borderColor", "#2ea4fd");
+      setCSSVar("--fontColor", "white");
+      setCSSVar("--themeColor", "#bab3e9");
+      particles = null;
+      break;
+    case "Peachy Mist":
+      setCSSVar("--leftSidebarColor", "black");
+      setCSSVar("--pageColor", "linear-gradient(315deg, #f0b980, pink)");
+      setCSSVar("--pageColor2", "var(--pageColor)");
+      setCSSVar("--sidebarBG", isMobile ? "var(--pageColor)" : "transparent");
+      setCSSVar("--contentColor", "#f9e5e8");
+      setCSSVar("--contentColor2", "#f9dad7");
+      setCSSVar("--contentColor3", "#f3c2d4");
+      setCSSVar("--borderColor", "#2ea4fd");
+      setCSSVar("--fontColor", "#46261b");
+      setCSSVar("--themeColor", "#ed3950");
+      particles = null;
+      break;
     default:
       setCSSVar("--leftSidebarColor", "#262630");
       setCSSVar("--pageColor", "#151617");
