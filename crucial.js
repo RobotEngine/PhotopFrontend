@@ -2574,6 +2574,19 @@ function updateDisplay(type) {
       setCSSVar("--themeColor", "#ed3950");
       particles = null;
       break;
+    case "Faded":
+      setCSSVar("--leftSidebarColor", "black");
+      setCSSVar("--pageColor", "linear-gradient(295deg, #336264, #3a4048)");
+      setCSSVar("--pageColor2", "var(--pageColor)");
+      setCSSVar("--sidebarBG", isMobile ? "var(--pageColor)" : "transparent");
+      setCSSVar("--contentColor", "#497287");
+      setCSSVar("--contentColor2", "#5a8399");
+      setCSSVar("--contentColor3", "#6a91a5");
+      setCSSVar("--borderColor", "#2ea4fd");
+      setCSSVar("--fontColor", "white");
+      setCSSVar("--themeColor", "#a9cfe9");
+      particles = null;
+      break;
     default:
       setCSSVar("--leftSidebarColor", "#262630");
       setCSSVar("--pageColor", "#151617");

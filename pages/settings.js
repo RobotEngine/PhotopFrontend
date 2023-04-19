@@ -1,4 +1,4 @@
-let themes = [["Dark", "#151617"], ["Light", "#E6E9EB"], ["Blood Moon", "linear-gradient(to bottom, #5c0701, black)"], ["Under The Sea", "linear-gradient(to bottom, #4ecbef, #0062fe)"], ["Hacker", "black"], ["Midnight Haze", "linear-gradient(135deg, #0c1762, #650f9b, #780f31)"], ["Moss Green", "radial-gradient(ellipse at bottom, #658d65, #0d2c0a)"], ["Ourple 😂", "#4638a1"], ["Peachy Mist", "linear-gradient(315deg, #f0b980, pink)"]];
+let themes = [["Dark", "#151617"], ["Light", "#E6E9EB"], ["Blood Moon", "linear-gradient(to bottom, #5c0701, black)"], ["Under The Sea", "linear-gradient(to bottom, #4ecbef, #0062fe)"], ["Hacker", "black"], ["Midnight Haze", "linear-gradient(135deg, #0c1762, #650f9b, #780f31)"], ["Moss Green", "radial-gradient(ellipse at bottom, #658d65, #0d2c0a)"], ["Ourple 😂", "#4638a1"], ["Peachy Mist", "linear-gradient(315deg, #f0b980, pink)"], ["Faded", "linear-gradient(315deg, #336264, #3a4048)"]];
 let dispOptions = ["Embed YouTube Videos", "Embed Twitch Streams", "Embed GIFs"];
 wireframes.settings = `<div class="stickyContainer settingsTabs" id="tabs">
   <span class="tab" type="account" id="tab-account" tabindex="0">Account</span>
