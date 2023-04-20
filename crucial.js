@@ -428,6 +428,9 @@ function setAccountSub(location) {
     query.userID = userID;
     query.token = account.Realtime;
     query.groups = Object.keys(groups);
+    if (account.Type) {
+      query.location += account.Type;
+    }
   }
   if (accountSubscribe != null) {
     accountSubscribe.edit(query);
@@ -2585,6 +2588,32 @@ function updateDisplay(type) {
       setCSSVar("--borderColor", "#2ea4fd");
       setCSSVar("--fontColor", "white");
       setCSSVar("--themeColor", "#a9cfe9");
+      particles = null;
+      break;
+    case "Into the Light":
+      setCSSVar("--leftSidebarColor", "black");
+      setCSSVar("--pageColor", "radial-gradient(circle at 30% 70%, #fbe286, #4caed3)");
+      setCSSVar("--pageColor2", "var(--pageColor)");
+      setCSSVar("--sidebarBG", isMobile ? "var(--pageColor)" : "transparent");
+      setCSSVar("--contentColor", "#e9e8c2");
+      setCSSVar("--contentColor2", "#e3ddca");
+      setCSSVar("--contentColor3", "#d9d4c4");
+      setCSSVar("--borderColor", "#2ea4fd");
+      setCSSVar("--fontColor", "#152c46");
+      setCSSVar("--themeColor", "#1199dd");
+      particles = null;
+      break;
+    case "Canyon":
+      setCSSVar("--leftSidebarColor", "black");
+      setCSSVar("--pageColor", "radial-gradient(ellipse at bottom, #d5610f, #581703)");
+      setCSSVar("--pageColor2", "var(--pageColor)");
+      setCSSVar("--sidebarBG", isMobile ? "var(--pageColor)" : "transparent");
+      setCSSVar("--contentColor", "#783715");
+      setCSSVar("--contentColor2", "#7c3d1c");
+      setCSSVar("--contentColor3", "#85401b");
+      setCSSVar("--borderColor", "#2ea4fd");
+      setCSSVar("--fontColor", "white");
+      setCSSVar("--themeColor", "#e5986a");
       particles = null;
       break;
     default:
