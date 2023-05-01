@@ -42,6 +42,19 @@ html {
   background-size: contain;
 }
 
+#backdrop {
+  width: 100%;
+  background-position-x: center;
+  background-position-y: center;
+  background-repeat-x: no-repeat;
+  background-repeat-y: no-repeat;
+  background-size: cover;
+  height: 100%;
+  position: fixed;
+  opacity: 0;
+  z-index: -999;
+}
+
 .app {
   display: flex;
   width: 850px;
@@ -323,6 +336,7 @@ button:active {
   margin-bottom: 8px;
   min-width: fit-content;
   position: relative;
+  color: white;
 }
 
 .shine:before {
@@ -547,7 +561,7 @@ button:active {
 
 #premiumBannerText {
   text-align: center;
-  color: var(--fontColor);
+  color: white;
   font-size: 25px;
   font-weight: bold;
   margin: 10px;
@@ -651,7 +665,7 @@ button:active {
 }
 .premiumBenefitTitle {
   margin: 6px 0px 4px 0px;
-  color: var(--fontColor);
+  color: white;
   font-family: var(--secondFont);
   font-size: 22px;
   font-weight: 600;
@@ -1797,6 +1811,31 @@ input[type="radio"]:checked + .radioLabel:before, input[type="checkbox"]:checked
 .settingsPfpHolder {
   margin: -50px 0px 0px 12px;
 }
+.settingsBackdropHolder {
+  position: relative;
+  background: var(--contentColor3);
+  border-radius: 8px;
+  width: 80%;
+  height: 100px;
+  margin: auto;
+  margin-top: 10px;
+  margin-bottom: 6px;
+}
+.settingsBackdrop {
+  display: block;
+  object-fit: cover;
+  border-radius: 8px;
+  background: var(--contentColor2);
+  width: 100%;
+  height: 100%;
+}
+#settingsBackdropRemove {
+  background: var(--grayColor);
+  display: block;
+  padding: 4px;
+  margin: auto;
+  margin-top: 4px;
+}
 #settingsNewUrl {
 	display:inline-block;
 	margin:auto 0px auto 0px;
@@ -2012,6 +2051,13 @@ input[type="radio"]:checked + .radioLabel:before, input[type="checkbox"]:checked
   border-radius: 100%;
   content: url(./icons/upload.svg);
   cursor: pointer;
+}
+#backdropRemove {
+  content: url(./icons/XButton.svg);
+  left: 70%;
+}
+.upload2 {
+  left: 30%;
 }
 .socialConnection {
   margin-top: 4px;
@@ -2419,7 +2465,7 @@ td {
   height: 100vh;
   top: 0px;
   overflow-y: auto;
-  background: var(--pageColor2);
+  background: var(--sidebarBG);
 }
 .groupMemberSection {
   margin-top: 8px;
@@ -2692,6 +2738,7 @@ td {
   font-size: 25px;
   font-weight: bold;
   text-shadow: 0 3px 5px rgb(0 0 0 / 50%);
+  color: white;
 }
 
 #premiumCardFlexData {
@@ -3219,6 +3266,7 @@ td {
 }
 #dmContent {
 	display:flex;
+	flex-wrap:wrap;
 	margin-top:auto;
 	padding:0 12px 12px 12px;
 }
@@ -3231,6 +3279,7 @@ td {
 }
 .dm {
 	display:flex;
+	flex-wrap:wrap;
 	width:98%;
 	padding:4px;
 	border-radius:15px;
@@ -3291,16 +3340,96 @@ td {
 	margin-left:auto;
 	margin-right:6px;
 }
+.dmTimestamp[minified] {
+	width:43px;
+	margin: auto 6px auto 0;
+	justify-content: right;
+}
 .dmTimestampMinified[minifiedself] {
-	margin: auto 25px auto 6px;
+	width:43px;
+	margin: auto 0 auto 6px;
 }
 .dmText {
 	margin-top:3px;
 	font-size:14px;
 }
+.dmText[self] {
+	text-align:right;
+}
 .dmText[minified] {
 	margin-top:0;
+}
+.dmText[minified][self] {
 	margin-left:auto;
+}
+.messageReplyHolder {
+	position: relative;
+	width:100%;
+  height: 16px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-size: 13px;
+  color: #bbb;
+  cursor: pointer;
+}
+.messageReplyHolder .chatReplyUsername {
+	margin:0px 0px 0px 4px;
+}
+.messageReplyHolder[self] {
+	text-align:right;
+}
+.messageReplyHolder[self] .chatReplyUsername {
+	margin:0px 4px 0px 0px;
+}
+.messageReplyLine {
+  display: inline-block;
+  width: 20px;
+  height: 10px;
+  margin-left: 16px;
+  margin-top: 6px;
+  border-style: solid;
+  border-width: 0px;
+  border-left-width: 3px;
+  border-top-width: 3px;
+  border-top-left-radius: 8px;
+  border-color: #666666;
+  box-sizing: border-box;
+}
+.messageReplyLine[self] {
+	margin-right: 16px;
+	margin-left: 0;
+	border-right-width:3px;
+	border-left-width:0;
+	border-top-left-radius: 0;
+	border-top-right-radius: 8px;
+}
+.messageReplyContent {
+	display:flex;
+}
+.acceptMessageHolder {
+	display:flex;
+	padding:6px;
+	width:calc(100% - 12px);
+	border-radius:10px;
+	background:var(--contentColor2);
+}
+.acceptMessageText {
+	margin:auto 0;
+}
+.acceptMessageButtons {
+	margin-left:auto;
+}
+.acceptMessageButtons button {
+	padding:3px;
+	border-radius:7px;
+	font-size:14px;
+}
+.denyMessageButton {
+	background:grey;
+}
+.acceptMessageButton {
+	background:#2AF5B5;
 }
 
 .sendDMInput {
@@ -3310,7 +3439,7 @@ td {
 	font-size: 16px;
 	border-radius: 8px;
 	background: var(--contentColor2);
-	margin: 4px 6px 4px 4px;
+	margin: 4px 6px 4px 0;
 	padding: 6px;
 }
 .sendDMInput:empty:before {
@@ -3322,7 +3451,7 @@ td {
 	width: 30px;
 	height: 31px;
 	padding: 6px;
-	margin:auto 6px auto 0;
+	margin:auto 0 auto 0;
 	font-size: 14px;
 	border-radius: 8px;
 }
@@ -3459,4 +3588,56 @@ td {
   margin: 4px;
   border: 2px solid var(--fontColor);
   cursor: pointer;
+  margin-bottom: 0;
+}
+.themeOption:after {
+  content: "✓";
+  display: block;
+  position: absolute;
+  background: var(--themeColor);
+  width: 20px;
+  height: 20px;
+  font-size: 17px;
+  border-radius: 100px;
+  line-height: 20px;
+  font-weight: 800;
+  transform: translate(44px, -9px) scale(0);
+  opacity: 0;
+  transition: 0.1s;
+  outline: 2px solid var(--contentColor);
+}
+.themeSelected:after {
+  transform: translate(33px, -2px) scale(1);
+  transition: 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  opacity: 1;
+}
+.themeSelected {
+  border-color: var(--themeColor);
+}
+.premiumPerkAd {
+  padding: 8px;
+  border-radius: 8px;
+  border: 2px solid #831c53;
+  background: linear-gradient(45deg, #831c53, black);
+  display: flex;
+  color: white;
+  margin: 4px 0px;
+}
+.premiumPerkTitle {
+  font-weight: bold;
+  font-size: 18px;
+}
+.premiumPerkDesc {
+  font-size: 15px;
+}
+.premiumPerkIcon {
+  width: 30px;
+  height: 30px;
+  display: block;
+}
+.premiumAdAction {
+  padding: 4px;
+  background: var(--premiumColor);
+  color: white;
+  margin-top: 4px;
 }

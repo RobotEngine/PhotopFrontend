@@ -49,6 +49,11 @@ wireframes.premium = `
       <div class="premiumBenefitDesc">Longer posts, chats, and profile descriptions!</div>  
     </div>
     <div class="premiumBenefit">
+      <img src="../icons/premium/PremiumBackdrop.svg" class="benefitImageShowcase">
+      <div class = "premiumBenefitTitle">Backdrop!</div>
+      <div class="premiumBenefitDesc">Upload an image to use as a backdrop!</div>  
+    </div>
+    <div class="premiumBenefit">
       <img src="../icons/premium/PremiumRank.svg" class="benefitImageShowcase">
       <div class = "premiumBenefitTitle">Flex To Others!</div>
       <div class="premiumBenefitDesc">Show your Photop support to others with a special rank!</div>  
@@ -73,7 +78,7 @@ pages.premium = async function() {
   modifyParams("chat");
   modifyParams("group");
   modifyParams("user");
-  let phrases = ["Support the platform you love", "Help us keep the lights on", "Help us keep the servers online", "GIVE US MONEY (please)", "Give the gift of happiness (and post editing)", "You wouldn't want it to take 3 billion years for the page to load, would you?"];
+  let phrases = ["Support the platform you love", "Help us keep the lights on", "Help us keep the servers online", "GIVE US MONEY (please)", "Give the gift of happiness (and post editing)", "You wouldn't want it to take 3 billion years for the page to load, would you?", "Support Photop's Development", "adam was here"];
   findI("premiumHeader").textContent = phrases[Math.floor(Math.random() * phrases.length)];
   const subButton = findI("premiumSub");
   const giftButton = findI("premiumGift");

@@ -233,7 +233,7 @@ modules.createpost = function(holder) {
                 });
               } else {
                 if (file.size > 5242881 && !hasPremium()) {
-                  showPopUp("Too Big!", "Your image must be under 5MB. However, with Photop Premium you can upload up too 10MB!", [["Premium", "var(--premiumColor)", function() { setPage("premium"); }], ["Okay", "var(--grayColor)"]]);
+                  showPopUp("Too Big!", `Your image must be under 5MB.${premiumPerk("Upload limits are doubled! Upload images up to 10MB for your posts.")}`, [["Okay", "var(--grayColor)"]]);
                 } else {
                   if (file.size > 5242881 * 2 && hasPremium()) {
                     showPopUp("Too Big!", "Your image must be under 10MB!", [["Okay", "var(--grayColor)"]]);
@@ -271,7 +271,7 @@ modules.createpost = function(holder) {
     }
     if ((newPostArea.innerText.length > 400 && !premium) || (newPostArea.innerText.length > 400 * 2 && premium)) {
       if (!premium) {
-        showPopUp("That's Too Long", `Please keep your posts to under ${lim} characters. However, with Photop Premium, you can send posts up to 800 characters long!`, [["Premium", "var(--premiumColor)", function() { setPage("premium"); }], ["Okay", "var(--grayColor)"]]);
+        showPopUp("That's Too Long", `Please keep your posts to under ${lim} characters.${premiumPerk("Text limits are doubled! Use up to 800 characters in your posts.")}`, [["Okay", "var(--grayColor)"]]);
       } else {
         showPopUp("That's Too Long", `Please keep your posts to under ${lim} characters.`, [["Okay", "var(--grayColor)"]]);
       }

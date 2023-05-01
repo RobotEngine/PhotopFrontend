@@ -35,6 +35,7 @@ let wireframes = {};
 let pages = {};
 let modules = {};
 
+let convos = {};
 let account = {};
 let groups = {};
 let userID = null;
@@ -1023,7 +1024,6 @@ async function updateToSignedIn(response) {
             } else {
               if (file.size > 2097153 && !premium) {
                 showPopUp("Too big!", "Your image must be under 2MB.", [["Okay", "var(--grayColor)"]]);
-                //showPopUp("Too big!", "Your image must be under 2MB. However, with Photop Premium you can upload up too 4MB!", [["Okay", "var(--grayColor)"]]);
               } else {
                 if (file.size > 2097153 * 2 && premium) {
                   showPopUp("Too big!", "Your image file size must be under 4MB.", [["Okay", "var(--grayColor)"]]);
@@ -1066,6 +1066,7 @@ async function updateToSignedIn(response) {
   account.Settings.Display = account.Settings.Display || {};
   account.Settings.Display.Theme = account.Settings.Display.Theme || "Dark Mode";
   updateDisplay(account.Settings.Display.Theme);
+  updateBackdrop(account.Settings.Backdrop);
   if (data.restored != null) {
     showPopUp("Account Restored!", "Your Photop account has been restored. <b>Welcome Back!</b>", [["Okay", "var(--grayColor)"]]);
   }
@@ -2010,6 +2011,35 @@ window.addEventListener("scroll", function() {
   scrollTimeout = setTimeout(setupPostChats, 200);
 });
 
+socket.remotes.account = async function(data) {
+	switch(data.type) {
+		case "message":
+			let message = data.message;
+			console.log(data)
+			if(convos[message.ConvID]) {
+				convos[message.ConvID].messages.splice(49, 1);
+				convos[message.ConvID].messages.push(message)
+			}
+			if(currentPage != "messages" || document.querySelector(".message[active]").getAttribute("convid") != message.ConvID) return;
+			
+			let renderMessage = await getModule("message");
+			let dms = document.querySelector("#dms");
+			let users = getObject(data.users, "_id");
+			if (data.reply != null) {
+				data.reply.user = users[data.reply.UserID];
+			}
+			renderMessage(dms, message, users[message.UserID], data.reply);
+
+			if (dms.lastElementChild != null && (dms.scrollTop + dms.clientHeight + dms.lastElementChild.clientHeight + 50 > dms.scrollHeight)) {
+				let scrollToParams = { top: dms.scrollHeight };
+				if (viewingTab == true) {
+					scrollToParams.behavior = "smooth";
+				}
+				dms.scrollTo(scrollToParams);
+			}
+			break;
+	}
+}
 socket.remotes.stream = async function(data) {
   let renderChat = await getModule("chat");
 
@@ -2429,16 +2459,15 @@ if (isTouchDevice() == true && screen.width < 550 || getParam("embed") == "mobil
 
 let particles = null;
 function updateDisplay(type) {
+  setCSSVar("--sidebarBG", isMobile ? "var(--pageColor)" : "transparent");
   switch (type) {
     case "Light":
       setCSSVar("--leftSidebarColor", "#E8E8E8");
       setCSSVar("--pageColor", "#E6E9EB");
       setCSSVar("--pageColor2", "var(--pageColor)");
-      setCSSVar("--sidebarBG", "var(--pageColor)");
       setCSSVar("--contentColor", "#DFDFE6");
       setCSSVar("--contentColor2", "#D9D9E4");
       setCSSVar("--contentColor3", "#D2D2E0");
-      setCSSVar("--borderColor", "#D8D8D8");
       setCSSVar("--fontColor", "#000000");
       setCSSVar("--themeColor", "#5AB7FA");
       particles = null;
@@ -2459,11 +2488,9 @@ function updateDisplay(type) {
       setCSSVar("--leftSidebarColor", "black");
       setCSSVar("--pageColor", "black");
       setCSSVar("--pageColor2", "var(--pageColor)");
-      setCSSVar("--sidebarBG", "var(--pageColor)");
       setCSSVar("--contentColor", "black");
       setCSSVar("--contentColor2", "black");
       setCSSVar("--contentColor3", "black");
-      setCSSVar("--borderColor", "black");
       setCSSVar("--fontColor", "white");
       setCSSVar("--themeColor", "lime");
       particles = null;
@@ -2472,11 +2499,9 @@ function updateDisplay(type) {
       setCSSVar("--leftSidebarColor", "black");
       setCSSVar("--pageColor", "linear-gradient(to bottom, #5c0701, black)");
       setCSSVar("--pageColor2", "var(--pageColor)");
-      setCSSVar("--sidebarBG", isMobile ? "var(--pageColor)" : "transparent");
       setCSSVar("--contentColor", "#831100");
       setCSSVar("--contentColor2", "#942200");
       setCSSVar("--contentColor3", "#a52300");
-      setCSSVar("--borderColor", "#861500");
       setCSSVar("--fontColor", "white");
       setCSSVar("--themeColor", "tomato");
       particles = null;
@@ -2485,11 +2510,9 @@ function updateDisplay(type) {
       setCSSVar("--leftSidebarColor", "black");
       setCSSVar("--pageColor", "linear-gradient(to bottom, #4ecbef, #0062fe)");
       setCSSVar("--pageColor2", "var(--pageColor)");
-      setCSSVar("--sidebarBG", isMobile ? "var(--pageColor)" : "transparent");
       setCSSVar("--contentColor", "#0056d6");
       setCSSVar("--contentColor2", "#0061fe");
       setCSSVar("--contentColor3", "#3a87fe");
-      setCSSVar("--borderColor", "#2ea4fd");
       setCSSVar("--fontColor", "white");
       setCSSVar("--themeColor", "#52d6fc");
       particles = null;
@@ -2498,11 +2521,9 @@ function updateDisplay(type) {
       setCSSVar("--leftSidebarColor", "#262630");
       setCSSVar("--pageColor", "#151617");
       setCSSVar("--pageColor2", "var(--pageColor)");
-      setCSSVar("--sidebarBG", "var(--pageColor)");
       setCSSVar("--contentColor", "#1f1f28");
       setCSSVar("--contentColor2", "#24242e");
       setCSSVar("--contentColor3", "#2a2a37");
-      setCSSVar("--borderColor", "#323242");
       setCSSVar("--fontColor", "#ffffff");
       setCSSVar("--themeColor", "#eb6123");
       particles = null;
@@ -2519,7 +2540,6 @@ function updateDisplay(type) {
       setCSSVar("--contentColor", "#1f1f28");
       setCSSVar("--contentColor2", "#24242e");
       setCSSVar("--contentColor3", "#2a2a37");
-      setCSSVar("--borderColor", "#323242");
       setCSSVar("--fontColor", "#ffffff");
       setCSSVar("--themeColor", "#f13333");
       particles = "snow";
@@ -2529,11 +2549,9 @@ function updateDisplay(type) {
       setCSSVar("--leftSidebarColor", "black");
       setCSSVar("--pageColor", "linear-gradient(135deg, #0c1762, #650f9b, #780f31)");
       setCSSVar("--pageColor2", "var(--pageColor)");
-      setCSSVar("--sidebarBG", isMobile ? "var(--pageColor)" : "transparent");
       setCSSVar("--contentColor", "#1F1F59");
       setCSSVar("--contentColor2", "#421f59");
       setCSSVar("--contentColor3", "#611f59");
-      setCSSVar("--borderColor", "#2ea4fd");
       setCSSVar("--fontColor", "white");
       setCSSVar("--themeColor", "#78ddd4");
       particles = null;
@@ -2542,11 +2560,9 @@ function updateDisplay(type) {
       setCSSVar("--leftSidebarColor", "black");
       setCSSVar("--pageColor", "radial-gradient(ellipse at bottom, #658d65, #0d2c0a)");
       setCSSVar("--pageColor2", "var(--pageColor)");
-      setCSSVar("--sidebarBG", isMobile ? "var(--pageColor)" : "transparent");
       setCSSVar("--contentColor", "#334e33");
       setCSSVar("--contentColor2", "#395839");
       setCSSVar("--contentColor3", "#426042");
-      setCSSVar("--borderColor", "#2ea4fd");
       setCSSVar("--fontColor", "white");
       setCSSVar("--themeColor", "#78dd8a");
       particles = null;
@@ -2555,11 +2571,9 @@ function updateDisplay(type) {
       setCSSVar("--leftSidebarColor", "black");
       setCSSVar("--pageColor", "#4638a1");
       setCSSVar("--pageColor2", "var(--pageColor)");
-      setCSSVar("--sidebarBG", "var(--pageColor)");
       setCSSVar("--contentColor", "#5a4cb1");
       setCSSVar("--contentColor2", "#6459ab");
       setCSSVar("--contentColor3", "#6c62af");
-      setCSSVar("--borderColor", "#2ea4fd");
       setCSSVar("--fontColor", "white");
       setCSSVar("--themeColor", "#bab3e9");
       particles = null;
@@ -2568,11 +2582,9 @@ function updateDisplay(type) {
       setCSSVar("--leftSidebarColor", "black");
       setCSSVar("--pageColor", "linear-gradient(315deg, #f0b980, pink)");
       setCSSVar("--pageColor2", "var(--pageColor)");
-      setCSSVar("--sidebarBG", isMobile ? "var(--pageColor)" : "transparent");
       setCSSVar("--contentColor", "#f9e5e8");
       setCSSVar("--contentColor2", "#f9dad7");
       setCSSVar("--contentColor3", "#f3c2d4");
-      setCSSVar("--borderColor", "#2ea4fd");
       setCSSVar("--fontColor", "#46261b");
       setCSSVar("--themeColor", "#ed3950");
       particles = null;
@@ -2581,11 +2593,9 @@ function updateDisplay(type) {
       setCSSVar("--leftSidebarColor", "black");
       setCSSVar("--pageColor", "linear-gradient(295deg, #336264, #3a4048)");
       setCSSVar("--pageColor2", "var(--pageColor)");
-      setCSSVar("--sidebarBG", isMobile ? "var(--pageColor)" : "transparent");
       setCSSVar("--contentColor", "#497287");
       setCSSVar("--contentColor2", "#5a8399");
       setCSSVar("--contentColor3", "#6a91a5");
-      setCSSVar("--borderColor", "#2ea4fd");
       setCSSVar("--fontColor", "white");
       setCSSVar("--themeColor", "#a9cfe9");
       particles = null;
@@ -2594,11 +2604,9 @@ function updateDisplay(type) {
       setCSSVar("--leftSidebarColor", "black");
       setCSSVar("--pageColor", "radial-gradient(circle at 30% 70%, #fbe286, #4caed3)");
       setCSSVar("--pageColor2", "var(--pageColor)");
-      setCSSVar("--sidebarBG", isMobile ? "var(--pageColor)" : "transparent");
       setCSSVar("--contentColor", "#e9e8c2");
       setCSSVar("--contentColor2", "#e3ddca");
       setCSSVar("--contentColor3", "#d9d4c4");
-      setCSSVar("--borderColor", "#2ea4fd");
       setCSSVar("--fontColor", "#152c46");
       setCSSVar("--themeColor", "#1199dd");
       particles = null;
@@ -2607,13 +2615,33 @@ function updateDisplay(type) {
       setCSSVar("--leftSidebarColor", "black");
       setCSSVar("--pageColor", "radial-gradient(ellipse at bottom, #d5610f, #581703)");
       setCSSVar("--pageColor2", "var(--pageColor)");
-      setCSSVar("--sidebarBG", isMobile ? "var(--pageColor)" : "transparent");
       setCSSVar("--contentColor", "#783715");
       setCSSVar("--contentColor2", "#7c3d1c");
       setCSSVar("--contentColor3", "#85401b");
-      setCSSVar("--borderColor", "#2ea4fd");
       setCSSVar("--fontColor", "white");
       setCSSVar("--themeColor", "#e5986a");
+      particles = null;
+      break;
+    case "Spocco":
+      setCSSVar("--leftSidebarColor", "black");
+      setCSSVar("--pageColor", "linear-gradient(180deg, #ededed 20%, #bbb8b8 80%)");
+      setCSSVar("--pageColor2", "var(--pageColor)");
+      setCSSVar("--contentColor", "#f1f1f1");
+      setCSSVar("--contentColor2", "#ebedef");
+      setCSSVar("--contentColor3", "#dce3e9");
+      setCSSVar("--fontColor", "#242c32");
+      setCSSVar("--themeColor", "#0db7c1");
+      particles = null;
+      break;
+    case "Into the Night":
+      setCSSVar("--leftSidebarColor", "black");
+      setCSSVar("--pageColor", "radial-gradient(circle at 50% 20%, #3e5a72, #000)");
+      setCSSVar("--pageColor2", "var(--pageColor)");
+      setCSSVar("--contentColor", "#0b1218");
+      setCSSVar("--contentColor2", "#0d151c");
+      setCSSVar("--contentColor3", "#141f28");
+      setCSSVar("--fontColor", "white");
+      setCSSVar("--themeColor", "#758691");
       particles = null;
       break;
     default:
@@ -2623,12 +2651,31 @@ function updateDisplay(type) {
       setCSSVar("--contentColor", "#1f1f28");
       setCSSVar("--contentColor2", "#24242e");
       setCSSVar("--contentColor3", "#2a2a37");
-      setCSSVar("--borderColor", "#323242");
       setCSSVar("--fontColor", "#ffffff");
       setCSSVar("--themeColor", "#5AB7FA");
       particles = null;
       break;
   }
+}
+function updateBackdrop(imageID) {
+  if (imageID != null && hasPremium()) {
+    findI("backdrop").style.backgroundImage = `url("https://photop-content.s3.amazonaws.com/Backdrops/${imageID}")`;
+    findI("backdrop").style.opacity = 0.3;
+  } else {
+    findI("backdrop").style.opacity = 0;
+  }
+}
+function premiumPerk(text) {
+  return `<div class="premiumPerkAd">
+  <div>
+    <img src="https://exotek.co/images/photop/premium.svg" class="premiumPerkIcon">
+  </div>
+  <div style="margin-left: 5px;">
+    <div class="premiumPerkTitle">Premium Perk</div>
+    <div class="premiumPerkDesc">${text}</div>
+    <button class="premiumAdAction" onclick="setPage('premium');findC('backBlur').remove();">Learn More</button>
+  </div>
+  </div>`;
 }
 
 function createParticle() {
@@ -2646,6 +2693,7 @@ setInterval(createParticle, (isMobile ? 1500 : 500));
 if (getLocalStore("display") != null) {
   account.Settings = { Display: JSON.parse(getLocalStore("display")) };
   updateDisplay(account.Settings.Display.Theme);
+  updateBackdrop(account.Settings.Backdrop);
 }
 /*
 if (getLocalStore("lastUpdateView") != "PhotopRevamp") {

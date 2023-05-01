@@ -1,4 +1,4 @@
-let themes = [["Dark", "#151617"], ["Light", "#E6E9EB"], ["Blood Moon", "linear-gradient(to bottom, #5c0701, black)"], ["Under The Sea", "linear-gradient(to bottom, #4ecbef, #0062fe)"], ["Hacker", "black"], ["Midnight Haze", "linear-gradient(135deg, #0c1762, #650f9b, #780f31)"], ["Moss Green", "radial-gradient(ellipse at bottom, #658d65, #0d2c0a)"], ["Ourple 😂", "#4638a1"], ["Peachy Mist", "linear-gradient(315deg, #f0b980, pink)"], ["Faded", "linear-gradient(315deg, #336264, #3a4048)"], ["Into the Light", "radial-gradient(circle at 30% 70%, #fbe286, #4caed3)"], ["Canyon", "radial-gradient(ellipse at bottom, #d5610f, #581703)"]];
+let themes = [["/section", "Basic"], ["Dark", "#151617"], ["Light", "#E6E9EB"], ["/section", "New"], ["Blood Moon", "linear-gradient(to bottom, #5c0701, black)"], ["Under The Sea", "linear-gradient(to bottom, #4ecbef, #0062fe)"], ["Hacker", "black"], ["Midnight Haze", "linear-gradient(135deg, #0c1762, #650f9b, #780f31)"], ["Moss Green", "radial-gradient(ellipse at bottom, #658d65, #0d2c0a)"], ["Ourple 😂", "#4638a1"], ["Peachy Mist", "linear-gradient(315deg, #f0b980, pink)"], ["Faded", "linear-gradient(315deg, #336264, #3a4048)"], ["Into the Light", "radial-gradient(circle at 30% 70%, #fbe286, #4caed3)"], ["Canyon", "radial-gradient(ellipse at bottom, #d5610f, #581703)"], ["Spocco", "linear-gradient(180deg, #ededed 20%, #bbb8b8 80%)"], ["Into the Night", "radial-gradient(circle at 50% 20%, #3e5a72, #000)"]];
 let dispOptions = ["Embed YouTube Videos", "Embed Twitch Streams", "Embed GIFs"];
 wireframes.settings = `<div class="stickyContainer settingsTabs" id="tabs">
   <span class="tab" type="account" id="tab-account" tabindex="0">Account</span>
@@ -435,10 +435,7 @@ pages.settings = function () {
 						} else {
 							// showPopUp("An Error Occured", "Your banner is too large. Please upload a smaller banner.", [["Okay", "var(--grayColor)"]]);
 							if (file.size > 5242881 && !premium) {
-								showPopUp("Too big!", "Your image must be under 5MB. However, with Photop Premium, you can upload up to 10MB", [
-									["Premium", "var(--premiumColor)", function () {
-										setPage("premium");
-									}],
+								showPopUp("Too big!", `Your image must be under 5MB.${premiumPerk("Upload limits are doubled! Upload a ≤10MB image as your banner.")}`, [
 									["Okay", "var(--grayColor)"]
 								]);
 							} else if (file.size > 5242881 * 2) {
@@ -487,10 +484,7 @@ pages.settings = function () {
 							]);
 							if (file.size > 2097153 && !hasPremium()) {
 								// alert("I think we have a problem")
-                showPopUp("Too big!", `Your image must be under 2MB. However, with Photop Premium you can upload up too 4MB!`, [
-							["Premium", "var(--premiumColor)", function () {
-								setPage("premium");
-							}],
+                showPopUp("Too big!", `Your image must be under 2MB.${premiumPerk("Upload limits are doubled! Upload a ≤4MB image as your banner.")}`, [
 							["Okay", "var(--grayColor)"]
 						]);
 							} else {
@@ -587,10 +581,7 @@ pages.settings = function () {
 					}
 				} else {
 					if (!premium) {
-						showPopUp("Invalid Description", `Descriptions must be less than ${limit} characters long. However, with Photop Premium, you can have descriptions with up to 600 characters!`, [
-							["Premium", "var(--premiumColor)", function () {
-								setPage("premium");
-							}],
+						showPopUp("Invalid Description", `Descriptions must be less than ${limit} characters long.${premiumPerk("Text limits are doubled! Use up to 600 characters in your description.")}`, [
 							["Okay", "var(--grayColor)"]
 						]);
 					} else {
@@ -745,6 +736,10 @@ pages.settings = function () {
         <div id="dispSelector"></div>
       </div>
       <div class="settingsSection">
+        <div class="settingsTitle">Backdrop</div>
+        <div id="backdropSelector"></div>
+      </div>
+      <div class="settingsSection">
         <a class="settingsLink" href="${window.location.origin}/#tos">Terms of Service</a>
         <a class="settingsLink" href="${window.location.origin}/#privacy">Privacy Policy</a>
         <a class="settingsLink" href="${window.location.origin}/#rules">Photop Rules</a>
@@ -759,6 +754,75 @@ pages.settings = function () {
 			for (var i in dispOptions) {
 				addDispOption(dispOptions[i]);
 			}
+      if (hasPremium()) {
+        if (account.Settings != null && account.Settings.Backdrop != null) {
+  				settingsBackdrop = `<img class="settingsBackdrop" src="${assetURL + "Backdrops/" + account.Settings.Backdrop}"><div class="settingsUploadButton upload2" id="backdropUpload"></div><div class="settingsUploadButton" id="backdropRemove"></div>`;
+  			} else {
+  				settingsBackdrop = `<img class="settingsBackdrop" style="opacity: 0;"><div class="settingsUploadButton" id="backdropUpload"></div><div class="settingsUploadButton" id="backdropRemove" hidden></div>`;
+  			}
+        findI("backdropSelector").innerHTML = `
+          <input id="imageInputBackdrop" type="file" accept="image/*" multiple="true" hidden="true">
+          <div class="settingsBackdropHolder">
+            ${settingsBackdrop}
+          </div>`;
+        let inputBackdrop = findI("imageInputBackdrop");
+  			tempListen(findI("backdropUpload"), "click", function () {
+  				inputBackdrop.click();
+  			});
+  			tempListen(inputBackdrop, "change", async function (e) {
+  				let file = e.target.files[0];
+  				if (file != null && file.type.substring(0, 6) == "image/") {
+  					let premium = hasPremium();
+  					if (supportedImageTypes.includes(file.type.replace(/image\//g, "")) == true) {
+  						if (file.size < 5242881) { // 5 MB
+  							let sendFormData = new FormData();
+  							sendFormData.append("image", file);
+  							let uploadPopUp = showPopUp("Uploading Image", "Uploading your new backdrop...");
+  							let [code, response] = await sendRequest("POST", "me/new/backdrop", sendFormData, true);
+  							if (code == 200) {
+  								updateBackdrop(response);
+                  findI("backdropRemove").hidden = false;
+                  findI("backdropUpload").classList.add("upload2");
+                  findC("settingsBackdrop").src = assetURL + "Backdrops/" + response;
+                  findC("settingsBackdrop").style.opacity = 1;
+  							} else {
+  								showPopUp("Error Uploading Backdrop", response, [
+  									["Okay", "var(--grayColor)"]
+  								]);
+  							}
+  							findI("backBlur" + uploadPopUp).remove();
+  						} else {
+                showPopUp("Too big!", "Your image file size must be under 5MB.", [
+                  ["Okay", "var(--grayColor)"]
+                ]);
+  						}
+  					} else {
+  						showPopUp("Invalid Image Type", "Photop only accepts images of the following types: <i style='color: #bbb'>" + (supportedImageTypes.join(", ")) + "</i>", [
+  							["Okay", "var(--grayColor)"]
+  						]);
+  					}
+  				} else {
+  					showPopUp("Must be an Image", "Only image files can be uploaded as a banner.", [
+  						["Okay", "var(--grayColor)"]
+  					]);
+  				}
+  			});
+        if (findI("backdropRemove") != null) {
+          tempListen(findI("backdropRemove"), "click", async function () {
+            let [code, response] = await sendRequest("DELETE", "me/new/backdrop");
+            if (code == 200) {
+              findI("backdropRemove").hidden = true;
+              findI("backdropUpload").classList.remove("upload2");
+              findC("settingsBackdrop").style.opacity = 0;
+              updateBackdrop();
+            } else {
+              showPopUp("Error Removing Backdrop", response, ["Okay", "var(--grayColor)"]);
+            }
+          });
+        }
+      } else {
+        findI("backdropSelector").innerHTML = premiumPerk("Upload an image to use as a custom backdrop!");
+      }
 		},
 		blocked: async function () {
 			let blockedHolder = createElement("settingsHolder-blocked", "div", "pageHolder");
@@ -856,12 +920,22 @@ pages.settings = function () {
 };
 
 function addThemeOption(index) {
-	let thisThemeOption = createElement("themeOption", "div", findI("themeSelector"));
+  if (themes[index][0] == "/section") {
+    let thisSection = createElement("settingsTitle", "div", findI("themeSelector"));
+    thisSection.innerText = themes[index][1];
+    return;
+  }
+  let thisThemeOption = createElement("themeOption", "div", findI("themeSelector"));
   thisThemeOption.style.background = themes[index][1];
   thisThemeOption.title = themes[index][0];
+  if (account.Settings.Display.Theme == themes[index][0]) {
+    thisThemeOption.classList.add("themeSelected");
+  }
   thisThemeOption.addEventListener("click", async function () {
     let updatedSettings = account.Settings.Display;
     updatedSettings.Theme = themes[index][0];
+    findC("themeSelected").classList.remove("themeSelected");
+    thisThemeOption.classList.add("themeSelected");
     updateDisplay(themes[index][0]);
     let [code, response] = await sendRequest("POST", "me/settings", {
       update: "display",

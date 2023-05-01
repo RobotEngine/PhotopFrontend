@@ -161,7 +161,7 @@ pages.groups = function() {
             } else {
               if (file.size > 2097153 && !premium) {
                 // alert("I think we have a problem")
-                showPopUp("Too big!", "Your image must be under 2MB. However, with Photop Premium you can upload up too 4MB!", [["Premium", "var(--premiumColor)", function() { setPage("premium");}], ["Okay", "var(--grayColor)"]]);
+                showPopUp("Too big!", `Your image must be under 2MB.${premiumPerk("Upload limits are doubled! Use a ≤4MB image as your group icon.")}`, [["Premium", "var(--premiumColor)", function() { setPage("premium");}], ["Okay", "var(--grayColor)"]]);
               } else {
                 if (file.size > 2097153 * 2 && premium) {
                   showPopUp("Too big!", "Your image file size must be under 4MB.", [["Okay", "var(--grayColor)"]]);

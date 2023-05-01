@@ -282,7 +282,7 @@ modules.actions = function() {
         }
         if (text.length > limit) {
           if (limit == 200) {
-            showPopUp("That's Too Long", `Please keep your chats to under ${limit} characters. However, with Photop Premium, you can send chats with up to 400 characters!`, [["Premium", "var(--premiumColor)", function() { setPage("premium"); }], ["Okay", "var(--grayColor)"]]);
+            showPopUp("That's Too Long", `Please keep your chats to under ${limit} characters.${premiumPerk("Text limits are doubled! Use up to 400 characters in your chats.")}`, [["Okay", "var(--grayColor)"]]);
             showPopUp("That's Too Long", `Please keep your chats to under ${limit} characters.`, [["Okay", "var(--grayColor)"]]);
           } else {
             showPopUp("That's Too Long", `Please keep your chats to under ${limit} characters.`, [["Okay", "var(--grayColor)"]]);

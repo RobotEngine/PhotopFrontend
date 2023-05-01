@@ -294,7 +294,7 @@ pages.group = async function() {
             if (premium) {
               showPopUp("Image too Large", "Images must be under 4 MB in size.", [["Okay", "var(--grayColor)"]]);
             } else {
-              showPopUp("Image too Large", "Images must be under 2 MB in size. However, with Photop Premium, you can upload images with sizes up to 4 MB.", [["Premium", "var(--premiumColor)", function() { setPage("premium"); }], ["Okay", "var(--grayColor)"]]);
+              showPopUp("Image too Large", `Your image must be under 2MB.${premiumPerk("Upload limits are doubled! Use a ≤4MB image as your group icon.")}`, [["Premium", "var(--premiumColor)", function() { setPage("premium"); }], ["Okay", "var(--grayColor)"]]);
             }
           }
         } else {
@@ -360,9 +360,9 @@ pages.group = async function() {
         refreshPage();
       } else {
         if (response == "Max of 25 joined groups.") {
-          showPopUp("Couldn't Join", `You can only join up to 25 groups! However, with Photop Premium, you can join up to 75 groups!`, [["Premium", "var(--premiumColor)", function() { setPage("premium"); }],["Okay", "var(--grayColor)"]])
+          showPopUp("Couldn't Join", `You can only join up to 25 groups. ${premiumPerk("Join up to 75 groups at once!")}`, [["Premium", "var(--premiumColor)", function() { setPage("premium"); }],["Okay", "var(--grayColor)"]])
         } else if (response == "Max of 75 joined groups.") {
-          showPopUp("Couldn't Join", `You can only join up to 75 groups!`, [["Okay", "var(--grayColor)"]]);
+          showPopUp("Couldn't Join", `You can only join up to 75 groups.`, [["Okay", "var(--grayColor)"]]);
         } else {
           showPopUp("Couldn't Join", response, [["Okay", "var(--grayColor)"]]);
         }

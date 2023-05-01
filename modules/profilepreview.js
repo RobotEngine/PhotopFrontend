@@ -96,7 +96,9 @@ function updateProfileSub() {
             }
           } else if (data.data.Settings != null && data.data.Settings.Display != null) {
             setLocalStore("display", JSON.stringify(account.Settings.Display));
-            updateDisplay(account.Settings.Display.Theme.replace(" Mode", ""));
+            updateDisplay(account.Settings.Display.Theme);
+          } else if (data.data.Settings != null && data.data.Settings.hasOwnProperty("Backdrop")) {
+            updateBackdrop(account.Settings.Backdrop);
           } else if (data.data.Affiliate != null && findC("settingsAffiliateStats") != null) {
             findI("settingsAffiliateStatClicks").textContent = ((account.Affiliate || {}).Clicks || 0) + " Clicks";
             findI("settingsAffiliateStatSignUps").textContent = ((account.Affiliate || {}).SignUps || 0) + " Sign Ups";

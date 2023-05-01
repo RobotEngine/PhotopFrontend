@@ -10,25 +10,7 @@ wireframes.messages = `
   	 			</div>
         </div>
       </div>
-	 		<div id="activeMessages">
-		 		<!--<div class="message">
-					<img class="messageImage" src="https://photop-content.s3.amazonaws.com/ProfileImages/63536df87c9dbb50fc24aa91c1fb321d">
-					<div style="background: #a4a4a4;" class="messageStatus"></div>
-					<div class="messageName">
-						Franco
-					</div>
-					<div class="messageNotif">2</div>
-				</div>
-	
-				<div class="message" active>
-					<img class="messageImage" src="https://photop-content.s3.amazonaws.com/ProfileImages/6066b99198895e660082965bcb91d776">
-					<div style="background: rgb(0, 252, 101);" class="messageStatus"></div>
-					<div class="messageName">
-						Robot_Engine
-					</div>
-					<div class="messageNotif">317</div>
-				</div>-->
-		 	</div>
+	 		<div id="activeMessages"></div>
 	 	</div>
 		<div id="mainHolder">
 	 		<div class="stickyContainer" id="dmTopBar">
@@ -47,32 +29,6 @@ wireframes.messages = `
 						<div class="newConvoName">Robot_Engine</div>
 						<div class="newConvoText">Embark on an amazing conversation with <b>Robot_Engine</b>!</div>
 	 				</div>
-		 			<div class="dm">
-						<img class="dmImage" src="https://photop-content.s3.amazonaws.com/ProfileImages/6066b99198895e660082965bcb91d776">
-						<div class="dmContent">
-							<div class="dmUser">
-								<div class="dmUsername">Robot_Engine</div>
-								<div class="dmTimestamp">1d</div>
-							</div>
-							<div class="dmText">Work on DMS!!!!!!!!</div>
-						</div>
-					</div>
-
-					<div class="dm" self>
-						<div class="dmContent" self>
-							<div class="dmUser">
-								<div class="dmTimestamp" self>1d</div>
-								<div class="dmUsername">Abooby</div>
-							</div>
-							<div class="dmText">Alr ill work on them</div>
-						</div>
-						<img self class="dmImage" src="https://photop-content.s3.amazonaws.com/ProfileImages/6154f0d0a8d6d106c5b869b6c6ce300f">
-					</div>
-		 			<div class="dmMinified" self>
-						<div class="dmText" self minified>Hi</div>
-						<div class="dmTimestamp dmTimestampMinified" minifiedself>1hr</div>
-					</div>
-			
 	 			</div>
 		 		<div id="dmContent">
 		 			<div class="sendDMInput" placeholder="Time to Chat" contenteditable></div>
@@ -90,26 +46,133 @@ wireframes.messages = `
 
 pages.messages = async function() {
   app.style.width = "1038px";
-	let [status, convos] = await sendRequest('GET', 'conversations');
+	let [status, convos] = await sendRequest("GET", "conversations");
 	if (status == 200) {
 		convos = JSON.parse(convos);
 		let userObject = getObject(convos.users, '_id');
 		for(var i=0;i<convos.conversations.length;i++) {
+			let div = document.createElement("div");
+			let html = "";
 			const convo = convos.conversations[i];
-			const user = userObject[convo.Creator];
-			const html = `
-				<img class="messageImage" src="${decideProfilePic(user)}">
-				<div style="background: ${statuses[user.Status][1]};" class="messageStatus" title="${statuses[user.Status][0]}"></div>
-				<div class="messageName">
-					${user.User}
-				</div>
-			`;
+			const user = convo.Creator == userID?userObject[convo.Users[0]]:userObject[convo.Creator];
+			if(convo.Users.length == 1) {
+				html = `
+					<img class="messageImage" src="${decideProfilePic(user)}">
+					<div style="background: ${statuses[user.Status][1]};" class="messageStatus" title="${statuses[user.Status][0]}"></div>
+					<div class="messageName">
+						${user.User}
+					</div>
+				`;
 
-			let div = document.createElement('div');
-			div.className = 'message';
-			div.setAttribute('convid', convo._id)
+				div.setAttribute("user", user.User);
+			} else {
+				html = `
+					<img class="messageImage" src="${assetURL + `ConversationImages/${convo.Image}`}">
+					<div class="messageName">
+						${convo.Name}
+					</div>
+				`;
+
+				div.setAttribute("user", convo.Name);
+			}
+			
+			div.className = "message";
+			div.setAttribute("convid", convo._id);
+			div.setAttribute("accepted", "");
 			div.innerHTML = html;
-			findI('messageHolder').appendChild(div);
+			tempListen(div, "click", async function() {
+				const usernames = convo.Users.map(a=>`${userObject[a].User}`);
+				if(document.querySelector(".message[active]")) {
+					document.querySelector(".message[active]").removeAttribute("active");
+				}
+
+				document.querySelector(".topbarImage").src = decideProfilePic(user);
+				document.querySelector(".newConvoImage").src = decideProfilePic(user);
+				document.querySelector("#dmTopBar .topbarStatus").style.background = statuses[user.Status][1];
+				document.querySelector("#dmTopBar .topbarStatus").title = statuses[user.Status][0];
+				if(convo.Users.length == 1) {
+					document.querySelector(".topbarName").innerText = user.User;
+					document.querySelector(".newConvoName").innerText = user.User;
+					document.querySelector(".newConvoText").innerHTML = `Embark on an amazing conversation with <b>${user.User}</b>!`;
+				} else {
+					document.querySelector(".topbarName").innerText = usernames.join(", ");
+					document.querySelector(".newConvoName").innerText = usernames.join(", ");
+					document.querySelector(".newConvoText").innerHTML = `Embark on an amazing conversation with ${usernames.map(a=>{if(usernames.indexOf(a)==usernames.length-1){return `and <b>${a}</b>`}else{return `<b>${a}</b>`}}).join(", ")}!`;
+				}
+				
+				div.setAttribute("active", "");
+				let [code, response] = await sendRequest("GET", `conversations/messages?convid=${div.getAttribute("convid")}`);
+				if(code == 200) {
+					let renderMessage = await getModule("message");
+					let dms = document.querySelector("#dms");
+					response = JSON.parse(response)
+					const dmChildren = Array.from(dms.children);
+					dmChildren.forEach(child => {
+						if (child.className == "dm" || child.className == "dmMinified") {
+							child.remove();
+						}
+					});
+					
+					let messages = response.messages.reverse();
+					let replies = getObject(response.replies, "_id");
+					let users = getObject(response.users, "_id");
+					for (let i = 0; i < messages.length; i++) {
+						let message = messages[i];
+						let reply = replies[message.ReplyID];
+						if (reply != null) {
+							reply.user = users[message.UserID];
+						}
+						renderMessage(dms, message, users[message.UserID], reply);
+					}
+				}
+			})
+			if(i == 0) {
+				const usernames = convo.Users.map(a=>`${userObject[a].User}`);
+				document.querySelector(".topbarImage").src = decideProfilePic(user);
+				document.querySelector(".newConvoImage").src = decideProfilePic(user);
+				document.querySelector("#dmTopBar .topbarStatus").style.background = statuses[user.Status][1];
+				document.querySelector("#dmTopBar .topbarStatus").title = statuses[user.Status][0];
+				if(convo.Users.length == 1) {
+					document.querySelector(".topbarName").innerText = user.User;
+					document.querySelector(".newConvoName").innerText = user.User;
+					document.querySelector(".newConvoText").innerHTML = `Embark on an amazing conversation with <b>${user.User}</b>!`;
+				} else {
+					document.querySelector(".topbarName").innerText = usernames.join(", ");
+					document.querySelector(".newConvoName").innerText = usernames.join(", ");
+					document.querySelector(".newConvoText").innerHTML = `Embark on an amazing conversation with ${usernames.map(a=>{if(usernames.indexOf(a)==usernames.length-1){return `and <b>${a}</b>`}else{return `<b>${a}</b>`}}).join(", ")}!`;
+				}
+				
+				if(document.querySelector(".message[active]")) {
+					document.querySelector(".message[active]").removeAttribute("active");
+				}
+				div.setAttribute("active", "");
+				let [code, response] = await sendRequest("GET", `conversations/messages?convid=${div.getAttribute("convid")}`);
+				if(code == 200) {
+					let renderMessage = await getModule("message");
+					let dms = document.querySelector("#dms");
+					response = JSON.parse(response)
+					const dmChildren = Array.from(dms.children);
+					dmChildren.forEach(child => {
+						if (child.className == "dm" || child.className == "dmMinified") {
+							child.remove();
+						}
+					});
+					//change the top of the message elem
+					console.log(response)
+					let messages = response.messages.reverse();
+					let replies = getObject(response.replies, "_id");
+					let users = getObject(response.users, "_id");
+					for (let i = 0; i < messages.length; i++) {
+						let message = messages[i];
+						let reply = replies[message.ReplyID];
+						if (reply != null) {
+							reply.user = users[message.UserID];
+						}
+						renderMessage(dms, message, users[message.UserID], reply);
+					}
+				}
+			}
+			findI("activeMessages").appendChild(div);
 		}
 	} else {console.log(convos)}
 	
@@ -123,9 +186,9 @@ pages.messages = async function() {
 	let messageHolder = document.getElementById("messageHolder");
 	let startMessageBtn = document.getElementById("startAMessageButton");
 	let requestsOpen;
+	var selectedUsers = {};
 	var cachedRequests = [];
   tempListen(findI("newMessage"), "click", async function () {
-		let selectedUsers = {};
     let modalID = showPopUp("New DM", `<input class="searchUserInput" placeholder="Search for a user" id="searchUserInput"></div><div id="searchResults"></div>`, [["Start", "var(--themeColor)"],["Cancel", "var(--grayColor)"]]);
     findI("searchResults").id = "searchResults" + modalID;
     findI("searchUserInput").id = "searchUserInput" + modalID;
@@ -133,6 +196,7 @@ pages.messages = async function() {
     let startButton = findI("modalButtons" + modalID).children[0];
     startButton.style.display = "none";
 		tempListen(startButton, "click", function() {
+			//add the message to active messages
 			document.querySelector('.topbarStatus').style.display = 'none';
 			console.log(selectedUsers);
 			var usernames = [];
@@ -199,6 +263,9 @@ pages.messages = async function() {
 	tempListen(startMessageBtn, "click", async function() {
 		if (!requestsOpen) {
 			requestsOpen = true;
+			if(document.querySelector(".message[active]")) {
+				document.querySelector(".message[active]").removeAttribute("active");
+			}
 			startMessageBtn.innerText = "< Active Messages";
       findI("activeMessages").style.opacity = 0.1;
       requestMessages.style.maxHeight = "99999px";
@@ -223,21 +290,87 @@ pages.messages = async function() {
 					let div = document.createElement("div");
 					div.className = "message";
 					div.setAttribute("convid", convo._id);
+					div.setAttribute("user", user.User);
 					tempListen(div, "click", async function() {
-						const [code, request] = await sendRequest("GET", `conversations?convid=${div.getAttribute("convid")}`)
+						if(document.querySelector(".acceptMessageHolder")) {
+							document.querySelector(".acceptMessageHolder").remove()
+						}
+						let [code, response] = await sendRequest("GET", `conversations/messages?convid=${div.getAttribute("convid")}`);
 						if(code == 200) {
-							const div = document.createElement("div");
-							div.innerHTML = `
-			 					<div class="acceptMessageText"></div>
+							let renderMessage = await getModule("message");
+							let dms = document.querySelector("#dms");
+							response = JSON.parse(response)
+							const dmChildren = Array.from(dms.children);
+							dmChildren.forEach(child => {
+								if (child.className == "dm" || child.className == "dmMinified") {
+									child.remove();
+								}
+							});
+							//change the top of the message elem
+							console.log(response)
+							let messages = response.messages.reverse();
+		          let replies = getObject(response.replies, "_id");
+		          let users = getObject(response.users, "_id");
+		          for (let i = 0; i < messages.length; i++) {
+		            let message = messages[i];
+		            let reply = replies[message.ReplyID];
+		            if (reply != null) {
+		              reply.user = users[message.UserID];
+		            }
+		            renderMessage(dms, message, users[message.UserID], reply);
+		          }
+							
+							const acceptMessages = document.createElement("div");
+							div.setAttribute("active", "")
+							acceptMessages.innerHTML = `
+			 					<div class="acceptMessageText"><b>${div.getAttribute("user")}</b> wants to talk to you!</div>
 				 				<div class="acceptMessageButtons">
 				 					<button class="denyMessageButton">Deny</button>
 									<button class="acceptMessageButton">Accept</button>
 		 						</div>
 							`;
-							div.className = "acceptMessageHolder";
-							document.querySelector("#dmContent").prepend(div);
+							acceptMessages.className = "acceptMessageHolder";
+							document.querySelector("#dmContent").prepend(acceptMessages);
+							dms.scrollTo({ top: dms.scrollHeight, behavior: "smooth" });
+							tempListen(document.querySelector(".denyMessageButton"), "click", function() {
+								showPopUp(
+									"Request Decline",
+									"Are you sure you want to decline this request?",
+									[
+										["Yes", "var(--themeColor)", async function() {
+											let [code2, response2] = await sendRequest("DELETE", "conversations/requests/decline?convid=" + div.getAttribute("convid"))
+											if(code2 == 200) {
+												div.style.transition = "opacity 0.4s, scale 0.4s";
+												div.style.opacity = 0;
+												div.style.scale = 1.1;
+												setTimeout(() => {
+													div.remove()
+												}, 410)
+
+												if(findI("activeMessages").firstChild) {
+													findI("activeMessages").firstChild.setAttribute("active", "");
+													findI("activeMessages").firstChild.click()
+												}
+											}
+										}],
+										["No", "grey", null]
+									]
+								)
+							})
+							tempListen(document.querySelector(".acceptMessageButton"), "click", async function() {
+								let [code2, response2] = await sendRequest("PUT", "conversations/requests/accept?convid=" + div.getAttribute("convid"))
+								if(code2 == 200) {
+									requestsOpen = false;
+									startMessageBtn.innerText = "Start a Message";
+						      findI("activeMessages").style.opacity = 1;
+									findI("activeMessages").prepend(div);
+						      requestMessages.style.maxHeight = 0;
+						      requestMessages.style.transform = "scaleY(0)";
+									requestMessages.innerHTML = newMessageBtnHtml;
+								}
+							})
 						} else {
-							console.log(request)
+							console.log(response)
 						}
 					});
 					div.innerHTML = html;
@@ -253,4 +386,78 @@ pages.messages = async function() {
 			requestMessages.innerHTML = newMessageBtnHtml;
 		}
 	});
+
+	async function sendMessage (){
+		let activeMessage = document.querySelector(".message[active]");
+		const text = document.querySelector(".sendDMInput").textContent;
+		const formData = new FormData();
+		const convid = activeMessage?activeMessage.getAttribute("convid"):null;
+		const newConvo = !convid?{
+			name: selectedUsers[Object.keys(selectedUsers)[0]].User,
+			invite: Object.keys(selectedUsers)
+		}:null;
+		console.log(newConvo)
+
+		formData.append("data", JSON.stringify({ text, new: newConvo }));
+		const [code, response] = await sendRequest("POST", "conversations/messages/new" + (convid?`?convid=${convid}`:""), formData, true);
+		if(code == 200) {
+			document.querySelector(".sendDMInput").innerText = "";
+			if(convid == null) {
+				requestsOpen = false;
+				startMessageBtn.innerText = "Start a Message";
+	      findI("activeMessages").style.opacity = 1;
+	      requestMessages.style.maxHeight = 0;
+	      requestMessages.style.transform = "scaleY(0)";
+				requestMessages.innerHTML = newMessageBtnHtml;
+
+				let [code2, response2] = await sendRequest("GET", "conversations?convid=" + response)
+
+				if(code2 == 200) {
+					response2 = JSON.parse(response2);
+					
+					const users = getObject(response2.users);
+					const convo = response2.conversations[0];
+					const user = users[response2.Users[0]];
+					const html = `
+						<img class="messageImage" src="${decideProfilePic(user)}">
+						<div style="background: ${statuses[user.Status][1]};" class="messageStatus" title="${statuses[user.Status][0]}"></div>
+						<div class="messageName">
+							${user.User}
+						</div>
+					`;
+		
+					let div = document.createElement("div");
+					div.className = "message";
+					div.setAttribute("convid", response);
+					div.setAttribute("user", document.querySelector(".newConvoName").innerText);
+					div.setAttribute("accepted", "");
+					div.innerHTML = html;
+					findI("activeMessages").prepend(div);
+				}
+				return;
+			}
+			if(activeMessage.getAttribute("accepted") == null) {
+				let [code2, response2] = await sendRequest("PUT", "conversations/requests/accept?convid=" + convid)
+				if(code2 == 200) {
+					requestsOpen = false;
+					startMessageBtn.innerText = "Start a Message";
+					findI("activeMessages").style.opacity = 1;
+					findI("activeMessages").prepend(activeMessage);
+					requestMessages.style.maxHeight = 0;
+					requestMessages.style.transform = "scaleY(0)";
+					requestMessages.innerHTML = newMessageBtnHtml;
+				}
+			}
+		}
+	}
+
+	tempListen(document.querySelector(".sendDMButton"), "click", async function() {
+		sendMessage();
+	})
+	tempListen(document.querySelector(".sendDMInput"), "keypress", function(e) {
+		if(e.keyCode == 13) {
+			sendMessage();
+			e.preventDefault();
+		}
+	})
 }
