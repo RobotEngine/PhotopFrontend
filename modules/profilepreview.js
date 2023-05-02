@@ -99,6 +99,7 @@ function updateProfileSub() {
             updateDisplay(account.Settings.Display.Theme);
           } else if (data.data.Settings != null && data.data.Settings.hasOwnProperty("Backdrop")) {
             updateBackdrop(account.Settings.Backdrop);
+            setLocalStore("backdrop", account.Settings.Backdrop);
           } else if (data.data.Affiliate != null && findC("settingsAffiliateStats") != null) {
             findI("settingsAffiliateStatClicks").textContent = ((account.Affiliate || {}).Clicks || 0) + " Clicks";
             findI("settingsAffiliateStatSignUps").textContent = ((account.Affiliate || {}).SignUps || 0) + " Sign Ups";

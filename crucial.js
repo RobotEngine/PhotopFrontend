@@ -19,7 +19,8 @@ let roleTypes = {
   // Role colors are determined by selecting one prominent color from the Google version of the emoji mixed with #505068.
   "Owner": ["👑", { CanDeletePosts: true, CanDeleteChats: true, CanBanUsers: true, CanUnbanUser: true }, "#A88D48"],
   "Admin": ["🔨", { CanDeletePosts: true, CanDeleteChats: true, CanBanUsers: true, CanUnbanUser: true }, "#B54242"],
-  "Moderator": ["🛡️", { CanDeletePosts: true, CanDeleteChats: true, CanBanUsers: true }, "#3F6479"],
+  "Moderator": ["🛡️", { CanDeletePosts: true, CanDeleteChats: true, CanBanUsers: true }, "#3F6479"]
+  "Trial Moderator": ["🛡️", { CanDeletePosts: true, CanDeleteChats: true}, "#888888", "filter: grayscale(1);"],
   "Developer": ["👨‍💻", {}, "#63A835"],
   "Contributor": ["🔧", {}, "#697F94"],
   "Bug Hunter": ["🐛", {}, "#849040"],

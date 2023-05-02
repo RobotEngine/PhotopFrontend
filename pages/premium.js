@@ -78,7 +78,7 @@ pages.premium = async function() {
   modifyParams("chat");
   modifyParams("group");
   modifyParams("user");
-  let phrases = ["Support the platform you love", "Help us keep the lights on", "Help us keep the servers online", "GIVE US MONEY (please)", "Give the gift of happiness (and post editing)", "You wouldn't want it to take 3 billion years for the page to load, would you?", "Support Photop's Development", "adam was here"];
+  let phrases = ["Support the platform you love", "Help us keep the lights on", "Help us keep the servers online", "Give the gift of happiness (and post editing)", "Give the gift of happiness (and backdrops)", "Give the gift of happiness (and doubled limits)", "Give the gift of happiness (and vanity URLs)", "Give the gift of happiness (and GIFs)", "You wouldn't want it to take 3 billion years for the page to load, would you?", "Support Photop's Development"];
   findI("premiumHeader").textContent = phrases[Math.floor(Math.random() * phrases.length)];
   const subButton = findI("premiumSub");
   const giftButton = findI("premiumGift");
