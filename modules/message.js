@@ -44,18 +44,18 @@ modules.message = function(parent, message, user, reply, isSending, extra) {
 					<div class="dmContent" self>
 						<div class="dmUser">
 							<div class="dmTimestamp" title="${formatFullDate(message.Timestamp)}" self>${timeSince(message.Timestamp, false)}</div>
-							<div class="dmUsername">${getRoleHTML(user)}${user.User}</div>
+							<div class="dmUsername" type="user">${getRoleHTML(user)}${user.User}</div>
 						</div>
 						<div class="dmText" self></div>
 					</div>
-					<img self class="dmImage" src="${decideProfilePic(user)}">
+					<img self class="dmImage" src="${decideProfilePic(user)}" type="user" tabindex="0">
 				`;
 			} else {
 				messageHTML = `
-					<img class="dmImage" src="${decideProfilePic(user)}">
+					<img class="dmImage" src="${decideProfilePic(user)}" type="user" tabindex="0">
 					<div class="dmContent">
 						<div class="dmUser">
-							<div class="dmUsername">${getRoleHTML(user)}${user.User}</div>
+							<div class="dmUsername" type="user">${getRoleHTML(user)}${user.User}</div>
 							<div class="dmTimestamp" title="${formatFullDate(message.Timestamp)}">${timeSince(message.Timestamp, false)}</div>
 						</div>
 						<div class="dmText"></div>
@@ -78,7 +78,7 @@ modules.message = function(parent, message, user, reply, isSending, extra) {
 						</div>
 						<div class="dmText" self></div>
 					</div>
-					<img self class="dmImage" src="${decideProfilePic(user)}">
+					<img self class="dmImage" src="${decideProfilePic(user)}" type="user" tabindex="0">
 				`;
 			} else {
 				messageHTML = `
@@ -87,10 +87,10 @@ modules.message = function(parent, message, user, reply, isSending, extra) {
 			 			<span class="chatReplyUsername">${reply.user.User}</span>
 					 	<span class="chatReplyText"></span>
 			 		</div>
-					<img class="dmImage" src="${decideProfilePic(user)}">
+					<img class="dmImage" src="${decideProfilePic(user)}" type="user" tabindex="0">
 					<div class="dmContent">
 						<div class="dmUser">
-							<div class="dmUsername">${getRoleHTML(user)}${user.User}</div>
+							<div class="dmUsername" type="user">${getRoleHTML(user)}${user.User}</div>
 							<div class="dmTimestamp" title="${formatFullDate(message.Timestamp)}">${timeSince(message.Timestamp, false)}</div>
 						</div>
 						<div class="dmText"></div>
@@ -109,6 +109,7 @@ modules.message = function(parent, message, user, reply, isSending, extra) {
   newMessage.setAttribute("userid", message.UserID);
   newMessage.setAttribute("user", user.User);
   newMessage.setAttribute("time", message.Timestamp);
+	newMessage.setAttribute("convid", message.ConvID)
   newMessage.setAttribute("tabindex", 0);
   newMessage.setAttribute("editing", false);
   newMessage.innerHTML = messageHTML;

@@ -119,6 +119,8 @@ pages.profile = async function() {
   });
   if (user.ProfileData.Description != null && user.ProfileData.Description.length > 1) {
     pageHolder.querySelector(".profileBio").innerHTML = `${getRoleHTML(user, 20)}<br>${user.ProfileData.Description != null && user.ProfileData.Description.length > 1 ? formatText(user.ProfileData.Description).replace(/\n/g, "<br>") : ""}`;
+  } else {
+    pageHolder.querySelector(".profileBio").innerHTML = getRoleHTML(user, 20);
   }
   if (user.Premium == null || user.Premium.Bought == null || Math.floor(getEpoch() / 1000) > user.Premium.Expires) {
     findI("premiumDate").remove();

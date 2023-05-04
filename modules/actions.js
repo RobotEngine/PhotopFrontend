@@ -250,10 +250,12 @@ modules.actions = function() {
             dropdownButtons.unshift(["Report", "#FFCB70", function() {
               reportContent(post.getAttribute("id"), post.getAttribute("name"), post.getAttribute("userid"), "post");
             }]);
-            if (checkPermision(account.Role, "CanDeletePosts") == true) {
+            if (checkPermision(account.Role, "CanBanUsers")) {
               dropdownButtons.unshift(["Ban User", "#FF5C5C", async function() {
                 (await getModule("ban"))(post.getAttribute("userid"), post.getAttribute("name"))
               }]);
+            }
+            if (checkPermision(account.Role, "CanDeletePosts") == true) {
               dropdownButtons.unshift(["Delete", "#FF5C5C", deletePost]);
             } else {
               let groupID = getParam("group");
@@ -283,7 +285,6 @@ modules.actions = function() {
         if (text.length > limit) {
           if (limit == 200) {
             showPopUp("That's Too Long", `Please keep your chats to under ${limit} characters.${premiumPerk("Text limits are doubled! Use up to 400 characters in your chats.")}`, [["Okay", "var(--grayColor)"]]);
-            showPopUp("That's Too Long", `Please keep your chats to under ${limit} characters.`, [["Okay", "var(--grayColor)"]]);
           } else {
             showPopUp("That's Too Long", `Please keep your chats to under ${limit} characters.`, [["Okay", "var(--grayColor)"]]);
           }
@@ -437,10 +438,12 @@ modules.actions = function() {
             dropdownButtons.unshift(["Report", "#FFCB70", function() {
               reportContent(chat.getAttribute("id"), chat.getAttribute("user"), chat.getAttribute("userid"), "chat");
             }]);
-            if (checkPermision(account.Role, "CanDeletePosts") == true) {
-              dropdownButtons.unshift(["Ban User", "#FF5C5C", async function() {
+            if (checkPermision(account.Role, "CanBanUsers")) {
+               dropdownButtons.unshift(["Ban User", "#FF5C5C", async function() {
                 (await getModule("ban"))(chat.getAttribute("userid"), chat.getAttribute("user"));
               }]);
+            }
+            if (checkPermision(account.Role, "CanDeleteChats") == true) {
               dropdownButtons.unshift(["Delete", "#FF5C5C", deleteChat]);
             } else {
               let groupID = getParam("group");
@@ -534,7 +537,78 @@ modules.actions = function() {
       },
       claimgift: async function(elem){
         (await getModule("gift"))(elem.getAttribute("giftid"));
-      }
+      },
+
+			// Message Actions:
+			message: async function(message) {
+				if(message.getAttribute('editing') == "true")return;
+        let dropdownButtons = [
+          ["Copy Text", "var(--themeColor)", function() {
+            copyClipboardText(message.getAttribute("text"));
+          }]
+        ];
+
+				function editMessage() {
+					//
+				}
+				function deleteMessage() {
+					showPopUp("Delete Message?", "Are you sure you want to <b>permanently</b> delete this message?", [["Delete", "#FF5C5C", async function() {
+            message.style.opacity = "0.5";
+            let [code, response] = await sendRequest("DELETE", "conversations/messages/delete?messid=" + message.id + "&convid=" + message.getAttribute("convid"));
+            if (code != 200) {
+              message.style.opacity = "1";
+              showPopUp("Error Deleting", response, [["Okay", "var(--grayColor)"]]);
+            }
+          }], ["Wait, no", "var(--grayColor)"]]);
+				}
+
+				if (message.getAttribute("userid") == userID) {
+          dropdownButtons.unshift(["Delete", "#FF5C5C", deleteMessage]);
+          if (hasPremium()) {
+            dropdownButtons.unshift(["Edit Text", "var(--premiumColor)", editMessage]);
+          }
+        } else {
+          if (userID != null) {
+            dropdownButtons.unshift(["Block User", "#FF8652", function() {
+              blockUser(message.getAttribute("userid"), message.getAttribute("user"));
+            }]);
+            dropdownButtons.unshift(["Report", "#FFCB70", function() {
+              reportContent(message.getAttribute("id"), message.getAttribute("user"), message.getAttribute("userid"), "message");
+            }]);
+            if (checkPermision(account.Role, "CanBanUsers")) {
+              dropdownButtons.unshift(["Ban User", "#FF5C5C", async function() {
+                (await getModule("ban"))(message.getAttribute("userid"), message.getAttribute("user"));
+              }]);
+            }
+            if (checkPermision(account.Role, "CanDeleteChats") == true) {
+              dropdownButtons.unshift(["Delete", "#FF5C5C", deleteMessage]);
+            }
+          }
+        }
+
+				dropdownButtons.unshift(["Reply", "#2AF5B5", function() {
+          /*let newChatHolder = post.querySelector(".postChatNew");
+          let prevReply = findC("postChatReply");
+          if (prevReply != null) {
+            let prevChat = findI(prevReply.getAttribute("chatid"));
+            if (prevChat != null) {
+              prevChat.style.backgroundColor = "";
+            }
+            prevReply.remove();
+          }
+          chat.style.backgroundColor = "#2AF5B5";
+          let replyHolder = createElement("postChatReply", "div", newChatHolder);
+          newChatHolder.insertBefore(replyHolder, newChatHolder.firstChild);
+          replyHolder.setAttribute("chatid", chat.id);
+          replyHolder.innerHTML = `<div class="postChatReplyLine"></div><div class="postChatReplyText">Replying to <b style="color: #FE5D6A">${chat.getAttribute("user")}</b></div><div class="postChatReplyClose" tabindex="0">&times;</div>`;
+          replyHolder.querySelector(".postChatReplyClose").addEventListener("click", function() {
+            chat.style.backgroundColor = "";
+            replyHolder.remove();
+          });*/
+        }]);
+
+				showDropdown(button, (message.getAttribute("self") == null?"left":"right"), dropdownButtons);
+			}
     };
     if (actions[type] != null) {
       actions[type](button, button.closest(".post"));

@@ -45,6 +45,8 @@ wireframes.messages = `
 `;
 
 pages.messages = async function() {
+	return;
+	
   app.style.width = "1038px";
 	let [status, convos] = await sendRequest("GET", "conversations");
 	if (status == 200) {

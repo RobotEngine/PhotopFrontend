@@ -3320,6 +3320,7 @@ td {
 	margin-right:6px;
 	border-radius:12px;
 	object-fit:cover;
+	cursor:pointer;
 }
 .dmImage[self] {
 	margin-right:0;
@@ -3328,6 +3329,7 @@ td {
 .dmUsername {
 	font-weight:bold;
 	font-size:16px;
+	cursor:pointer;
 }
 .dmTimestamp {
 	display:flex;

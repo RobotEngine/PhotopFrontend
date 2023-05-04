@@ -222,7 +222,7 @@ modules.profilepreview = async function(element, getID) {
       </div>
       <button class="previewFollowButton" userid="${data._id}">Follow</button>
     </div>
-    <div class="previewUsername">${getRoleHTML(data, 5)}<span style="font-size: 30px;">${data.User}</span></div>
+    <div class="previewUsername">${getRoleHTML(data, 5) != "" ? getRoleHTML(data, 5) + "<br>" : ""}<span style="font-size: 30px;">${data.User}</span></div>
     <div class="previewFollow">
       <div tabindex="0" class="previewCount" onclick="modifyParams('user', '` + getID + `'); setPage('followers'); closeProfilePreview();">
         <span class="previewCountTicker"><span class="previewCountNumber" count="followerCount" userid="${data._id}" realnum="${data.ProfileData.Followers || 0}" title="${(data.ProfileData.Followers || 0).toLocaleString()}">${abbr(data.ProfileData.Followers) || 0}</span></span> ${data.ProfileData.Followers == 1 ? "Follower" : "Followers"}
