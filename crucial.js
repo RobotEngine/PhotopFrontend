@@ -774,7 +774,7 @@ async function init() {
       openLoginModal("signup", "Create Account");
     });
     findC("signInButton").addEventListener("click", function() {
-      let modalCode = showPopUp("Sign In", `<button class="exotekLoginBtn" id="exotekLoginBtn"><image src="https://exotek.co/images/favicon.png" class="btnImg"><div style="flex: 1">Exotek</div></button><div style="text-align: center"><br>Haven't transferred accounts yet?<br><a href="#migrate" target="_blank">Migrate Account</a></div>`, [["Cancel", "var(--grayColor)"]]);
+      let modalCode = showPopUp("Sign In", `<button class="exotekLoginBtn" id="exotekLoginBtn"><image src="https://exotek.co/images/favicon.png" class="btnImg"><div style="flex: 1">Exotek</div></button><div style="text-align: center"><br>Have an old Photop account?<br><a href="#migrate" target="_blank">Migrate Account</a></div>`, [["Cancel", "var(--grayColor)"]]);
       findI("exotekLoginBtn").addEventListener("click", function () {
         openLoginModal("signin", "Sign In");
         findI("backBlur" + modalCode).style.opacity = 0;
