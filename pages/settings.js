@@ -445,7 +445,7 @@ pages.settings = function () {
 							}
 						}
 					} else {
-						showPopUp("Invalid Image Type", "Photop only accepts images of the following types: <i style='color: #bbb'>" + (supportedImageTypes.join(", ")) + "</i>", [
+						showPopUp("Invalid Image Type", `Photop only accepts images of the following types: <i style='color: #bbb'>${(supportedImageTypes.join(", "))}</i>${file.type.replace(/image\//g, "") == "gif" ? premiumPerk("Upload GIFs to use as your banner!") : ""}`, [
 							["Okay", "var(--grayColor)"]
 						]);
 					}
@@ -496,7 +496,7 @@ pages.settings = function () {
 							}
 						}
 					} else {
-						showPopUp("Invalid Image Type", "Photop only accepts images of the following types: <i style='color: #bbb'>" + (supportedImageTypes.join(", ")) + "</i>", [
+						showPopUp("Invalid Image Type", `Photop only accepts images of the following types: <i style='color: #bbb'>${(supportedImageTypes.join(", "))}</i>${file.type.replace(/image\//g, "") == "gif" ? premiumPerk("Upload GIFs to use as your profile picture!") : ""}`, [
 							["Okay", "var(--grayColor)"]
 						]);
 					}

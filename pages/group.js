@@ -294,11 +294,11 @@ pages.group = async function() {
             if (premium) {
               showPopUp("Image too Large", "Images must be under 4 MB in size.", [["Okay", "var(--grayColor)"]]);
             } else {
-              showPopUp("Image too Large", `Your image must be under 2MB.${premiumPerk("Upload limits are doubled! Use a ≤4MB image as your group icon.")}`, [["Premium", "var(--premiumColor)", function() { setPage("premium"); }], ["Okay", "var(--grayColor)"]]);
+              showPopUp("Image too Large", `Your image must be under 2MB.${premiumPerk("Upload limits are doubled! Use a ≤4MB image as your group icon.")}`, [["Okay", "var(--grayColor)"]]);
             }
           }
         } else {
-          showPopUp("Invalid Image Type", "Photop only accepts images of the following types: <i style='color: #bbb'>" + (supportedImageTypes.join(", ")) + "</i>", [["Premium", "var(--premiumColor)", function() { setPage("premium"); }], ["Okay", "var(--grayColor)"]]);
+          showPopUp("Invalid Image Type", `Photop only accepts images of the following types: <i style='color: #bbb'>${(supportedImageTypes.join(", "))}</i>${file.type.replace(/image\//g, "") == "gif" ? premiumPerk("Upload GIFs to use as your group icon!") : ""}`, [["Okay", "var(--grayColor)"]]);
         }
       } else {
         showPopUp("Must be an Image", "Only image files can be uploaded to Photop.", [["Okay", "var(--grayColor)"]]);

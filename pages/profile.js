@@ -192,7 +192,7 @@ pages.profile = async function() {
       dropdownOptions.unshift(["Report", "#FFCB70", function() {
         reportContent(profileID, user.User, profileID, "user");
       }]);
-      if (checkPermision(account.Role, "CanDeletePosts") == true) {
+      if (checkPermision(account.Role, "CanBanUsers") == true) {
         dropdownOptions.unshift(["Ban User", "#FF5C5C", async function() {
           (await getModule("ban"))(profileID, user.User);
         }]);
