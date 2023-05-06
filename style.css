@@ -1462,19 +1462,19 @@ button:active {
   background: var(--contentColor3);
 }
 .profileTop {
+  display: grid;
   background: var(--contentColor);
   border-radius: 12px;
   padding-bottom: 8px;
 }
 .profileBanner {
   display: block;
-  width: calc(100% - 16px);
+  width: calc(100% - 12px);
   height: 250px;
+  margin: 6px;
   object-fit: cover;
   border-radius: 8px;
   cursor: pointer;
-  margin: 8px;
-  transform: translateY(8px);
 }
 .profilePictureHolder {
   position: relative;
