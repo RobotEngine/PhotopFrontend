@@ -1,25 +1,27 @@
 wireframes.profile = `
-<div class="profileBanner" style="background: var(--contentColor)"></div>
-<div class="profilePictureHolder">
-  <div class="profilePicture"></div>
-  <div class="profileStatus"></div>
-  <span class="profileUsername"></span>
-  <button class="profileFollow">Follow</button>
-  <button class="profileMenu"></button>
-</div>
-<div class="profileDataHolder">
-  <div class="profileFollowCounts">
-    <div id="profileFollowerCount" class="profileCount" tabindex="0"></div>
-    <div id="profileFollowingCount" class="profileCount" tabindex="0"></div>
-    <div class="profileSocialLinkHolder"></div>
+<div class="profileTop">
+  <div class="profileBanner" style="background: var(--contentColor2)"></div>
+  <div class="profilePictureHolder">
+    <div class="profilePicture"></div>
+    <div class="profileStatus"></div>
+    <span class="profileUsername"></span>
+    <button class="profileFollow">Follow</button>
+    <button class="profileMenu"></button>
   </div>
-  <div class="profileInfo">
-    <div class="profileBio"></div>
-    <div class="profileDates">
-      <span class="profileDate"></span>
-      </span>
-      <span class="profileDate" id="premiumDate"></span>
-  </div>
+  <div class="profileDataHolder">
+    <div class="profileFollowCounts">
+      <div id="profileFollowerCount" class="profileCount" tabindex="0"></div>
+      <div id="profileFollowingCount" class="profileCount" tabindex="0"></div>
+      <div class="profileSocialLinkHolder"></div>
+    </div>
+    <div class="profileInfo">
+      <div class="profileBio"></div>
+      <div class="profileDates">
+        <span class="profileDate"></span>
+        </span>
+        <span class="profileDate" id="premiumDate"></span>
+    </div>
+    </div>
   </div>
 </div>
 <div class="stickyContainer profileTabs" id="tabs">
@@ -86,10 +88,10 @@ pages.profile = async function() {
   }
   if (user.Settings != null && user.Settings.ProfileBanner != null) {
     let existingBanner = findC("profileBanner");
-    let imageProfileBanner = createElement("profileBanner", "img", pageHolder);
+    let imageProfileBanner = createElement("profileBanner", "img", findC("profileTop"));
     imageProfileBanner.src = assetURL + "ProfileBanners/" + user.Settings.ProfileBanner;
     imageProfileBanner.setAttribute("type", "imageenlarge");
-    pageHolder.insertBefore(imageProfileBanner, existingBanner);
+    findC("profileTop").insertBefore(imageProfileBanner, existingBanner);
     existingBanner.remove();
   }
   user.ProfileData = user.ProfileData || {};
@@ -416,4 +418,20 @@ pages.profile = async function() {
       }
     }
   });
+  /*findC("profileStatus").addEventListener("click", function () {
+    showDropdown(findC("profileStatus"), "right", [
+      ["Online", "#00FC65", function () {
+        findC("profileStatus").style.background = "#00FC65";
+      }],
+      ["In Group", "#5ab7fa", function () {
+        findC("profileStatus").style.background = "#5ab7fa";
+      }],
+      ["Away", "rgb(255, 203, 112)", function () {
+        findC("profileStatus").style.background = "rgb(255, 203, 112)";
+      }],
+      ["Offline", "#a4a4a4", function () {
+        findC("profileStatus").style.background = "#a4a4a4";
+      }]
+    ]);
+  });*/
 }

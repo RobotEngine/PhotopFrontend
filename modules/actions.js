@@ -545,6 +545,9 @@ modules.actions = function() {
         let dropdownButtons = [
           ["Copy Text", "var(--themeColor)", function() {
             copyClipboardText(message.getAttribute("text"));
+          }],
+          ["Copy ID", "var(--themeColor)", function() {
+            copyClipboardText("/Message_" + message.id);
           }]
         ];
 

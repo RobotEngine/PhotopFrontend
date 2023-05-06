@@ -221,9 +221,9 @@ pages.settings = function () {
 						<div>
 							<div style="display:flex; align-items: center; width: 100%">
 								<span style="font-weight: bold"><span id="currentGifts" style="color: var(--premiumColor);">${account.Premium.GiftMonths || 0}</span> Months</span>
-								<div style="background: var(--pageColor); display: flex; align-items: center; padding: 6px; margin-left: auto; border-radius: 14px">
+								<div style="background: var(--contentColor2); display: flex; align-items: center; padding: 6px; margin-left: auto; border-radius: 14px">
                   <span style='margin-right: 8px'>Gift</span>
-                  <input id="giftLengthInput" class="settingsInput" min="0" max="${account.Premium.GiftMonths || 0}" placeholder="${account.Premium.GiftMonths || 0}" style="font-size: 20px; width: 50px; margin: 0px; font-size:17px; text-align: center">
+                  <input id="giftLengthInput" class="settingsInput" min="0" max="${account.Premium.GiftMonths || 0}" placeholder="${account.Premium.GiftMonths || 0}" style="font-size: 20px; width: 50px; margin: 0px; font-size:17px; text-align: center; background: var(--contentColor3);">
                   <span style="margin-left: 8px">Months</span>
 								  <button id="createGiftButton" style="background-color:var(--premiumColor); margin-left: 8px; font-size:17px; text-align: center">Create</button>
                 </div>
@@ -934,7 +934,9 @@ function addThemeOption(index) {
   thisThemeOption.addEventListener("click", async function () {
     let updatedSettings = account.Settings.Display;
     updatedSettings.Theme = themes[index][0];
-    findC("themeSelected").classList.remove("themeSelected");
+    if (findC("themeSelected") != null) {
+      findC("themeSelected").classList.remove("themeSelected");
+    }
     thisThemeOption.classList.add("themeSelected");
     updateDisplay(themes[index][0]);
     let [code, response] = await sendRequest("POST", "me/settings", {

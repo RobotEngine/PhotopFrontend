@@ -1461,13 +1461,20 @@ button:active {
   margin: 6px;
   background: var(--contentColor3);
 }
+.profileTop {
+  background: var(--contentColor);
+  border-radius: 12px;
+  padding-bottom: 8px;
+}
 .profileBanner {
   display: block;
-  width: 100%;
+  width: calc(100% - 16px);
   height: 250px;
   object-fit: cover;
-  border-radius: 12px;
+  border-radius: 8px;
   cursor: pointer;
+  margin: 8px;
+  transform: translateY(8px);
 }
 .profilePictureHolder {
   position: relative;
@@ -1480,8 +1487,8 @@ button:active {
   height: 120px;
   object-fit: cover;
   border-radius: 24px;
-  border: 6px solid var(--pageColor2);
-  background: var(--contentColor);
+  border: 6px solid var(--contentColor);
+  background: var(--contentColor2);
   margin-left: 16px;
   pointer-events: all;
   cursor: pointer;
@@ -1501,7 +1508,7 @@ button:active {
   height: 20px;
   top: 104px;
   left: 118px;
-  border: 6px solid var(--pageColor2);
+  border: 6px solid var(--contentColor);
   border-radius: 100px;
   transition: 0.2s;
   pointer-events: all;
@@ -1551,7 +1558,7 @@ button:active {
   font-size: 16px;
 }
 .profileTabs {
-  margin: 20px 0px 8px 0px;
+  margin: 25px 0px 8px 0px;
 }
 #tabs {
   display: flex;
@@ -1645,7 +1652,7 @@ button:active {
 }
 
 .profileMenu {
-  margin: auto 0px 4px auto;
+  margin: auto 8px 4px auto;
   margin-left: 6px;
   background: var(--grayColor);
   height: 40px;
@@ -1901,7 +1908,7 @@ input[type="radio"]:checked + .radioLabel:before, input[type="checkbox"]:checked
 	height:80px;
 	border:solid;
 	border-width:3px;
-	border-color:var(--borderColor);
+	border-color:var(--themeColor);
 	border-radius:50%;
 	object-fit:cover;
 }
