@@ -1462,7 +1462,8 @@ button:active {
   background: var(--contentColor3);
 }
 .profileTop {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   background: var(--contentColor);
   border-radius: 12px;
   padding-bottom: 8px;
