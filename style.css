@@ -1464,17 +1464,15 @@ button:active {
 .profileTop {
   display: flex;
   flex-direction: column;
+  padding-bottom: 8px;
+  overflow: hidden;
   background: var(--contentColor);
   border-radius: 12px;
-  padding-bottom: 8px;
 }
 .profileBanner {
   display: block;
-  width: calc(100% - 12px);
   height: 250px;
-  margin: 6px;
   object-fit: cover;
-  border-radius: 8px;
   cursor: pointer;
 }
 .profilePictureHolder {
