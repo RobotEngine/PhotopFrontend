@@ -20,7 +20,7 @@ let roleTypes = {
   "Owner": ["👑", { CanDeletePosts: true, CanDeleteChats: true, CanBanUsers: true, CanUnbanUser: true }, "#A88D48"],
   "Admin": ["🔨", { CanDeletePosts: true, CanDeleteChats: true, CanBanUsers: true, CanUnbanUser: true }, "#B54242"],
   "Moderator": ["🛡️", { CanDeletePosts: true, CanDeleteChats: true, CanBanUsers: true }, "#3F6479"],
-  "Trial Moderator": ["🛡️", { CanDeletePosts: true, CanDeleteChats: true }, "#888888", "filter: grayscale(1);"],
+  "Trial Moderator": ["🛡️", { CanDeletePosts: true, CanDeleteChats: true }, "#888888", "filter: contrast(0) brightness(1.5);"],
   "Developer": ["👨‍💻", {}, "#63A835"],
   "Contributor": ["🔧", {}, "#697F94"],
   "Bug Hunter": ["🐛", {}, "#849040"],
@@ -807,7 +807,7 @@ function randomString(l) {
 async function openLoginModal(page, title) {
   let randomStr = randomString(20);
   setLocalStore("state", randomStr);
-  window.loginWindow = (await getModule("webmodal"))("https://exotek.co/login?client_id=62f8fac716d8eb8d2f6562ef&redirect_uri=https%3A%2F%2F" + window.location.host + "&response_type=code&scope=userinfo&state=" + randomStr + "#" + page, title);
+  window.loginWindow = (await getModule("webmodal"))("https://exotek.co/login?client_id=62f8fac716d8eb8d2f6562ef&redirect_uri=" + encodeURIComponent(window.location.href) + "&response_type=code&scope=userinfo&state=" + randomStr + "#" + page, title);
 }
 
 /*
@@ -912,7 +912,7 @@ async function handleOAuthEvents(authCode, authState) {
     } else if (authState == "transferlogin") {
       window.transferLoginCode = authCode;
       showPopUp("Complete Transfer", "To complete the process, login to the new Exotek account you wish to use when signing in.", [["Authenticate", "var(--themeColor)", async function() {
-        window.loginWindow = (await getModule("webmodal"))("https://exotek.co/login?client_id=62f8fac716d8eb8d2f6562ef&redirect_uri=https%3A%2F%2F" + window.location.host + "&response_type=code&scope=userinfo&state=transferfinish", "Transfer Exotek Account (New Account)");
+        window.loginWindow = (await getModule("webmodal"))("https://exotek.co/login?client_id=62f8fac716d8eb8d2f6562ef&redirect_uri=" + encodeURIComponent(window.location.href) + "&response_type=code&scope=userinfo&state=transferfinish", "Transfer Exotek Account (New Account)");
       }], ["Cancel", "var(--grayColor)"]]);
     } else if (authState == "transferfinish") {
       if (window.transferLoginCode) {

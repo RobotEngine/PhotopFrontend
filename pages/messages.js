@@ -17,7 +17,7 @@ wireframes.messages = `
 		 		<img class="topbarImage" src="https://photop-content.s3.amazonaws.com/ProfileImages/6066b99198895e660082965bcb91d776">
 				<div style="background: rgb(0, 252, 101);" class="topbarStatus"></div>
 				<span class="topbarName">Robot_Engine</span>
-				<button class="topbarOptions groupToolbarButton">
+				<button class="topbarOptions groupToolbarButton" id="messageTopBarButton">
 		      <svg viewBox="0 0 41.915 41.915"><g fill="var(--themeColor)"><path style="" id="Svg" d="M11.214,20.956c0,3.091-2.509,5.589-5.607,5.589C2.51,26.544,0,24.046,0,20.956c0-3.082,2.511-5.585,5.607-5.585 C8.705,15.371,11.214,17.874,11.214,20.956z"></path><path d="M26.564,20.956c0,3.091-2.509,5.589-5.606,5.589c-3.097,0-5.607-2.498-5.607-5.589c0-3.082,2.511-5.585,5.607-5.585 C24.056,15.371,26.564,17.874,26.564,20.956z"></path><path d="M41.915,20.956c0,3.091-2.509,5.589-5.607,5.589c-3.097,0-5.606-2.498-5.606-5.589c0-3.082,2.511-5.585,5.606-5.585 C39.406,15.371,41.915,17.874,41.915,20.956z"></path></g></svg>
 		    </button>
 			</div>
@@ -45,8 +45,6 @@ wireframes.messages = `
 `;
 
 pages.messages = async function() {
-	return;
-	
   app.style.width = "1038px";
 	let [status, convos] = await sendRequest("GET", "conversations");
 	if (status == 200) {
@@ -67,6 +65,7 @@ pages.messages = async function() {
 				`;
 
 				div.setAttribute("user", user.User);
+				div.setAttribute("creator", convo.Creator);
 			} else {
 				html = `
 					<img class="messageImage" src="${assetURL + `ConversationImages/${convo.Image}`}">
@@ -76,6 +75,7 @@ pages.messages = async function() {
 				`;
 
 				div.setAttribute("user", convo.Name);
+				div.setAttribute("creator", convo.Creator);
 			}
 			
 			div.className = "message";
@@ -293,6 +293,7 @@ pages.messages = async function() {
 					div.className = "message";
 					div.setAttribute("convid", convo._id);
 					div.setAttribute("user", user.User);
+					div.setAttribute("creator", convo.Creator);
 					tempListen(div, "click", async function() {
 						if(document.querySelector(".acceptMessageHolder")) {
 							document.querySelector(".acceptMessageHolder").remove()
@@ -455,11 +456,33 @@ pages.messages = async function() {
 
 	tempListen(document.querySelector(".sendDMButton"), "click", async function() {
 		sendMessage();
-	})
+	});
 	tempListen(document.querySelector(".sendDMInput"), "keypress", function(e) {
 		if(e.keyCode == 13) {
 			sendMessage();
 			e.preventDefault();
 		}
-	})
+	});
+
+	tempListen(findI("messageTopBarButton"), "click", function() {
+		let dropdownOptions = [];
+		const activeMessage = document.querySelector(".message[active]")
+		if(!activeMessage) return;
+
+		let creator = activeMessage.getAttribute("creator")
+		if(creator == userID) {
+			creator = true;
+		}
+
+		function closeDM() {
+			//
+		}
+		function viewMembers() {
+			//
+		}
+		
+		if (window.innerWidth < 1075) {
+			//
+		}
+	});
 }

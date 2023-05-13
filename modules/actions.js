@@ -590,24 +590,25 @@ modules.actions = function() {
         }
 
 				dropdownButtons.unshift(["Reply", "#2AF5B5", function() {
-          /*let newChatHolder = post.querySelector(".postChatNew");
-          let prevReply = findC("postChatReply");
+          let newMessageHolder = document.querySelector("#dmContent");
+          let prevReply = findC("messageReplyHolder");
           if (prevReply != null) {
-            let prevChat = findI(prevReply.getAttribute("chatid"));
-            if (prevChat != null) {
-              prevChat.style.backgroundColor = "";
+            let prevMessage = findI(prevReply.getAttribute("replyid"));
+            if (prevMessage != null) {
+              prevMessage.style.backgroundColor = "";
             }
             prevReply.remove();
           }
-          chat.style.backgroundColor = "#2AF5B5";
-          let replyHolder = createElement("postChatReply", "div", newChatHolder);
-          newChatHolder.insertBefore(replyHolder, newChatHolder.firstChild);
-          replyHolder.setAttribute("chatid", chat.id);
-          replyHolder.innerHTML = `<div class="postChatReplyLine"></div><div class="postChatReplyText">Replying to <b style="color: #FE5D6A">${chat.getAttribute("user")}</b></div><div class="postChatReplyClose" tabindex="0">&times;</div>`;
+          message.style.backgroundColor = "#2AF5B5";
+          let replyHolder = createElement("messageReplyHolder", "div", newMessageHolder);
+          newMessageHolder.insertBefore(replyHolder, newMessageHolder.firstChild);
+          replyHolder.setAttribute("replyid", message.id);
+					replyHolder.style = 'height:unset;cursor:default;';
+          replyHolder.innerHTML = `<div class="postChatReplyLine"></div><div class="postChatReplyText">Replying to <b style="color: #FE5D6A">${message.getAttribute("user")}</b></div><div class="postChatReplyClose" tabindex="0">&times;</div>`;
           replyHolder.querySelector(".postChatReplyClose").addEventListener("click", function() {
-            chat.style.backgroundColor = "";
+            message.style.backgroundColor = "";
             replyHolder.remove();
-          });*/
+          });
         }]);
 
 				showDropdown(button, (message.getAttribute("self") == null?"left":"right"), dropdownButtons);
