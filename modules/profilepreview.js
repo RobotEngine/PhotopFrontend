@@ -26,9 +26,14 @@ function updateProfileSub() {
           for (let i = 0; i < keys.length; i++) {
             let key = keys[i];
             if (typeof obj[key] != "object" || Array.isArray(obj[key]) == true || obj[key] == null) {
-              passData[key] = obj[key];
+              if (obj[key] != null) {
+                passData[key] = obj[key];
+              } else if (passData[key]) {
+                delete passData[key];
+              }
             } else {
               passData[key] = passData[key] || {};
+              console.log(passData[key] || {});
               recUpdate(obj[key], passData[key] || {});
             }
           }

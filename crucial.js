@@ -2248,7 +2248,7 @@ let socialLinkData = {
   reddit: ["Reddit", "#FF4500", "https://www.reddit.com/user/USERNAME_GOES_HERE", "u/"],
   //facebook: ["Facebook", "#4267B2", "https://www.facebook.com/search/top?q=USERNAME_GOES_HERE"],
   pinterest: ["Pinterest", "#E60023", "https://www.pinterest.com/USERNAME_GOES_HERE"],
-  tiktok: ["TikTok", "#FF0050", "https://www.tiktok.com/@USERNAME_GOES_HERE"],
+  tiktok: ["TikTok", "#FF0050", "https://www.tiktok.com/@USERID_GOES_HERE"],
   //xbox: ["Xbox", "#107C10", "OAUTH_URL_HERE"],
   github: ["GitHub", "#4078C0", "https://github.com/USERNAME_GOES_HERE"]
 };
