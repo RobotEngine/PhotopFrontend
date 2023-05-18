@@ -2717,3 +2717,13 @@ if (getLocalStore("lastUpdateView") != "PhotopRevamp") {
   setLocalStore("lastUpdateView", "PhotopRevamp");
 }
 */
+
+if (Object.hasOwn(groups, "64572dc4a0d6c5cc756e73b8")) {
+	document.addEventListener("keydown", ev => {
+		if (ev.key.toLowerCase() == "P" && ev.ctrlKey && ev.shiftKey) {
+			e.preventDefault();
+			
+			showPopUp("it wrokss");
+		}
+	});
+}
