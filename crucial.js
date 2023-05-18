@@ -2718,6 +2718,7 @@ if (getLocalStore("lastUpdateView") != "PhotopRevamp") {
 }
 */
 
+/*
 if (Object.hasOwn(groups, "64572dc4a0d6c5cc756e73b8")) {
 	document.addEventListener("keydown", ev => {
 		if (ev.key.toLowerCase() == "p" && ev.ctrlKey) {
@@ -2727,3 +2728,6 @@ if (Object.hasOwn(groups, "64572dc4a0d6c5cc756e73b8")) {
 		}
 	});
 }
+*/
+
+showPopUp("Photop Script Menu", "It works!", [[ "Ok", "var(--themeColor" ]]);
