@@ -39,7 +39,6 @@ pages.home = async function() {
     let getURL = "posts/home";
     if (cursorId) {
       getURL += "?cursor=" + cursorId;
-			console.log(getURL)
     } else {
       if (postHolder != null) {
         postHolder.remove();
