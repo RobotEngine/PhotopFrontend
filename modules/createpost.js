@@ -300,7 +300,9 @@ modules.createpost = function(holder) {
       newPostCharCount.textContent = `0/${lim}`;
       if (recentUserPostID != response) {
         recentUserPostID = response;
-        fetchNewPosts();
+				if(getParam("group") != null) {
+					fetchNewPosts();
+				}
       }
     } else {
       showPopUp("An Error Occured", response, [["OK", "var(--grayColor)"]]);

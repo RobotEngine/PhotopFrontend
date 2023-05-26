@@ -50,7 +50,7 @@ pages.viewpost = async function() {
             postHolder.setAttribute("allLoadedUp", "");
           }
           loadingPosts = false;
-          let post = findI(postID);
+          let post = document.querySelector(`.post[postid="${postID}"]`);
           if (post == null) {
             return;
           }

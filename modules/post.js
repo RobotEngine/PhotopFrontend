@@ -62,7 +62,7 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
   if (props.loadToTop == true && parent.firstChild != null) {
     parent.insertBefore(newPost, parent.firstChild);
   }
-  newPost.id = post._id;
+  newPost.setAttribute("postid", post._id);
   newPost.setAttribute("userid", post.UserID);
   newPost.setAttribute("name", user.User);
   newPost.setAttribute("time", post.Timestamp);

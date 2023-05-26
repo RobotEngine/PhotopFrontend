@@ -18,7 +18,7 @@ let week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "S
 let roleTypes = {
   // Role colors are determined by selecting one prominent color from the Google version of the emoji mixed with #505068.
   "Owner": ["👑", { CanDeletePosts: true, CanDeleteChats: true, CanBanUsers: true, CanUnbanUser: true }, "#A88D48"],
-  "Admin": ["🔨", { CanDeletePosts: true, CanDeleteChats: true, CanBanUsers: true, CanUnbanUser: true }, "#B54242"],
+  "Admin": ["🔨", { CanDeletePosts: true, CanDeleteChats: true, CanBanUsers: true, CanUnbanUser: true }, "#b58c42"],
   "Moderator": ["🛡️", { CanDeletePosts: true, CanDeleteChats: true, CanBanUsers: true }, "#3F6479"],
   "Trial Moderator": ["🛡️", { CanDeletePosts: true, CanDeleteChats: true }, "#888888", "filter: contrast(0) brightness(1.5);"],
   "Developer": ["👨‍💻", {}, "#63A835"],
@@ -446,29 +446,10 @@ function setAccountSub(location) {
       }
       switch (data.type) {
         case "newpost":
-          if (data.post.UserID == userID) {
-            if (recentUserPostID != data.post._id) {
-              recentUserPostID = data.post._id;
-              fetchNewPosts(data.post);
-            }
-            return;
-          }
           if (account.BlockedUsers != null && account.BlockedUsers.includes(data.post.UserID) == true) {
             return;
           }
-          if (data.post.GroupID != null) {
-            let notifHolder = findI(data.post.GroupID + "notif");
-            if (notifHolder == null) {
-              let groupnotif = await getModule("groupnotif");
-              groupnotif({ ...groups[data.post.GroupID], _id: data.post.GroupID });
-            }
-            if (currentPage != "group" || getParam("group") != data.post.GroupID) {
-              return;
-            }
-          } else if (currentPage != "home") {
-            return;
-          }
-          let postHolder = findC("postHolder");
+					let postHolder = findC("postHolder");
           if (postHolder == null) {
             return;
           }
@@ -477,25 +458,48 @@ function setAccountSub(location) {
               return;
             }
           }
-          let refreshPosts = findI("refreshPosts");
-          if (refreshPosts == null) {
-            refreshPosts = createElement("stickyContainer", "div", postHolder);
-            refreshPosts.id = "refreshPosts";
-            newPostCount = 0;
+					if(getParam("group") == data.post.GroupID) {
+						newPostCount += 1;
+					}
+          if (data.post.GroupID != null) {
+            let notifHolder = findI(data.post.GroupID + "notif");
+						if (data.post.UserID == userID) {
+	            if (recentUserPostID != data.post._id) {
+	              recentUserPostID = data.post._id;
+	              fetchNewPosts(data.post);
+								newPostCount = 0;
+	            }
+	            return;
+	          }
+            if (notifHolder == null && (currentPage != "group" || getParam("group") != data.post.GroupID)) {
+              let groupnotif = await getModule("groupnotif");
+              groupnotif({ ...groups[data.post.GroupID], _id: data.post.GroupID });
+							return;
+            }
+						let refreshPosts = findI("refreshPosts");
+	          if (refreshPosts == null) {
+	            refreshPosts = createElement("stickyContainer", "div", postHolder);
+	            refreshPosts.id = "refreshPosts";
+	          }
+						refreshPosts.style.top = "62px";
+						let ending = "";
+	          if (newPostCount > 1) {
+	            ending = "s";
+	          }
+	          refreshPosts.innerHTML = "Show <b>" + newPostCount + "</b> Post" + ending;
+						if (postHolder.firstChild != null) {
+	            postHolder.insertBefore(refreshPosts, postHolder.firstChild);
+	          }
+	          tempListen(refreshPosts, "click", function() { newPostCount = 0; fetchNewPosts(); });
+          } else if (currentPage == "home") {
+            if(data.post.UserID == userID) {
+							let postHolder = findC("postHolder");
+							let renderPost = await getModule("post");
+							renderPost(postHolder, data.post, account, {loadToTop: true});
+							setPostUpdateSub();
+							setupPostChats();
+						}
           }
-          if (currentPage == "group") {
-            refreshPosts.style.top = "62px";
-          }
-          if (postHolder.firstChild != null) {
-            postHolder.insertBefore(refreshPosts, postHolder.firstChild);
-          }
-          newPostCount += 1;
-          let ending = "";
-          if (newPostCount > 1) {
-            ending = "s";
-          }
-          refreshPosts.innerHTML = "Show <b>" + newPostCount + "</b> Post" + ending;
-          tempListen(refreshPosts, "click", function() { fetchNewPosts(); });
           break;
         case "checked":
           let groupSeen = groups[data._id];
@@ -549,6 +553,7 @@ function setAccountSub(location) {
             setPage("groups");
           }
           setAccountSub();
+					break;
       }
     });
   }
@@ -559,14 +564,14 @@ function setPostUpdateSub() {
   let loadedPosts = [];
   let postElements = document.getElementsByClassName("post");
   for (let i = 0; i < postElements.length; i++) {
-    loadedPosts.push(postElements[i].id);
+    loadedPosts.push(postElements[i].getAttribute("postid"));
   }
   let query = { task: "post", _id: loadedPosts };
   if (postUpdate != null) {
     postUpdate.edit(query);
   } else {
     postUpdate = socket.subscribe(query, function(data) {
-      let post = findI(data._id);
+      let post = document.querySelector(`.post[postid="${data._id}"]`);
       if (post == null) {
         return;
       }
@@ -582,7 +587,7 @@ function setPostUpdateSub() {
           // data.userID - userID
           // data.change - Like Change (1, -1)
           let button = post.querySelector(".postButton[type='like']");
-          let likeAmount = findI("likes" + post.id);
+          let likeAmount = findI("likes" + post.getAttribute("postid"));
           if (data.userID == userID) {
             let icon = button.querySelector("svg").querySelector("path");
             if (data.change == 1) {
@@ -1402,7 +1407,7 @@ async function showPost(postID, noAnim) {
   if (postID == null) {
     showPopUp("Post Not Found", "That post wasn't found! It may have been removed or never sent at all.", [["Okay", "var(--grayColor)"]]);
   }
-  let post = findI(postID);
+  let post = document.querySelector(`.post[postid="${postID}"]`);
   if (post == null) {
     let data = postID;
     if (noAnim != null) {
@@ -1467,14 +1472,14 @@ async function showChat(postID, chatID) {
       showPopUp("Chat Not Found", "That chat wasn't found! It may have been removed or never sent at all.", [["Back", "var(--grayColor)"]]);
       return;
     }
-    let post = findI(postID);
+    let post = document.querySelector(`.post[postid="${postID}"]`);
     if (post == null) {
       postID = chat.PostID;
       await showPost(postID, true);
     } else {
       post.scrollIntoView();
     }
-    post = findI(postID);
+    post = document.querySelector(`.post[postid="${postID}"]`);
     if (post == null) {
       return;
     }
@@ -1577,7 +1582,7 @@ async function attachListeners(post) {
         if (groupID != null) {
           groupIDAddOn += "&groupid=" + groupID;
         }
-        let [code, response] = await sendRequest("GET", "chats?postid=" + post.id + "&before=" + chatHolder.firstChild.getAttribute("time") + groupIDAddOn);
+        let [code, response] = await sendRequest("GET", "chats?postid=" + post.getAttribute("postid") + "&before=" + chatHolder.firstChild.getAttribute("time") + groupIDAddOn);
         if (code == 200) {
           let data = JSON.parse(response);
           let chats = data.chats;
@@ -1604,7 +1609,7 @@ async function attachListeners(post) {
         if (groupID != null) {
           groupIDAddOn += "&groupid=" + groupID;
         }
-        let [code, response] = await sendRequest("GET", "chats?postid=" + post.id + "&after=" + chatHolder.lastChild.getAttribute("time") + groupIDAddOn);
+        let [code, response] = await sendRequest("GET", "chats?postid=" + post.getAttribute("postid") + "&after=" + chatHolder.lastChild.getAttribute("time") + groupIDAddOn);
         if (code == 200) {
           let data = JSON.parse(response);
           let chats = data.chats;
@@ -1626,12 +1631,12 @@ async function attachListeners(post) {
       }
     }
   }
-  activePostListeners[post.id] = handleChatScroll;
+  activePostListeners[post.getAttribute("postid")] = handleChatScroll;
   postChatHolder.addEventListener("scroll", handleChatScroll);
 }
 function detatchListeners(post) {
-  post.querySelector(".postChatHolder").removeEventListener("scroll", activePostListeners[post.id]);
-  delete activePostListeners[post.id];
+  post.querySelector(".postChatHolder").removeEventListener("scroll", activePostListeners[post.getAttribute("postid")]);
+  delete activePostListeners[post.getAttribute("postid")];
 }
 async function setupPostChats() {
   let renderChat = await getModule("chat");
@@ -1644,12 +1649,12 @@ async function setupPostChats() {
     let post = posts[i];
     let rect = post.getBoundingClientRect();
     if ((rect.y) + (post.offsetHeight) > 0 && rect.y < (window.innerHeight || document.documentElement.clientHeight)) {
-      connectPosts.push(post.id);
+      connectPosts.push(post.getAttribute("postid"));
       if (post.querySelector(".chatHolder") == null) {
         createElement("chatHolder", "div", post.querySelector(".postChatHolder"));
         post.setAttribute("loading", "");
         attachListeners(post);
-        getChatsPost.push(post.id);
+        getChatsPost.push(post.getAttribute("postid"));
         let replyAdd = post.querySelector(".postChatReply");
         if (replyAdd != null) {
           replyAdd.remove();
@@ -1677,7 +1682,7 @@ async function setupPostChats() {
       }
     }
     if (post.querySelector(".postChatChatting").textContent == "") {
-      getChatting.push(post.id);
+      getChatting.push(post.getAttribute("postid"));
     }
   }
   if (getChatsPost.length < 1) {
@@ -1696,7 +1701,7 @@ async function setupPostChats() {
     let users = getObject(data.users, "_id");
     for (let i = 0; i < chats.length; i++) {
       let chat = chats[i];
-      let parent = findI(chat.PostID);
+      let parent = document.querySelector(`.post[postid="${chat.PostID}"]`);
       if (parent != null) {
         let reply = replies[chat.ReplyID];
         if (reply != null) {
@@ -1706,7 +1711,7 @@ async function setupPostChats() {
       }
     }
     for (let i = 0; i < getChatsPost.length; i++) {
-      let post = findI(getChatsPost[i]);
+      let post = document.querySelector(`.post[postid="${getChatsPost[i]}"]`);
       if (post != null) {
         post.removeAttribute("loading");
         post.setAttribute("allDownChatsLoaded", "");
@@ -2018,7 +2023,6 @@ socket.remotes.account = async function(data) {
 	switch(data.type) {
 		case "message":
 			let message = data.message;
-			console.log(data)
 			if(convos[message.ConvID]) {
 				convos[message.ConvID].messages.splice(49, 1);
 				convos[message.ConvID].messages.push(message)
@@ -2033,11 +2037,8 @@ socket.remotes.account = async function(data) {
 			}
 			renderMessage(dms, message, users[message.UserID], data.reply);
 
-			if (dms.lastElementChild != null && (dms.scrollTop + dms.clientHeight + dms.lastElementChild.clientHeight + 50 > dms.scrollHeight)) {
-				let scrollToParams = { top: dms.scrollHeight };
-				if (viewingTab == true) {
-					scrollToParams.behavior = "smooth";
-				}
+			if(dms.lastElementChild != null && (dms.scrollTop + dms.clientHeight + dms.lastElementChild.clientHeight + 50 > dms.scrollHeight)) {
+				let scrollToParams = { top: dms.scrollHeight, behavior: "smooth" };
 				dms.scrollTo(scrollToParams);
 			}
 			break;
@@ -2052,7 +2053,7 @@ socket.remotes.stream = async function(data) {
       if (account.BlockedUsers != null && account.BlockedUsers.includes(chat.UserID) == true) {
         return;
       }
-      let parent = findI(chat.PostID);
+      let parent = document.querySelector(`.post[postid="${chat.PostID}"]`);
       if (parent != null) {
         if (parent.hasAttribute("allDownChatsLoaded") == false) {
           return;

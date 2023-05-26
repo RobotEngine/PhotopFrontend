@@ -2224,30 +2224,30 @@ function SetupPostChats(CheckAlreadyLoad, ForceAddScrollListener) {
   for (var i = 0; i < LoadedPosts.length; i++) {
     var CheckPost = LoadedPosts[i];
     var ObjectRect = CheckPost.getBoundingClientRect();
-    var LiveChatFrame = find(CheckPost.id + "LiveChat");
+    var LiveChatFrame = find(CheckPost.getAttribute("postid") + "LiveChat");
     if (LiveChatFrame != null) {
       var ScrollFrame = LiveChatFrame.querySelector("#Chat");
       if (ScrollFrame != null) {
         var Holder = ScrollFrame.querySelector("#Holder");
         if ((ObjectRect.y) + (CheckPost.offsetHeight) > 0 && ObjectRect.y < (window.innerHeight || document.documentElement.clientHeight)) {
-          RequestChatPosts.push(CheckPost.id);
+          RequestChatPosts.push(CheckPost.getAttribute("postid"));
           if (Holder == null || Holder.childNodes.length < 1) {
-            RequestPostsForChats.push(CheckPost.id);
+            RequestPostsForChats.push(CheckPost.getAttribute("postid"));
           }
           var LastLoad = CheckPost.getAttribute("LastChatLoad");
           if (LastLoad == null || LastLoad + 120 < Math.round(Date.now() / 1000)) {
-            RequestLiveUserCount.push(CheckPost.id);
+            RequestLiveUserCount.push(CheckPost.getAttribute("postid"));
           }
           CheckPost.setAttribute("LastChatLoad", Math.round(Date.now() / 1000));
 
-          var VideoFrame = find(CheckPost.id + "SiteEmbed");
+          var VideoFrame = find(CheckPost.getAttribute("postid") + "SiteEmbed");
           if (VideoFrame != null && VideoFrame.src == "about:blank") {
             if (UserDisplaySettings["Embed Twitch Live Chat"] == true) {
               if (VideoFrame.getAttribute("TwitchChannel") != null) {
                 if (typeof LoadedTwitchLiveScript !== 'undefined') {
-                  AddTwitchLiveChat(CheckPost.id, VideoFrame.getAttribute("TwitchChannel"));
+                  AddTwitchLiveChat(CheckPost.getAttribute("postid"), VideoFrame.getAttribute("TwitchChannel"));
                 } else {
-                  WaitingForTwitchLiveChatModule[CheckPost.id] = VideoFrame.getAttribute("TwitchChannel");
+                  WaitingForTwitchLiveChatModule[CheckPost.getAttribute("postid")] = VideoFrame.getAttribute("TwitchChannel");
                   if (IsLoadingTwitchLiveChatModule == false) {
                     function LoadTwitchLiveChatModule() {
                       IsLoadingTwitchLiveChatModule = true;
@@ -2277,9 +2277,9 @@ function SetupPostChats(CheckAlreadyLoad, ForceAddScrollListener) {
               setCSS(LiveChatFrame.querySelector("#ChatType").querySelector("#SendChatButton"), "margin-top", "0px");
             }
           }
-          var TopMessage = find(CheckPost.id + "ChatTopMessage");
+          var TopMessage = find(CheckPost.getAttribute("postid") + "ChatTopMessage");
           if (TopMessage == null) {
-            createElement(CheckPost.id + "ChatTopMessage", "div", ScrollFrame, [
+            createElement(CheckPost.getAttribute("postid") + "ChatTopMessage", "div", ScrollFrame, [
               ["position", "relative"],
               ["width", "80%"],
               ["left", "10%"],
@@ -2299,10 +2299,10 @@ function SetupPostChats(CheckAlreadyLoad, ForceAddScrollListener) {
             TopMessage.textContent = "Loading Chat Messages...";
           }
 
-          var VideoFrame = find(CheckPost.id + "SiteEmbed");
+          var VideoFrame = find(CheckPost.getAttribute("postid") + "SiteEmbed");
           if (VideoFrame != null && VideoFrame.src != "about:blank") {
             if (VideoFrame.getAttribute("TwitchChannel") != null) {
-              RemoveTwitchLiveChat(CheckPost.id);
+              RemoveTwitchLiveChat(CheckPost.getAttribute("postid"));
             }
             VideoFrame.src = "about:blank";
           }

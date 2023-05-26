@@ -413,6 +413,7 @@ button:active {
   background: var(--contentColor);
   border-radius: 12px;
   overflow: hidden;
+	transition:opacity 0.2s;
 }
 
 .postPost {
@@ -3155,8 +3156,13 @@ td {
 	font-weight:700;
 }
 #activeMessages {
-	width:196px;
-  transition: 0.2s;
+	width: 188px;
+	padding: 4px;
+	padding-top: 1px;
+	background: var(--contentColor);
+	border-radius: 10px;
+	margin-top: 3px;
+	transition: 0.2s;
 }
 #requestMessages {
   max-height: 0;
@@ -3169,19 +3175,19 @@ td {
   width: 196px;
 }
 .message {
-	display:flex;
-	position:relative;
-	padding:4px;
-	margin-top:3px;
-	border-radius:10px;
-	cursor:pointer;
-	transition:transform .1s, background .4s;
+	display: flex;
+	position: relative;
+	padding: 4px;
+	margin-top: 3px;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: transform .1s, background .4s;
 }
 .message[active] {
-	background: var(--contentColor);
+	background: var(--contentColor2);
 }
 .message:hover {
-	background: var(--contentColor);
+	background: var(--contentColor2);
 }
 .message:active {
 	transform: scale(0.95);
@@ -3189,7 +3195,7 @@ td {
 .messageImage {
 	width:38px;
 	height:38px;
-	border-radius:7px;
+	border-radius:4px;
 	object-fit:cover;
 }
 .messageStatus {
@@ -3198,13 +3204,14 @@ td {
 	height:10px;
 	top:29px;
 	left:29px;
-	border: 3px solid var(--pageColor2);
+	border: solid;
+	border-color: var(--contentColor);
 	border-radius: 100px;
   transition: 0.4s;
 }
-.message:hover .messageStatus, .message[active] .messageStatus {
+/*.message:hover .messageStatus, .message[active] .messageStatus {
   border-color: var(--contentColor);
-}
+}*/
 .messageName {
 	margin:auto 0 auto 6px;
 	font-weight:bold;
@@ -3250,7 +3257,8 @@ td {
 	height:10px;
 	top:31px;
 	left:31px;
-	border: 3px solid var(--pageColor2);
+	border: solid;
+	border-color:var(--contentColor);
 	border-radius: 100px;
 }
 .topbarName {
@@ -3321,8 +3329,8 @@ td {
 	display:flex;
 }
 .dmImage {
-	width:45px;
-	height:45px;
+	width:35px;
+	height:35px;
 	margin-right:6px;
 	border-radius:12px;
 	object-fit:cover;
@@ -3334,14 +3342,14 @@ td {
 }
 .dmUsername {
 	font-weight:bold;
-	font-size:16px;
+	font-size:14px;
 	cursor:pointer;
 }
 .dmTimestamp {
 	display:flex;
 	align-items:center;
 	margin-left:6px;
-	font-size:13px;
+	font-size:12px;
 	color:#999;
 }
 .dmTimestamp[self] {
@@ -3349,17 +3357,17 @@ td {
 	margin-right:6px;
 }
 .dmTimestamp[minified] {
-	width:43px;
+	width:33px;
 	margin: auto 6px auto 0;
 	justify-content: right;
 }
 .dmTimestampMinified[minifiedself] {
-	width:43px;
+	width:33px;
 	margin: auto 0 auto 6px;
 }
 .dmText {
 	margin-top:3px;
-	font-size:14px;
+	font-size:13px;
 }
 .dmText[self] {
 	text-align:right;
@@ -3648,4 +3656,31 @@ td {
   background: var(--premiumColor);
   color: white;
   margin-top: 4px;
+}
+
+.newMessageImage {
+	border-radius:16px;
+	height:100px;
+	margin-left:3px;
+}
+.newMessageImageContainer {
+	position:relative;
+	width:fit-content;
+}
+#newMessageImages {
+	display: flex;
+	width: calc(100% - 42px);
+	overflow-x: auto;
+}
+.dmContentImages {
+	display: flex;
+	margin-top: 6px;
+	overflow-x: auto;
+	border-radius: 8px;
+}
+.dmContentImage {
+	height:100px;
+	object-fit: cover;
+	border-radius: 8px;
+	margin-right: 6px;
 }

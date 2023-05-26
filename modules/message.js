@@ -12,13 +12,13 @@ modules.message = function(parent, message, user, reply, isSending, extra) {
 		self = true;
 	}
   if (extra.addTop != true) {
-    if (parent.lastElementChild != null && message.ReplyID == null && parent.lastElementChild.getAttribute("userid") == message.UserID && parent.lastElementChild.querySelector(".messageReplyHolder") == null && parent.lastElementChild.hasAttribute("sending") == false) {
+    if (parent.lastElementChild != null && message.ReplyID == null && parent.lastElementChild.getAttribute("userid") == message.UserID && parent.lastElementChild.querySelector(".messageReplyHolder") == null && parent.lastElementChild.hasAttribute("sending") == false && !message.Media) {
       className = "dmMinified";
       messageHTML = `${self?`<span class="dmText" minified self></span>`:""}<span class="dmTimestamp dmTimestampMinified" title="` + formatFullDate(message.Timestamp) + `" ${self?"minifiedself self":"minified"}>${timeSince(message.Timestamp, false)}</span>${!self?`<span class="dmText" minified></span>`:""}`;
     }
   } else {
 		//move to message variable
-    if (parent.firstElementChild != null && message.ReplyID == null && parent.firstElementChild.querySelector(".messageReplyHolder") == null && parent.firstElementChild.getAttribute("userid") == chat.UserID) {
+    if (parent.firstElementChild != null && message.ReplyID == null && parent.firstElementChild.querySelector(".messageReplyHolder") == null && parent.firstElementChild.getAttribute("userid") == chat.UserID && !message.Media) {
       let oldMessage = parent.firstElementChild;
       let convertMessage = createElement("dmMinified", "div", parent);
       parent.insertBefore(convertMessage, parent.firstChild);
@@ -117,6 +117,18 @@ modules.message = function(parent, message, user, reply, isSending, extra) {
     newMessage.querySelector(".chatReplyText").innerHTML = reply.Text;
   }
 
+	if (message.Media != null && message.Media.Images > 0) {
+    let messageImages = document.createElement("div");
+		messageImages.className = "dmContentImages";
+		newMessage.querySelector(".dmContent").appendChild(messageImages)
+    for (let i = 0; i < message.Media.Images; i++) {
+      let image = createElement("dmContentImage", "img", messageImages);
+      image.src = assetURL + "ConversationImages/" + message._id + i;
+      image.setAttribute("type", "imageenlarge");
+      image.setAttribute("tabindex", 0);
+    }
+  }
+
 	const editedHTML = message.Edited ? `<span class="chatEditedTitle" title="${formatFullDate(message.Edited)}">(edited)</span>` : "";
 	let messageText = newMessage.querySelector(".dmText");
   messageText.innerHTML = `${formatText(message.Text)} ${editedHTML}`;
@@ -125,4 +137,8 @@ modules.message = function(parent, message, user, reply, isSending, extra) {
     newMessage.style.color = "#bbb";
     newMessage.setAttribute("sending", "");
   }
+
+	const dms = findI("dms");
+	let scrollToParams = { top: dms.scrollHeight, behavior: "smooth" };
+	dms.scrollTo(scrollToParams);
 }

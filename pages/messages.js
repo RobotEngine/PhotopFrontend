@@ -1,4 +1,5 @@
 wireframes.messages = `
+	<input id="imageInput" type="file" accept="image/*" multiple="true" hidden="true">
   <div style="display:flex;height:100%;">
 		<div id="messageHolder">
 	 		<button id="startAMessageButton">Start a Message</button>
@@ -14,9 +15,9 @@ wireframes.messages = `
 	 	</div>
 		<div id="mainHolder">
 	 		<div class="stickyContainer" id="dmTopBar">
-		 		<img class="topbarImage" src="https://photop-content.s3.amazonaws.com/ProfileImages/6066b99198895e660082965bcb91d776">
-				<div style="background: rgb(0, 252, 101);" class="topbarStatus"></div>
-				<span class="topbarName">Robot_Engine</span>
+		 		<img class="topbarImage" src="https://photop-content.s3.amazonaws.com/ProfileImages/DefaultProfilePic">
+				<div style="display:none;" class="topbarStatus"></div>
+				<span class="topbarName"></span>
 				<button class="topbarOptions groupToolbarButton" id="messageTopBarButton">
 		      <svg viewBox="0 0 41.915 41.915"><g fill="var(--themeColor)"><path style="" id="Svg" d="M11.214,20.956c0,3.091-2.509,5.589-5.607,5.589C2.51,26.544,0,24.046,0,20.956c0-3.082,2.511-5.585,5.607-5.585 C8.705,15.371,11.214,17.874,11.214,20.956z"></path><path d="M26.564,20.956c0,3.091-2.509,5.589-5.606,5.589c-3.097,0-5.607-2.498-5.607-5.589c0-3.082,2.511-5.585,5.607-5.585 C24.056,15.371,26.564,17.874,26.564,20.956z"></path><path d="M41.915,20.956c0,3.091-2.509,5.589-5.607,5.589c-3.097,0-5.606-2.498-5.606-5.589c0-3.082,2.511-5.585,5.606-5.585 C39.406,15.371,41.915,17.874,41.915,20.956z"></path></g></svg>
 		    </button>
@@ -25,12 +26,13 @@ wireframes.messages = `
 			<div id="dmHolder">
 	 			<div id="dms">
 		 			<div id="newConvoMessage">
-						<img class="newConvoImage" src="https://photop-content.s3.amazonaws.com/ProfileImages/6154f0d0a8d6d106c5b869b6797b8088">
-						<div class="newConvoName">Robot_Engine</div>
-						<div class="newConvoText">Embark on an amazing conversation with <b>Robot_Engine</b>!</div>
+						<img class="newConvoImage" src="https://photop-content.s3.amazonaws.com/ProfileImages/DefaultProfilePic">
+						<div class="newConvoName"></div>
+						<div class="newConvoText"></div>
 	 				</div>
 	 			</div>
 		 		<div id="dmContent">
+		 			<div id="newMessageImages"></div>
 		 			<div class="sendDMInput" placeholder="Time to Chat" contenteditable></div>
 					<button class="addDMImage">
 				  	<svg style="position: relative; height: 100%; width: 100%; cursor: pointer; " id="CreateImageButtonSvg" viewBox="0 0 550.801 550.801"><g style="" id="CreateImageButtonG" fill="var(--themeColor)" stroke="#ffffff" stroke-width="0"><path style="" id="Svg" d="M515.828,61.201H34.972C15.659,61.201,0,76.859,0,96.172v358.458C0,473.942,15.659,489.6,34.972,489.6h480.856 c19.314,0,34.973-15.658,34.973-34.971V96.172C550.801,76.859,535.143,61.201,515.828,61.201z M515.828,96.172V350.51l-68.92-62.66 c-10.359-9.416-26.289-9.04-36.186,0.866l-69.752,69.741L203.438,194.179c-10.396-12.415-29.438-12.537-39.99-0.271L34.972,343.219 V96.172H515.828z M367.201,187.972c0-26.561,21.523-48.086,48.084-48.086c26.562,0,48.086,21.525,48.086,48.086 c0,26.561-21.523,48.085-48.086,48.085C388.725,236.058,367.201,214.533,367.201,187.972z"></path></g></svg>
@@ -93,10 +95,12 @@ pages.messages = async function() {
 				document.querySelector("#dmTopBar .topbarStatus").style.background = statuses[user.Status][1];
 				document.querySelector("#dmTopBar .topbarStatus").title = statuses[user.Status][0];
 				if(convo.Users.length == 1) {
+					document.querySelector("#dmTopBar .topbarStatus").style.display = "initial";
 					document.querySelector(".topbarName").innerText = user.User;
 					document.querySelector(".newConvoName").innerText = user.User;
 					document.querySelector(".newConvoText").innerHTML = `Embark on an amazing conversation with <b>${user.User}</b>!`;
 				} else {
+					document.querySelector("#dmTopBar .topbarStatus").style.display = "none";
 					document.querySelector(".topbarName").innerText = usernames.join(", ");
 					document.querySelector(".newConvoName").innerText = usernames.join(", ");
 					document.querySelector(".newConvoText").innerHTML = `Embark on an amazing conversation with ${usernames.map(a=>{if(usernames.indexOf(a)==usernames.length-1){return `and <b>${a}</b>`}else{return `<b>${a}</b>`}}).join(", ")}!`;
@@ -135,10 +139,12 @@ pages.messages = async function() {
 				document.querySelector("#dmTopBar .topbarStatus").style.background = statuses[user.Status][1];
 				document.querySelector("#dmTopBar .topbarStatus").title = statuses[user.Status][0];
 				if(convo.Users.length == 1) {
+					document.querySelector("#dmTopBar .topbarStatus").style.display = "initial";
 					document.querySelector(".topbarName").innerText = user.User;
 					document.querySelector(".newConvoName").innerText = user.User;
 					document.querySelector(".newConvoText").innerHTML = `Embark on an amazing conversation with <b>${user.User}</b>!`;
 				} else {
+					document.querySelector("#dmTopBar .topbarStatus").style.display = "none";
 					document.querySelector(".topbarName").innerText = usernames.join(", ");
 					document.querySelector(".newConvoName").innerText = usernames.join(", ");
 					document.querySelector(".newConvoText").innerHTML = `Embark on an amazing conversation with ${usernames.map(a=>{if(usernames.indexOf(a)==usernames.length-1){return `and <b>${a}</b>`}else{return `<b>${a}</b>`}}).join(", ")}!`;
@@ -399,12 +405,19 @@ pages.messages = async function() {
 			name: selectedUsers[Object.keys(selectedUsers)[0]].User,
 			invite: Object.keys(selectedUsers)
 		}:null;
-		console.log(newConvo)
 
+		let images = document.getElementsByClassName("newMessageImage");
 		formData.append("data", JSON.stringify({ text, new: newConvo }));
+		for (let i = 0; i < images.length; i++) {
+      await fetch(images[i].src).then(async function(file) {
+        formData.append("image" + i, await file.blob());
+        URL.revokeObjectURL(images[i].src);
+      });
+    }
 		const [code, response] = await sendRequest("POST", "conversations/messages/new" + (convid?`?convid=${convid}`:""), formData, true);
 		if(code == 200) {
 			document.querySelector(".sendDMInput").innerText = "";
+			findI('newMessageImages').innerHTML = "";
 			if(convid == null) {
 				requestsOpen = false;
 				startMessageBtn.innerText = "Start a Message";
@@ -477,6 +490,9 @@ pages.messages = async function() {
 		function closeDM() {
 			//
 		}
+		function editDM() {
+			//
+		}
 		function viewMembers() {
 			//
 		}
@@ -485,4 +501,164 @@ pages.messages = async function() {
 			//
 		}
 	});
+
+	const imageInput = findI("imageInput");
+	const newMessageImages = findI("newMessageImages");
+	tempListen(document.querySelector(".addDMImage"), "click", function() {
+    imageInput.click();
+  });
+	function processUpload(files) {
+    if (files == null) {
+      return;
+    }
+    if (newMessageImages.childNodes.length < 3) {
+      for (let i = 0; i < files.length; i++) {
+        let file = files[i];
+        if (file.kind == "file") {
+          file = file.getAsFile();
+        }
+        if (file.kind != "string") {
+          if (file.type.substring(0, 6) == "image/") {
+            if (supportedImageTypes.includes(file.type.replace(/image\//g, "")) == true) {
+              if (file.size < 5242881 || (file.size < 5242881 * 2 && hasPremium())) { // 5 MB
+                let blob = URL.createObjectURL(file);
+                let image = createElement("newMessageImageContainer", "div", newMessageImages);
+                createElement("newMessageImage", "img", image).src = blob;
+                let deleteButton = createElement("deleteImage", "div", image);
+								deleteButton.style = "height:20px;width:20px;font-size:15px;";
+                deleteButton.innerHTML = "&times;";
+                deleteButton.addEventListener("click", function(e) {
+                  URL.revokeObjectURL(e.target.parentElement.querySelector(".newMessageImage").src);
+                  e.target.parentElement.remove();
+                });
+              } else {
+                if (file.size > 5242881 && !hasPremium()) {
+                  showPopUp("Too Big!", `Your image must be under 5MB.${premiumPerk("Upload limits are doubled! Upload images up to 10MB for your messages.")}`, [["Okay", "var(--grayColor)"]]);
+                } else {
+                  if (file.size > 5242881 * 2 && hasPremium()) {
+                    showPopUp("Too Big!", "Your image must be under 10MB!", [["Okay", "var(--grayColor)"]]);
+                  }
+                }
+              }
+            } else {
+              showPopUp("Invalid Image Type", `Photop only accepts images of the following types: <i style='color: #bbb'>${(supportedImageTypes.join(", "))}</i>${file.type.replace(/image\//g, "") == "gif" ? premiumPerk("Upload GIFs to use in messages!") : ""}`, [["Okay", "var(--grayColor)"]]);
+            }
+          } else {
+            showPopUp("Must be an Image", "Only image files can be uploaded to Photop.", [["Okay", "var(--grayColor)"]]);
+          }
+        }
+      }
+    }
+  }
+  imageInput.addEventListener("change", function(e) {
+    processUpload(e.target.files);
+  });
+
+	let messageText = document.querySelector(".sendDMInput");
+	let lastLength = 0;
+	async function updateMessageFormat() {
+    await sleep(1);
+    let caretWas = getCurrentCursorPosition(messageText);
+    let nodes = messageText.childNodes;
+    for (let i = 0; i < nodes.length; i++) {
+      if (nodes[i].nodeName == "DIV" || nodes[i].nodeName == "SPAN") {
+        nodes[i].innerHTML = preFormat(nodes[i].innerText);
+      } else if (nodes[i].nodeValue != null) {
+        let newSpan = createElement("", "span", messageText);
+        newSpan.innerHTML = preFormat(nodes[i].nodeValue);
+        nodes[i].replaceWith(newSpan);
+      } else {
+        messageText.innerHTML = preFormat(nodes[i].innerHTML);
+      }
+    }
+    if (messageText.innerHTML == "<br>") {
+      messageText.innerHTML = "";
+    }
+    if (caretWas > -1) {
+      setCurrentCursorPosition(messageText, caretWas);
+    }
+    messageText.focus();
+  }
+	async function checkForMentions() {
+    await sleep(1);
+    let mentionsDropdown = findI("mentionsDropdown");
+    let node = document.getSelection().anchorNode;
+    if (node != null && node.parentElement.closest(".newPost") != null && node.parentElement.className == "mention") {
+      let lookupTx = node.textContent.substring(1);
+      if (lookupTx == "") {
+        return;
+      }
+      let rect = node.parentElement.getBoundingClientRect();
+      if (mentionsDropdown == null) {
+        mentionsDropdown = createElement("dropdown", "div", "pageHolder");
+        mentionsDropdown.id = "mentionsDropdown";
+        mentionsDropdown.style.display = "none";
+      }
+      if (mentionsDropdown.getAttribute("lastText") == lookupTx) {
+        return;
+      }
+      mentionsDropdown.setAttribute("lastText", lookupTx);
+      mentionsDropdown.style.left = rect.left + "px";
+      mentionsDropdown.style.top = rect.top + 24 + "px";
+      let sentTime = Date.now();
+      lastRequest = sentTime;
+      let [code, response] = await sendRequest("GET", "user/search?term=" + lookupTx + "&amount=10");
+      if (lastRequest != sentTime) {
+        return;
+      }
+      if (code == 200) {
+        response = JSON.parse(response);
+        if (response.length == 0) {
+          mentionsDropdown.style.opacity = 0;
+          mentionsDropdown.style.display = "none";
+          mentionsDropdown.style.height = "0px";
+          return;
+        }
+        mentionsDropdown.innerHTML = "";
+        for (let i = 0; i < response.length; i++) {
+          let user = response[i];
+          let userHtml = `<img class="mentionUserPfp" src="${decideProfilePic(user)}"> ${getRoleHTML(user)}<span style="margin-left: 4px">${user.User}</span>`
+          let userContainer = createElement("mentionUser", "div", mentionsDropdown);
+          userContainer.setAttribute("user", user.User);
+          userContainer.innerHTML = userHtml;
+          userContainer.addEventListener("mouseup", async function() {
+            node.textContent = "@" + user.User + "&nbsp;";
+            mentionsDropdown.remove();
+            mentionsDropdown = null;
+            setCurrentCursorPosition(node, node.textContent.length - 1);
+          });
+        }
+        mentionsDropdown.style.opacity = 1;
+        mentionsDropdown.style.display = "unset";
+        mentionsDropdown.style.height = response.length * 43 + 4 + "px";
+      }
+    } else {
+      let mentionsDropdown = findI("mentionsDropdown");
+      if (mentionsDropdown != null) {
+        mentionsDropdown.remove();
+        mentionsDropdown = null;
+      }
+    }
+  }
+	messageText.addEventListener("keydown", async function(e) {
+    await sleep(1);
+    if (messageText.textContent.length != lastLength) {
+      updateMessageFormat();
+      lastLength = messageText.textContent.length;
+    }
+    if (e.code == "Tab") {
+      e.preventDefault();
+      let mentionsDropdown = findI("mentionsDropdown");
+      if (mentionsDropdown != null && mentionsDropdown.firstChild != null) {
+        let node = document.getSelection().anchorNode;
+        if (node != null && node.parentElement.className == "mention") {
+          node.textContent = "@" + mentionsDropdown.firstChild.getAttribute("user") + "&nbsp;";
+          mentionsDropdown.remove();
+          setCurrentCursorPosition(node, node.textContent.length - 1);
+        }
+      }
+    } else {
+      checkForMentions();
+    }
+  }, "selection");
 }

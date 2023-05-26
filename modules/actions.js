@@ -1,3 +1,5 @@
+//check the bottom of the file for more post stuff
+
 let openMobilePost;
 let mobilePostIsOpen = false;
 let openMobilePostRect;
@@ -108,7 +110,7 @@ modules.actions = function() {
           return;
         }
         function updateLike(type) {
-          let likeAmount = findI("likes" + post.id);
+          let likeAmount = findI("likes" + post.getAttribute("postid"));
           let icon = button.querySelector("svg").querySelector("path");
           let svg = button.querySelector("svg");
           if (type == "like") {
@@ -131,13 +133,13 @@ modules.actions = function() {
         }
         if (button.hasAttribute("isLiked") == false) {
           updateLike("like");
-          let [code] = await sendRequest("PUT", "posts/like?postid=" + post.id);
+          let [code] = await sendRequest("PUT", "posts/like?postid=" + post.getAttribute("postid"));
           if (code != 200) {
             updateLike("unlike");
           }
         } else {
           updateLike("unlike");
-          let [code] = await sendRequest("DELETE", "posts/unlike?postid=" + post.id);
+          let [code] = await sendRequest("DELETE", "posts/unlike?postid=" + post.getAttribute("postid"));
           if (code != 200) {
             updateLike("like");
           }
@@ -153,7 +155,7 @@ modules.actions = function() {
           await setPage("home");
         }
         postTextArea = findI("newPostArea");
-        postTextArea.innerHTML += "/Post_" + post.id + "&nbsp;";
+        postTextArea.innerHTML += "/Post_" + post.getAttribute("postid") + "&nbsp;";
         setCurrentCursorPosition(postTextArea, postTextArea.textContent.length);
       },
       actionchat: async function(button, post) {
@@ -173,12 +175,12 @@ modules.actions = function() {
             copyClipboardText(post.getAttribute("text"));
           }],
           ["Copy ID", "var(--themeColor)", function() {
-            copyClipboardText("/Post_" + post.id);
+            copyClipboardText("/Post_" + post.getAttribute("postid"));
           }]
         ];
         if (button.hasAttribute("jump")) {
           dropdownButtons.unshift(["Jump to Post", "var(--themeColor)", function() {
-            modifyParams("post", post.id);
+            modifyParams("post", post.getAttribute("postid"));
             setPage("viewpost");
           }]);
         }
@@ -189,7 +191,7 @@ modules.actions = function() {
             post.style.opacity = "0.5";
             let sendFormData = new FormData();
 	          sendFormData.append("data", JSON.stringify({ text: findI("editPost").innerText.replace(/@([\w-]+)/g, "@$1 ") }));
-            let [code, response] = await sendRequest("POST", `posts/edit?postid=${post.id} `, sendFormData, true);
+            let [code, response] = await sendRequest("POST", `posts/edit?postid=${post.getAttribute("postid")} `, sendFormData, true);
            
             if (code != 200) {
               showPopUp("An Error Occured", response, [["OK", "var(--grayColor)"]]);
@@ -206,7 +208,7 @@ modules.actions = function() {
         function deletePost() {
           showPopUp("Delete Post?", "Are you sure you want to <b>permanently</b> delete this post?", [["Delete", "#FF5C5C", async function() {
             post.style.opacity = "0.5";
-            let [code, response] = await sendRequest("DELETE", "posts/delete?postid=" + post.id);
+            let [code, response] = await sendRequest("DELETE", "posts/delete?postid=" + post.getAttribute("postid"));
             if (code != 200) {
               post.style.opacity = "1";
               showPopUp("Error Deleting", response, [["Okay", "var(--grayColor)"]]);
@@ -218,7 +220,7 @@ modules.actions = function() {
         //if (postedGroup != null && postedGroup.Owner == userID) {
         if (post.getAttribute("userid") == userID) {
           if (viewGroupID == null) {
-            if (account.ProfileData != null && account.ProfileData.PinnedPost == post.id) {
+            if (account.ProfileData != null && account.ProfileData.PinnedPost == post.getAttribute("postid")) {
               dropdownButtons.unshift(["Unpin Post", "#C95EFF", function() {
                 showPopUp("Unpin this Post?", "Unpinning this post will remove it from the top of your profile. It won't delete the post.", [["Unpin", "#C95EFF", function() {
                   sendRequest("DELETE", "posts/unpin");
@@ -230,9 +232,9 @@ modules.actions = function() {
             } else {
               dropdownButtons.unshift(["Pin Post", "#C95EFF", function() {
                 showPopUp("Pin this Post?", "Pinning this post will keep it at the top of your profile. If another post is already pinned, it will be replaced by this post.", [["Pin", "#C95EFF", function() {
-                  sendRequest("PUT", "posts/pin?postid=" + post.id);
+                  sendRequest("PUT", "posts/pin?postid=" + post.getAttribute("postid"));
                   account.ProfileData = account.ProfileData || {};
-                  account.ProfileData.PinnedPost = post.id;
+                  account.ProfileData.PinnedPost = post.getAttribute("postid");
                   refreshPage();
                 }], ["Wait, no", "var(--grayColor)"]]);
               }]);
@@ -248,7 +250,7 @@ modules.actions = function() {
               blockUser(post.getAttribute("userid"), post.getAttribute("name"));
             }]);
             dropdownButtons.unshift(["Report", "#FFCB70", function() {
-              reportContent(post.getAttribute("id"), post.getAttribute("name"), post.getAttribute("userid"), "post");
+              reportContent(post.getAttribute("postid"), post.getAttribute("name"), post.getAttribute("userid"), "post");
             }]);
             if (checkPermision(account.Role, "CanBanUsers")) {
               dropdownButtons.unshift(["Ban User", "#FF5C5C", async function() {
@@ -292,7 +294,7 @@ modules.actions = function() {
         }
         let sendData = { text: text };
         let replyAdd = post.querySelector(".postChatReply");
-        let previewData = { UserID: userID, PostID: post.id, Text: text, Timestamp: Date.now() };
+        let previewData = { UserID: userID, PostID: post.getAttribute("postid"), Text: text, Timestamp: Date.now() };
         let replyData = null;
         if (replyAdd != null) {
           sendData.replyID = replyAdd.getAttribute("chatid");
@@ -312,7 +314,7 @@ modules.actions = function() {
           top: post.querySelector(".postChatHolder").scrollHeight,
           behavior: "smooth"
         });
-        let [code, response] = await sendRequest("POST", "chats/new?postid=" + post.id, sendData);
+        let [code, response] = await sendRequest("POST", "chats/new?postid=" + post.getAttribute("postid"), sendData);
         if (code != 200) {
           let sendingChats = post.querySelectorAll("[sending='']");
           for (let i = 0; i < sendingChats.length; i++) {
@@ -476,7 +478,7 @@ modules.actions = function() {
         showDropdown(button, "left", dropdownButtons);
       },
       reply: async function(reply, post) {
-        showChat(post.id, reply.getAttribute("replyid"));
+        showChat(post.getAttribute("postid"), reply.getAttribute("replyid"));
       },
       chatlink: async function(elem) {
         showChat(null, elem.getAttribute("chatid"));
@@ -551,9 +553,71 @@ modules.actions = function() {
           }]
         ];
 
-				function editMessage() {
-					//
-				}
+				let mainElement;
+        function editMessage() {
+					//FIX editing minified buttons broken
+          let currentEditing = document.querySelector(".dmText[contenteditable='true']");
+          if (currentEditing) {
+            currentEditing.setAttribute("contenteditable", "false");
+            currentEditing.innerHTML = formatText(currentEditing.getAttribute('originalText'));
+            if(currentEditing.getAttribute('minified') = null){
+              currentEditing.parentElement.parentElement.setAttribute('editing', "false");
+            }else{
+              currentEditing.parentElement.setAttribute('editing', "false");
+            }
+            
+            currentEditing.parentElement.querySelector('.editChatButtons').remove();
+          }
+          message.setAttribute('editing', "true");
+          mainElement = message.querySelector(".dmText");
+          mainElement.setAttribute("contenteditable", "true");
+					mainElement.setAttribute("onpaste", "clipBoardRead(event)")
+          mainElement.focus();
+          const oldText = message.getAttribute('text');
+					const oldHTML = mainElement.innerHTML;
+					mainElement.innerHTML = message.getAttribute('text').replace(/@([^"]+)"([^"]+)"/g, "@$2");
+          mainElement.setAttribute('originalText', oldText);
+
+          const editButtonsContainer = createElement("editChatButtons", 'div', mainElement.parentElement);
+					//${chat.className == "minifyChat"? "minified=\"defined\"":""}
+          editButtonsContainer.innerHTML = `<button class="editChatButton saveEditButton">Save</button><button class="editChatButton cancelEditButton">Cancel</button>`;
+          const editButtons = editButtonsContainer.querySelectorAll('.editChatButton');
+          tempListen(editButtons[0], 'click', saveMessage);
+          tempListen(editButtons[1], 'click', () => {
+            editButtonsContainer.remove();
+            mainElement.setAttribute("contenteditable", "false");
+            message.setAttribute('editing', "false");
+            message.removeAttribute('originalText');
+            mainElement.innerHTML = oldHTML;
+          });
+
+          tempListen(mainElement, 'keypress', enterChat);
+
+          function enterChat(event){
+            if (event.key == "Enter") {
+              event.preventDefault();
+              saveMessage();
+            }
+          }
+    
+          async function saveMessage(){
+              mainElement.removeEventListener('keypress', enterChat);
+              mainElement.style = 'color: #bbb';
+              mainElement.setAttribute("contenteditable", "false");
+              editButtonsContainer.remove();
+              message.setAttribute("type", "message");
+              message.setAttribute("editing", "false");
+              let [code, response] = await sendRequest("POST", `conversations/messages/edit?messid=${message.id}&convid=${message.getAttribute('convid')}`, { text: mainElement.textContent });
+              if (code != 200) {
+                showPopUp("Error Editing Message", response, [["Okay", "var(--themeColor)"]]);
+                mainElement.textContent = oldText;
+                editMessage(message);
+              }
+              mainElement.style = 'color: inherit;';
+              message.removeAttribute('originalText');
+          }
+        }
+				
 				function deleteMessage() {
 					showPopUp("Delete Message?", "Are you sure you want to <b>permanently</b> delete this message?", [["Delete", "#FF5C5C", async function() {
             message.style.opacity = "0.5";
@@ -601,7 +665,7 @@ modules.actions = function() {
           }
           message.style.backgroundColor = "#2AF5B5";
           let replyHolder = createElement("messageReplyHolder", "div", newMessageHolder);
-          newMessageHolder.insertBefore(replyHolder, newMessageHolder.firstChild);
+          newMessageHolder.insertBefore(replyHolder, document.querySelector(".sendDMInput"));
           replyHolder.setAttribute("replyid", message.id);
 					replyHolder.style = 'height:unset;cursor:default;';
           replyHolder.innerHTML = `<div class="postChatReplyLine"></div><div class="postChatReplyText">Replying to <b style="color: #FE5D6A">${message.getAttribute("user")}</b></div><div class="postChatReplyClose" tabindex="0">&times;</div>`;
@@ -620,7 +684,7 @@ modules.actions = function() {
       if (isMobile == false) {
         let postContent = path[0].closest(".postPost").querySelector(".postContent");
         if (postContent.hasAttribute("enlarged") == false) {
-          modifyParams("post", postContent.closest(".post").id);
+          modifyParams("post", postContent.closest(".post").getAttribute("postid"));
           let otherEnlargedPost = pageHolder.querySelector(".postContent[enlarged='']");
           if (otherEnlargedPost != null) {
             otherEnlargedPost.style.removeProperty("height");

@@ -1,6 +1,101 @@
 wireframes.home = ``;
 
 pages.home = async function() {
+	let renderPost = await getModule("post");
+  let createpost = await getModule("createpost");
+  let newPost = findC("newPost");
+  if (newPost == null) {
+    newPost = createpost("pageHolder");
+  }
+
+  if (userID == null) {
+    if (newPost.style.display != "none") {
+      newPost.style.display = "none";
+    }
+  } else {
+    if (newPost.style.display != "flex") {
+      newPost.style.display = "flex";
+      let newPic = decideProfilePic(account);
+      if (findI("newPostUserPfp").src != newPic) {
+        findI("newPostUserPfp").src = newPic;
+      }
+      findI("newPostUsername").textContent = account.User || "";
+    }
+  }
+  
+  modifyParams("post");
+  modifyParams("chat");
+  modifyParams("group");
+  modifyParams("user");
+  
+  let loadingPosts = false;
+  let postHolder;
+	let cursorId;
+  
+  setAccountSub("home");
+  async function loadPosts() {
+    postHolder = findC("postHolder");
+    loadingPosts = true;
+    let getURL = "posts/home";
+    if (cursorId) {
+      getURL += "?cursor=" + cursorId;
+			console.log(getURL)
+    } else {
+      if (postHolder != null) {
+        postHolder.remove();
+        postHolder = null;
+      }
+    }
+    if (postHolder == null) {
+      postHolder = createElement("postHolder", "div", pageHolder);
+    }
+    let [code, response] = await sendRequest("GET", getURL);
+    if (code == 200) {
+      let data = JSON.parse(response);
+			cursorId = data.cursor;
+      let posts = data.posts;
+      let users = getObject(data.users, "_id");
+      let likes = getObject(data.likes, "_id");
+      for (let i = 0; i < posts.length; i++) {
+        let post = posts[i];
+        renderPost(postHolder, post, users[post.UserID], { isLiked: (likes[post._id + userID] != null) });
+      }
+      if (posts.length > 14) {
+        loadingPosts = false;
+      }
+      setPostUpdateSub();
+      setupPostChats();
+      updateChatting(posts);
+
+			setInterval(() => {
+				if(newPostCount == 0) return;
+				if(findI("refreshPosts")) return;
+				if(getParam("group")) return;
+				let postHolder = findC("postHolder");
+				if (postHolder == null) {
+					return;
+				}
+				newPostCount = 0;
+				refreshPosts = createElement("stickyContainer", "div", postHolder);
+				refreshPosts.id = "refreshPosts";
+				refreshPosts.innerHTML = "<b>Show Newer Posts</b>";
+				if (postHolder.firstChild != null) {
+					postHolder.insertBefore(refreshPosts, postHolder.firstChild);
+				}
+				tempListen(refreshPosts, "click", function() { fetchNewPosts(); });
+			}, (60000 * 10))
+    }
+  }
+
+  loadPosts();
+  
+  tempListen(document, "scroll", function() {
+    if (postHolder != null && (window.innerHeight + window.scrollY) >= postHolder.offsetHeight - 500 && !loadingPosts) {
+      loadPosts();
+    }
+  });
+	
+	/*
   // Load Needed Modules
   let renderPost = await getModule("post");
   let createpost = await getModule("createpost");
@@ -31,14 +126,15 @@ pages.home = async function() {
   
   let loadingPosts = false;
   let postHolder;
+	let cursorId;
   
   setAccountSub("home");
-  async function loadPosts(before) {
+  async function loadPosts() {
     postHolder = findC("postHolder");
     loadingPosts = true;
     let getURL = "posts";
-    if (before != null) {
-      getURL += "?before=" + before;
+    if (cursorId) {
+      getURL += "?cursor=" + cursorId;
     } else {
       if (postHolder != null) {
         postHolder.remove();
@@ -51,6 +147,8 @@ pages.home = async function() {
     let [code, response] = await sendRequest("GET", getURL);
     if (code == 200) {
       let data = JSON.parse(response);
+			cursorId = response.cursor;
+			console.log(response.cursor)
       let posts = data.posts;
       let users = getObject(data.users, "_id");
       let likes = getObject(data.likes, "_id");
@@ -71,7 +169,8 @@ pages.home = async function() {
   
   tempListen(document, "scroll", function() {
     if (postHolder != null && (window.innerHeight + window.scrollY) >= postHolder.offsetHeight - 500 && !loadingPosts) {
-      loadPosts(postHolder.lastChild.getAttribute("time"));
+      loadPosts();
     }
   });
+	*/
 }
