@@ -476,6 +476,7 @@ function setAccountSub(location) {
               groupnotif({ ...groups[data.post.GroupID], _id: data.post.GroupID });
 							return;
             }
+						if(currentPage != "group") return;
 						let refreshPosts = findI("refreshPosts");
 	          if (refreshPosts == null) {
 	            refreshPosts = createElement("stickyContainer", "div", postHolder);
