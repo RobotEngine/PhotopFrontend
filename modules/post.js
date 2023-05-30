@@ -60,7 +60,11 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
   `;
   let newPost = createElement("post", "div", parent);
   if (props.loadToTop == true && parent.firstChild != null) {
-    parent.insertBefore(newPost, parent.firstChild);
+		if(parent.firstChild.id == "refreshPosts") {
+			parent.insertBefore(newPost, parent.children[1])
+		} else {
+			parent.insertBefore(newPost, parent.firstChild);
+		}
   }
   newPost.setAttribute("postid", post._id);
   newPost.setAttribute("userid", post.UserID);

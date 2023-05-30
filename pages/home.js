@@ -65,24 +65,6 @@ pages.home = async function() {
       setPostUpdateSub();
       setupPostChats();
       updateChatting(posts);
-
-			setInterval(() => {
-				if(newPostCount == 0) return;
-				if(findI("refreshPosts")) return;
-				if(getParam("group")) return;
-				let postHolder = findC("postHolder");
-				if (postHolder == null) {
-					return;
-				}
-				newPostCount = 0;
-				refreshPosts = createElement("stickyContainer", "div", postHolder);
-				refreshPosts.id = "refreshPosts";
-				refreshPosts.innerHTML = "<b>Show Newer Posts</b>";
-				if (postHolder.firstChild != null) {
-					postHolder.insertBefore(refreshPosts, postHolder.firstChild);
-				}
-				tempListen(refreshPosts, "click", function() { fetchNewPosts(); });
-			}, (60000 * 10))
     }
   }
 

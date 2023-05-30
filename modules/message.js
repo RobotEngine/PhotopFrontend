@@ -1,5 +1,4 @@
 modules.message = function(parent, message, user, reply, isSending, extra) {
-	//get reply stuff working
 	//(await getModule("message"))(document.querySelector("#dms"), {Timestamp: 1, UserID: account._id, Text: 'testing'}, {User: 'Abooby', Settings: {ProfilePic: "6154f0d0a8d6d106c5b869b6797b8088"}})
 	if (parent == null) {
     return;
