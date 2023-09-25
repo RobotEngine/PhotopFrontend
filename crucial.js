@@ -13,7 +13,7 @@ let configs = {
   }
 };
 
-let config = configs["public"]; // ["testing" / "public"]
+let config = configs["testing"]; // ["testing" / "public"]
 
 const socket = new SimpleSocket({
   project_id: "61b9724ea70f1912d5e0eb11",
