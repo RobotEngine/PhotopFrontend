@@ -55,21 +55,25 @@ pages.home = async function() {
 	let observer = new IntersectionObserver(handleIntersection);
   
   setAccountSub("home");
-  async function loadPosts() {
+  async function loadPosts(before) {
     postHolder = findC("postHolder");
     loadingPosts = true;
     let getURL = "posts/home";
 		if(homeView == "recent") {
 			getURL = "posts";
-		}
-    if (cursorId) {
+
+			if(before) {
+				getURL += `?before=${before}`;
+			}
+		} else if (cursorId) {
       getURL += "?cursor=" + cursorId;
-    } else {
-      if (postHolder != null) {
-        postHolder.remove();
-        postHolder = null;
-      }
     }
+		if(!before && !cursorId) {
+			if (postHolder != null) {
+				postHolder.remove();
+				postHolder = null;
+			}
+		}
     if (postHolder == null) {
       postHolder = createElement("postHolder", "div", pageHolder);
 
@@ -84,10 +88,20 @@ pages.home = async function() {
 				tempListen(findI("tab-active"), "click", function() {
 					homeView = "active";
 					setPage('home');
+
+					if (postHolder != null) {
+		        postHolder.remove();
+		        postHolder = null;
+		      }
 				});
 				tempListen(findI("tab-recent"), "click", function() {
 					homeView = "recent";
 					setPage('home');
+
+					if (postHolder != null) {
+		        postHolder.remove();
+		        postHolder = null;
+		      }
 				});
 			}
     }
@@ -117,7 +131,8 @@ pages.home = async function() {
   
   tempListen(document, "scroll", function() {
     if (postHolder != null && (window.innerHeight + window.scrollY) >= postHolder.offsetHeight - 500 && !loadingPosts) {
-      loadPosts();
+			let currentPosts = Array.from(document.querySelectorAll(".post"))
+      loadPosts(currentPosts[currentPosts.length-1].getAttribute("time"));
     }
   });
 	
