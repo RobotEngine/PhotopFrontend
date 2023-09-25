@@ -533,6 +533,8 @@ button:active {
 #newPostUsername {
   font-size: 20px;
   font-weight: 500;
+	display: flex;
+	width: calc(100% - 45px);
 }
 
 #newPostArea {
@@ -546,6 +548,7 @@ button:active {
   word-wrap: break-word;
   overflow-y: auto;
   overflow-x: hidden;
+	white-space:pre-wrap;
 }
 
 #newPostArea:empty:before {
@@ -2533,7 +2536,7 @@ td {
   cursor: pointer;
 }
 #groupInvite {
-  margin-left: auto;
+	margin-left:auto;
   visibility: hidden;
 }
 #groupSettings {
@@ -3683,4 +3686,56 @@ td {
 	object-fit: cover;
 	border-radius: 8px;
 	margin-right: 6px;
+}
+.pollStat {
+  margin-bottom: 4px;
+  color: var(--fontColor);
+}
+.pollStatBar {
+  position: absolute;
+  background: var(--themeColor);
+  height: 25px;
+  border-radius: 4px;
+  text-align: right;
+  padding-right: 4px;
+  font-size: 15px;
+  line-height: 25px;
+}
+.pollStatText {
+  position: relative;
+  font-weight: bold;
+  margin-left: 4px;
+  font-size: 20px;
+  line-height: 25px;
+}
+
+#migrateTag {
+	display:flex;
+	font-family:var(--mainFont);
+	margin-top:7px;
+	font-weight:100;
+	font-size:14px;
+	line-height:1;
+}
+#migrateTagIcon[mobile] {
+	border-radius: 100px;
+  margin-right: 3px;
+  background: var(--contentColor2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 0px 10px;
+  font-size: 16px;
+}
+#migrateTagIcon {
+  border-radius: 100px;
+  margin-right: 3px;
+  background: var(--contentColor2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 2px 4px;
+  font-size: 14px;
 }

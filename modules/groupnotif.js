@@ -9,7 +9,7 @@ modules.groupnotif = function(group) {
   newNotif.id = group._id + "notif";
   newNotif.querySelector(".notifGroupName").textContent = cleanString(group.Name);
   if (group.Icon != null) {
-    newNotif.querySelector(".notifGroupImg").src = assetURL + "GroupImages/" + group.Icon;
+    newNotif.querySelector(".notifGroupImg").src = config.assets + "GroupImages/" + group.Icon;
   } else {
     newNotif.querySelector(".notifGroupImg").remove();
   }

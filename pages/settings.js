@@ -28,7 +28,7 @@ pages.settings = function () {
 			accountHolder.id = "settingsHolder";
 			let settingsBanner;
 			if (account.Settings != null && account.Settings.ProfileBanner != null) {
-				settingsBanner = `<img class="settingsBanner" src="${assetURL + "ProfileBanners/" + account.Settings.ProfileBanner}">`;
+				settingsBanner = `<img class="settingsBanner" src="${config.assets + "ProfileBanners/" + account.Settings.ProfileBanner}">`;
 			} else {
 				settingsBanner = `<div class="settingsBanner" style="background: var(--contentColor)"></div>`;
 			}
@@ -425,7 +425,7 @@ pages.settings = function () {
 							let uploadPopUp = showPopUp("Uploading Image", "Uploading your new banner...");
 							let [code, response] = await sendRequest("POST", "me/new/banner", sendFormData, true);
 							if (code == 200) {
-								findC("settingsBanner").src = assetURL + "ProfileBanners/" + response;
+								findC("settingsBanner").src = config.assets + "ProfileBanners/" + response;
 							} else {
 								showPopUp("An Error Occured", response, [
 									["Okay", "var(--grayColor)"]
@@ -470,7 +470,7 @@ pages.settings = function () {
 							let uploadPopUp = showPopUp("Uploading Image", "Uploading your new profile picture...");
 							let [code, response] = await sendRequest("POST", "me/new/picture", sendFormData, true);
 							if (code == 200) {
-								findC("settingsPfp").src = assetURL + "ProfileImages/" + response;
+								findC("settingsPfp").src = config.assets + "ProfileImages/" + response;
 							} else {
 								showPopUp("An Error Occured", response, [
 									["Okay", "var(--grayColor)"]
@@ -756,7 +756,7 @@ pages.settings = function () {
 			}
       if (hasPremium()) {
         if (account.Settings != null && account.Settings.Backdrop != null) {
-  				settingsBackdrop = `<img class="settingsBackdrop" src="${assetURL + "Backdrops/" + account.Settings.Backdrop}"><div class="settingsUploadButton upload2" id="backdropUpload"></div><div class="settingsUploadButton" id="backdropRemove"></div>`;
+  				settingsBackdrop = `<img class="settingsBackdrop" src="${config.assets + "Backdrops/" + account.Settings.Backdrop}"><div class="settingsUploadButton upload2" id="backdropUpload"></div><div class="settingsUploadButton" id="backdropRemove"></div>`;
   			} else {
   				settingsBackdrop = `<img class="settingsBackdrop" style="opacity: 0;"><div class="settingsUploadButton" id="backdropUpload"></div><div class="settingsUploadButton" id="backdropRemove" hidden></div>`;
   			}
@@ -783,7 +783,7 @@ pages.settings = function () {
   								updateBackdrop(response);
                   findI("backdropRemove").hidden = false;
                   findI("backdropUpload").classList.add("upload2");
-                  findC("settingsBackdrop").src = assetURL + "Backdrops/" + response;
+                  findC("settingsBackdrop").src = config.assets + "Backdrops/" + response;
                   findC("settingsBackdrop").style.opacity = 1;
   							} else {
   								showPopUp("Error Uploading Backdrop", response, [

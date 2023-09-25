@@ -1097,7 +1097,7 @@ async function CreatePostView(ID, Data, UserData, Parent, IsLikingPost, IsLikeDa
         ["background-color", ContentColorLayer3],
         ["z-index", "5"]
       ]);
-      SitePreviewMedia.src = "https://exotekcdn.exotektechnolog.repl.co/" + encodeURIComponent(EmbedLink);
+      SitePreviewMedia.src = "https://config.proxy.exotektechnolog.repl.co/" + encodeURIComponent(EmbedLink);
       if (SetElemType == "video") {
         SitePreviewMedia.muted = true;
         SitePreviewMedia.loop = true;

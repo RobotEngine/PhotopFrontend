@@ -1,7 +1,19 @@
-let serverURL = "https://photop.exotek.co/";
-//let serverURL = "http://localhost:8080/";
-let assetURL = "https://photop-content.s3.amazonaws.com/";
-let exotekCDN = "https://exotekcdn.exotektechnolog.repl.co/";
+let configs = {
+  public: {
+    server: "https://photop.exotek.co/",
+    exotek_id: "62f8fac716d8eb8d2f6562ef",
+    assets: "https://photop-content.s3.amazonaws.com/",
+    proxy: "https://config.proxy.exotektechnolog.repl.co/"
+  },
+  testing: {
+    server: "http://localhost:8080/",
+    exotek_id: "648d345f91517635f157c08c",
+    assets: "https://photop-content.s3.amazonaws.com/",
+    proxy: "https://config.proxy.exotektechnolog.repl.co/"
+  }
+};
+
+let config = configs["testing"]; // ["testing" / "public"]
 
 const socket = new SimpleSocket({
   project_id: "61b9724ea70f1912d5e0eb11",
@@ -39,6 +51,7 @@ let modules = {};
 let convos = {};
 let account = {};
 let groups = {};
+let homeView = "active";
 let userID = null;
 
 let mainLoadActions = [];
@@ -293,7 +306,7 @@ async function renewToken() {
     return;
   }
   let sendUserID = userID || getLocalStore("userID");
-  let refreshToken = await fetch(serverURL + "auth/renew", {
+  let refreshToken = await fetch(config.server + "auth/renew", {
     method: "POST",
     headers: {
       "cache": "no-cache",
@@ -346,7 +359,7 @@ async function sendRequest(method, path, body, noFileType) {
         sendData.headers.auth = sendUserID + ";" + token.session;
       }
     }
-    let response = await fetch(serverURL + path, sendData);
+    let response = await fetch(config.server + path, sendData);
     if (response.headers.has("date") == true) {
       let serverTimeMillisGMT = new Date(response.headers.get("date")).getTime();
       let localMillisUTC = new Date().getTime();
@@ -386,7 +399,7 @@ async function sendRequest(method, path, body, noFileType) {
     return [0, "Request Refused"];
   } catch (err) {
     if (hadSentFirst == false) {
-      findI("backBlur" + (await getModule("modal"))("Error Reaching Server", "All no! We encountered an error sending your request through the pipes of the internet. Please try again later.", [["Retry", "var(--themeColor)", function() { location.reload(); }]])).style.zIndex = 999999;
+      findI("backBlur" + (await getModule("modal"))("Error Reaching Server", "Oh no! We encountered an error sending your request through the pipes of the internet. Please try again later.", [["Retry", "var(--themeColor)", function() { location.reload(); }]])).style.zIndex = 999999;
     }
     console.log("FETCH ERROR: " + err);
     return [0, "Fetch Error"];
@@ -404,6 +417,15 @@ function getObject(arr, field) {
   }
   return returnObj;
 }
+function handleIntersection(entries, observer) {
+	 entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.visibility = 'visible';
+    } else {
+      entry.target.style.visibility = 'hidden';
+    }
+  });
+}
 
 let accountSubscribe;
 let newPostCount = 0;
@@ -419,6 +441,7 @@ function fetchNewPosts(post) {
   } else if (window.refreshPostsFunction != null) {
     window.refreshPostsFunction();
   } else {
+		findI("groupPins").removeAttribute("active");
     setPage("group");
   }
 }
@@ -453,21 +476,24 @@ function setAccountSub(location) {
           if (postHolder == null) {
             return;
           }
-          if (postHolder.firstChild != null && postHolder.firstChild.getAttribute("time") != null) {
-            if (parseInt(postHolder.firstChild.getAttribute("time")) >= data.post.Timestamp) {
+          if (postHolder.querySelector('.post') != null && postHolder.querySelector('.post').getAttribute("time") != null) {
+            if (parseInt(postHolder.querySelector('.post').getAttribute("time")) >= data.post.Timestamp) {
               return;
             }
           }
-					if(getParam("group") == data.post.GroupID) {
+					if(getParam("group") == data.post.GroupID && (findI("groupPins") && findI("groupPins").getAttribute("active") == null)) {
 						newPostCount += 1;
 					}
-          if (data.post.GroupID != null) {
+          if (data.post.GroupID != null && (findI("groupPins") && findI("groupPins").getAttribute("active") == null)) {
             let notifHolder = findI(data.post.GroupID + "notif");
 						if (data.post.UserID == userID) {
 	            if (recentUserPostID != data.post._id) {
 	              recentUserPostID = data.post._id;
 	              fetchNewPosts(data.post);
 								newPostCount = 0;
+								if(findI("groupPins").getAttribute("active") != null) {
+									findI("groupPins").removeAttribute("active");
+								}
 	            }
 	            return;
 	          }
@@ -496,7 +522,7 @@ function setAccountSub(location) {
             if(data.post.UserID == userID) {
 							let postHolder = findC("postHolder");
 							let renderPost = await getModule("post");
-							renderPost(postHolder, data.post, account, {loadToTop: true});
+							renderPost(postHolder, data.post, account, {loadToTop: true, newPost: true});
 							setPostUpdateSub();
 							setupPostChats();
 						}
@@ -518,7 +544,7 @@ function setAccountSub(location) {
           let groupDisplayHolder = findC("groupsHolder-groups");
           if (groupDisplayHolder != null) {
             let thisGroup = createElement("groupSection", "div", pageHolder);
-            thisGroup.innerHTML = `${data.data.Icon != null ? `<img src="${assetURL}GroupImages/${data.data.Icon}" class="groupIcon">` : ""}<div class="groupInfo"><div class="groupName">${data.data.Name}</div></div>`;
+            thisGroup.innerHTML = `${data.data.Icon != null ? `<img src="${config.assets}GroupImages/${data.data.Icon}" class="groupIcon">` : ""}<div class="groupInfo"><div class="groupName">${data.data.Name}</div></div>`;
             thisGroup.id = data.data._id;
             thisGroup.setAttribute("type", "viewgroup");
             if (groupDisplayHolder.firstChild != null) {
@@ -636,7 +662,7 @@ function decideProfilePic(data) {
   if (data != null && data.Settings != null && data.Settings.ProfilePic != null) {
     ending = data.Settings.ProfilePic;
   }
-  return assetURL + "ProfileImages/" + ending;
+  return config.assets + "ProfileImages/" + ending;
 }
 function changeCounter(el, num) {
   let _x = el;
@@ -679,7 +705,9 @@ findI("logoutB").addEventListener("click", function() {
     if (code == 200) {
       removeLocalStore("userID");
       removeLocalStore("token");
-      location.reload();
+      let randomStr = randomString(20);
+      setLocalStore("state", randomStr);
+      window.location = "https://exotek.co/login?client_id=" + config.exotek_id + "&redirect_uri=" + encodeURIComponent(window.location.href) + "&response_type=code&scope=userinfo&state=" + randomStr;
     }
   }], ["Cancel", "var(--grayColor)"]]);
 });
@@ -765,34 +793,28 @@ async function init() {
     } else {
       setPage("home");
     }
-    let signInUpBar = createElement("stickyContainer", "div", main);
-    signInUpBar.id = "signInUpBar";
-    signInUpBar.innerHTML = `
-    <span class="signInUpText">Ready to Join the Hangout?</span>
-    <button class="signUpButton">
-      Sign Up
-    </button>
-    <button class="signInButton">
-      Sign In
-    </button>
-    `;
-    findC("signUpButton").addEventListener("click", function() {
-      openLoginModal("signup", "Create Account");
-    });
-    findC("signInButton").addEventListener("click", function() {
-      let modalCode = showPopUp("Sign In", `<button class="exotekLoginBtn" id="exotekLoginBtn"><image src="https://exotek.co/images/favicon.png" class="btnImg"><div style="flex: 1">Exotek</div></button><div style="text-align: center"><br>Have an old Photop account?<br><a href="#migrate" target="_blank">Migrate Account</a></div>`, [["Cancel", "var(--grayColor)"]]);
-      findI("exotekLoginBtn").addEventListener("click", function () {
-        openLoginModal("signin", "Sign In");
-        findI("backBlur" + modalCode).style.opacity = 0;
-        findI("backBlur" + modalCode).children[0].style.transform = "scale(0.9)";
-        setTimeout(function () {
-          findI("backBlur" + modalCode).remove();
-        }, 199);
-      });
-    });
-    if (findC("pageHolder") != null) {
-      main.insertBefore(signInUpBar, findC("pageHolder"));
-    }
+
+		if(currentPage != 'migrate') {
+	    let signInUpBar = createElement("stickyContainer", "div", main);
+	    signInUpBar.id = "signInUpBar";
+	    signInUpBar.innerHTML = `
+	    <span class="signInUpText">
+		 		Ready to Join the Hangout?
+		 		<div id="migrateTag">
+					<span id="migrateTagIcon" ${isMobile?"mobile":""}>📢</span> <span><span style="font-weight:1000;">Still don't have an Exotek Account?</span> Migrate before <i>October 21, 2023</i> to keep your account. <a href="#migrate" style="font-weight:1000;">Migrate Now</a></span>
+				</div>
+	 		</span>
+	    <button class="signInButton">
+	      Login
+	    </button>
+	    `;
+	    findC("signInButton").addEventListener("click", function() {
+	      openLoginModal("signin", "Login");
+	    });
+	    if (findC("pageHolder") != null) {
+	      main.insertBefore(signInUpBar, findC("pageHolder"));
+	    }
+		}
   }
 
   // FasLoad TM
@@ -813,7 +835,7 @@ function randomString(l) {
 async function openLoginModal(page, title) {
   let randomStr = randomString(20);
   setLocalStore("state", randomStr);
-  window.loginWindow = (await getModule("webmodal"))("https://exotek.co/login?client_id=62f8fac716d8eb8d2f6562ef&redirect_uri=" + encodeURIComponent(window.location.href) + "&response_type=code&scope=userinfo&state=" + randomStr + "#" + page, title);
+  window.loginWindow = (await getModule("webmodal"))("https://exotek.co/login?client_id=" + config.exotek_id + "&redirect_uri=" + encodeURIComponent(window.location.href) + "&response_type=code&scope=userinfo&state=" + randomStr + "#" + page, title);
 }
 
 /*
@@ -918,7 +940,7 @@ async function handleOAuthEvents(authCode, authState) {
     } else if (authState == "transferlogin") {
       window.transferLoginCode = authCode;
       showPopUp("Complete Transfer", "To complete the process, login to the new Exotek account you wish to use when signing in.", [["Authenticate", "var(--themeColor)", async function() {
-        window.loginWindow = (await getModule("webmodal"))("https://exotek.co/login?client_id=62f8fac716d8eb8d2f6562ef&redirect_uri=" + encodeURIComponent(window.location.href) + "&response_type=code&scope=userinfo&state=transferfinish", "Transfer Exotek Account (New Account)");
+        window.loginWindow = (await getModule("webmodal"))("https://exotek.co/login?client_id=" + config.exotek_id + "&redirect_uri=" + encodeURIComponent(window.location.href) + "&response_type=code&scope=userinfo&state=transferfinish", "Transfer Exotek Account (New Account)");
       }], ["Cancel", "var(--grayColor)"]]);
     } else if (authState == "transferfinish") {
       if (window.transferLoginCode) {
@@ -971,7 +993,7 @@ async function updateToSignedIn(response) {
   await loadNeededModules();
   if (account.Onboarding) {
     let modalCode = showPopUp("Complete Sign Up", `<span class="settingsTitle">Profile Picture</span><div class="groupIconCreate" id="exotekPfpHolder">
-          <img class="groupIconCreateHolder" src="${account.Exotek.image || assetURL + "ProfileImages/DefaultProfilePic"}" id="exotekPfp">
+          <img class="groupIconCreateHolder" src="${account.Exotek.image || config.assets + "ProfileImages/DefaultProfilePic"}" id="exotekPfp">
           <div class="settingsUploadButton"></div>
         </div><input id="inputOnboardPfp" type="file" accept="image/*" hidden="true"><span class="settingsTitle">Username</span><input type="text" placeholder="Username" class="settingsInput" id="inputName" value="${account.Exotek.user || ""}">`, [["Sign Up", "var(--signUpColor)", async function () {
       let formData = new FormData();
@@ -1858,7 +1880,7 @@ async function updateChatting(posts) {
           } else if (link.endsWith(".gif") && account.Settings.Display["Embed GIFs"]) {
             videoEmbed = "";
             let embedHolder = createElement("embedMedia", "img", embed.parentElement.parentElement);
-            embedHolder.src = exotekCDN + encodeURIComponent(link);
+            embedHolder.src = config.proxy + encodeURIComponent(link);
             embedHolder.setAttribute("type", "imageenlarge");
           }
           if (videoEmbed == null) {
@@ -1912,7 +1934,7 @@ async function updateChatting(posts) {
                 let postImages = createElement("postImages", "div", thisEmbed.querySelector(".embedContent"));
                 for (let i = 0; i < post.Media.ImageCount; i++) {
                   let image = createElement("postImage", "img", postImages);
-                  image.src = assetURL + "PostImages/" + post._id + i;
+                  image.src = config.assets + "PostImages/" + post._id + i;
                   image.setAttribute("type", "imageenlarge");
                   image.setAttribute("tabindex", 0);
                 }

@@ -122,7 +122,7 @@ modules.message = function(parent, message, user, reply, isSending, extra) {
 		newMessage.querySelector(".dmContent").appendChild(messageImages)
     for (let i = 0; i < message.Media.Images; i++) {
       let image = createElement("dmContentImage", "img", messageImages);
-      image.src = assetURL + "ConversationImages/" + message._id + i;
+      image.src = config.assets + "ConversationImages/" + message._id + i;
       image.setAttribute("type", "imageenlarge");
       image.setAttribute("tabindex", 0);
     }

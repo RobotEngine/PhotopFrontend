@@ -66,11 +66,22 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
 			parent.insertBefore(newPost, parent.firstChild);
 		}
   }
+	if(!getParam('group') && props.newPost) {
+		parent.insertBefore(newPost, parent.children[2])
+	}
+	
   newPost.setAttribute("postid", post._id);
   newPost.setAttribute("userid", post.UserID);
   newPost.setAttribute("name", user.User);
   newPost.setAttribute("time", post.Timestamp);
   newPost.setAttribute("text", post.Text);
+	if(post.GroupID) {
+		newPost.setAttribute("groupid", post.GroupID);
+	}
+	if(post.GroupPin) {
+		newPost.setAttribute("grouppin", post.GroupPin);
+	}
+	
   newPost.innerHTML = postHTML;
   newPost.querySelector(".postText").innerHTML = formatText(post.Text);
 	
@@ -101,7 +112,7 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
     let postImages = createElement("postImages", "div", newPost.querySelector(".postContent"));
     for (let i = 0; i < post.Media.ImageCount; i++) {
       let image = createElement("postImage", "img", postImages);
-      image.src = assetURL + "PostImages/" + post._id + i;
+      image.src = config.assets + "PostImages/" + post._id + i;
       image.setAttribute("type", "imageenlarge");
       image.setAttribute("tabindex", 0);
     }
@@ -123,4 +134,8 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
     newPost.querySelector(".postPost").style.width = "100%";
     newPost.querySelector(".postChat").style.display = "none";
   }
+
+	if(props.observer) {
+		props.observer.observe(newPost);
+	}
 }

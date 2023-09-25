@@ -1,6 +1,6 @@
 wireframes.migrate = `
 <div style="width:100%;height:100%;display:flex;flex-wrap:wrap;">
-	<div id="transferContentHolder" style="max-width:335px;height:392px;margin:auto;background-color:var(--contentColor);filter:drop-shadow(0 0 5px var(--contentColor2));border-radius:15px;padding:8px;color:white;display:flex;flex-direction:column;color:var(--fontColor);transition:height .3s;align-items:center;">
+	<div id="transferContentHolder" style="max-width:335px;height:425px;margin:auto;background-color:var(--contentColor);filter:drop-shadow(0 0 5px var(--contentColor2));border-radius:15px;padding:8px;color:white;display:flex;flex-direction:column;color:var(--fontColor);transition:height .3s;align-items:center;">
  
 		<div style="font-size: 40px; font-weight: bold;text-align:center;">Migrate</div>
 	 
@@ -16,6 +16,7 @@ wireframes.migrate = `
 	</div>
 	
 		<div class="settingsSaveHolder" id="stepButtonHolder" style="z-index:1;"><button id="transferSignIn" class="signInButton settingsSave" title="Sign In to Photop account">Continue</button></div>
+		<div class="settingsTitle" id="helpText" style="margin-top:24px;">Need help? Email us at <a href="mailto:support@exotek.co">support@exotek.co</a></div>
 	</div>
 </div>`;
 
@@ -63,6 +64,7 @@ pages.migrate = function() {
           
 					findI("infoInputHolder").style.display = "none";
 					descText.style.display = "none";
+					findI("helpText").style.display = "none";
 					
 					findI("transferContentHolder").style.height = "325px";
 					
@@ -87,7 +89,7 @@ pages.migrate = function() {
 		    }
 				break;
 			case 1:
-				window.loginWindow = (await getModule("webmodal"))("https://exotek.co/login?client_id=62f8fac716d8eb8d2f6562ef&redirect_uri=https%3A%2F%2F" + window.location.host + "&response_type=code&scope=userinfo&state=migrate#signup", "Migrate Photop Account");
+				window.loginWindow = (await getModule("webmodal"))("https://exotek.co/login?client_id=" + config.exotek_id + "&redirect_uri=https%3A%2F%2F" + window.location.host + "&response_type=code&scope=userinfo&state=migrate#signup", "Migrate Photop Account");
 				break;
 		}
 	});

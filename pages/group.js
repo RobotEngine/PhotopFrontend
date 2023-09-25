@@ -12,6 +12,14 @@ wireframes.group = `
     <button class="groupToolbarButton" id="groupInvite">
       <svg viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg"> <g clip-path="url(#clip0_217_35)"> <path d="M242 260C242 272.368 232.248 285.987 211.038 297.105C190.3 307.976 160.958 315 128 315C95.0417 315 65.6996 307.976 44.9615 297.105C23.7515 285.987 14 272.368 14 260C14 247.632 23.7515 234.013 44.9615 222.895C65.6996 212.024 95.0417 205 128 205C160.958 205 190.3 212.024 211.038 222.895C232.248 234.013 242 247.632 242 260Z" stroke="var(--themeColor)" stroke-width="20"></path> <circle cx="128" cy="105" r="63" stroke="var(--themeColor)" stroke-width="20"></circle> <path d="M161.215 33.3877C161.213 33.4024 161.211 33.4167 161.21 33.4304C161.196 33.4321 161.182 33.4339 161.167 33.4356C160.504 33.5131 159.56 33.5195 157.839 33.5195H146.98C146.864 33.5195 146.749 33.5195 146.636 33.5195C144.199 33.519 142.54 33.5187 141.084 33.7332C132.355 35.0195 125.5 41.8745 124.214 50.6039C123.999 52.0593 124 53.7188 124 56.1551C124 56.2684 124 56.3833 124 56.5C124 56.6167 124 56.7316 124 56.8449C124 59.2812 123.999 60.9407 124.214 62.3961C125.5 71.1255 132.355 77.9805 141.084 79.2668C142.54 79.4813 144.199 79.481 146.636 79.4805C146.749 79.4805 146.864 79.4805 146.98 79.4805H157.839C159.56 79.4805 160.504 79.4869 161.167 79.5644C161.182 79.5661 161.196 79.5679 161.21 79.5696C161.211 79.5833 161.213 79.5976 161.215 79.6123C161.292 80.2758 161.299 81.2191 161.299 82.9402V94.0195C161.299 94.1362 161.299 94.2512 161.299 94.3645C161.298 96.8007 161.298 98.4602 161.512 99.9156C162.799 108.645 169.654 115.5 178.383 116.786C179.839 117.001 181.498 117 183.934 117C184.048 117 184.163 117 184.279 117C184.396 117 184.511 117 184.624 117C187.06 117 188.72 117.001 190.175 116.786C198.905 115.5 205.76 108.645 207.046 99.9156C207.261 98.4602 207.26 96.8007 207.26 94.3645C207.26 94.2512 207.26 94.1362 207.26 94.0195V82.9844C207.26 81.2407 207.266 80.2849 207.346 79.6134C207.347 79.599 207.349 79.5851 207.351 79.5716C207.364 79.5699 207.378 79.5682 207.393 79.5665C208.064 79.487 209.02 79.4805 210.764 79.4805H222.02C222.136 79.4805 222.251 79.4805 222.364 79.4805C224.801 79.481 226.46 79.4813 227.916 79.2668C236.645 77.9805 243.5 71.1255 244.786 62.3961C245.001 60.9407 245 59.2812 245 56.845C245 56.7317 245 56.6167 245 56.5C245 56.3833 245 56.2683 245 56.155C245 53.7188 245.001 52.0593 244.786 50.6039C243.5 41.8745 236.645 35.0195 227.916 33.7332C226.46 33.5187 224.801 33.519 222.364 33.5195C222.251 33.5195 222.136 33.5195 222.02 33.5195H210.764C209.02 33.5195 208.064 33.513 207.393 33.4335C207.378 33.4318 207.364 33.4301 207.351 33.4284C207.349 33.4149 207.347 33.401 207.346 33.3866C207.266 32.7151 207.26 31.7593 207.26 30.0156V18.9805C207.26 18.8638 207.26 18.7488 207.26 18.6355C207.26 16.1993 207.261 14.5398 207.046 13.0844C205.76 4.35497 198.905 -2.5 190.175 -3.78633C188.72 -4.0008 187.06 -4.00049 184.624 -4.00004C184.511 -4.00002 184.396 -4 184.279 -4C184.163 -4 184.048 -4.00002 183.934 -4.00004C181.498 -4.00049 179.839 -4.0008 178.383 -3.78633C169.654 -2.5 162.799 4.35497 161.512 13.0844C161.298 14.5398 161.298 16.1993 161.299 18.6355C161.299 18.7488 161.299 18.8638 161.299 18.9805V30.0598C161.299 31.7809 161.292 32.7242 161.215 33.3877ZM207.26 79.4804L207.26 79.4804L207.26 79.4804Z" fill="var(--themeColor)" stroke="var(--contentColor)" stroke-width="20"></path> </g> <defs> <clipPath id="clip0_217_35"> <rect width="256" height="256" fill="white"></rect> </clipPath> </defs> </svg>
     </button>
+		<button class="groupToolbarButton" id="groupPins">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="20 3 160 160" fill="none">
+				<rect x="93.9883" y="47.3272" width="52.0932" height="40.631" transform="rotate(40 93.9883 47.3272)" stroke="var(--themeColor)" stroke-width="10"></rect>
+				<rect x="99.7234" y="5.48206" width="96.4131" height="35.1738" rx="11.5" transform="rotate(40 99.7234 5.48206)" stroke="var(--themeColor)" stroke-width="10"></rect>
+				<rect x="50.526" y="64.1133" width="96.4131" height="24.2398" rx="11.5" transform="rotate(40 50.526 64.1133)" stroke="var(--themeColor)" stroke-width="10"></rect>
+				<path d="M63.5714 106.931L77.968 119.011L52.5087 149.352C50.2012 152.102 46.1013 152.461 43.3513 150.154L38.9132 146.43C36.1633 144.122 35.8046 140.022 38.1121 137.272L63.5714 106.931Z" stroke="var(--themeColor)" stroke-width="10"></path>
+			</svg>
+		</button>
     <button class="groupToolbarButton" id="groupSettings">
       <svg viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M126.5 149C138.374 149 148 139.374 148 127.5C148 115.626 138.374 106 126.5 106C114.626 106 105 115.626 105 127.5C105 139.374 114.626 149 126.5 149Z" fill="var(--themeColor)"></path> <path d="M101 64L108.972 12.846C109.048 12.3591 109.467 12 109.96 12H144.04C144.533 12 144.952 12.3591 145.028 12.846L153 64" stroke="var(--themeColor)" stroke-width="20"></path> <path d="M153 192L145.028 243.154C144.952 243.641 144.533 244 144.04 244H109.96C109.467 244 109.048 243.641 108.972 243.154L101 192" stroke="var(--themeColor)" stroke-width="20"></path> <path d="M84.5744 182.517L36.2877 201.19C35.8281 201.367 35.3074 201.184 35.061 200.757L18.0211 171.243C17.7747 170.816 17.876 170.274 18.2598 169.964L58.5744 137.483" stroke="var(--themeColor)" stroke-width="20"></path> <path d="M169.426 73.4833L217.712 54.8103C218.172 54.6326 218.693 54.8162 218.939 55.243L235.979 84.757C236.225 85.1838 236.124 85.7265 235.74 86.0357L195.426 118.517" stroke="var(--themeColor)" stroke-width="20"></path> <path d="M195.426 137.483L235.74 169.964C236.124 170.274 236.225 170.816 235.979 171.243L218.939 200.757C218.693 201.184 218.172 201.367 217.712 201.19L169.426 182.517" stroke="var(--themeColor)" stroke-width="20"></path> <path d="M58.5744 118.517L18.2598 86.0357C17.876 85.7265 17.7747 85.1838 18.0211 84.757L35.061 55.243C35.3074 54.8162 35.8281 54.6326 36.2877 54.8103L84.5744 73.4833" stroke="var(--themeColor)" stroke-width="20"></path> <path d="M194 128C194 165.003 164.003 195 127 195C89.9969 195 60 165.003 60 128C60 90.9969 89.9969 61 127 61C164.003 61 194 90.9969 194 128Z" stroke="var(--themeColor)" stroke-width="20"></path> </svg>
     </button>
@@ -61,10 +69,23 @@ pages.group = async function() {
   }
   let groupIcon = "";
   if (group.Icon != null) {
-    groupIcon = `<img src="${assetURL}GroupImages/${group.Icon}" class="groupIconInGroup" type="imageenlarge">`;
+    groupIcon = `<img src="${config.assets}GroupImages/${group.Icon}" class="groupIconInGroup" type="imageenlarge">`;
   }
   findI("groupInfo").innerHTML = `<div class="groupInfoInGroup">${groupIcon}<div class="groupName" style="font-size: 20px; color: var(--fontColor)">${group.Name}</div></div>`;
 
+	let pinsButton = findI("groupPins")
+	pinsButton.addEventListener("click", async function() {
+		if(pinsButton.getAttribute("active") != null) {
+			pinsButton.removeAttribute("active")
+			pinsButton.style.opacity = 1;
+			loadPosts()
+		} else {
+			pinsButton.setAttribute("active", "")
+			pinsButton.style.opacity = .4;
+			loadPosts(undefined, true)
+		}
+	})
+	
   //let [code, response] == await sendRequest()
   let inviteButton = findI("groupInvite");
   inviteButton.addEventListener("click", async function() {
@@ -244,12 +265,12 @@ pages.group = async function() {
   let settingsButton = findI("groupSettings");
   settingsButton.addEventListener("click", function() {
     /*if (account.Settings != null && account.Settings.ProfileBanner != null) {
-      groupIcon = `<img class="groupSettingsIcon" src="${assetURL + "ProfileBanners/" + account.Settings.ProfileBanner}">`;
+      groupIcon = `<img class="groupSettingsIcon" src="${config.assets + "ProfileBanners/" + account.Settings.ProfileBanner}">`;
     } else {
       groupIcon = `<div class="groupSettingsIcon" style="background: var(--contentColor)"></div>`;
     }*/
     showPopUp("Group Settings", `<input id="imageInputGroupIcon" type="file" accept="image/*" hidden="true"><span class="settingsTitle">Name</span><input type="text" placeholder="Group Name" class="settingsInput" id="inputName" value="${group.Name}"><span class="settingsTitle">Icon</span><input id="imageInputGroupIcon" type="file" accept="image/*" multiple="true" hidden="true"><div class="groupIconCreate">
-          <img class="groupIconCreateHolder" ${group.Icon != null ? `src="${assetURL}GroupImages/${group.Icon}" style="display: unset;"` : ""}>
+          <img class="groupIconCreateHolder" ${group.Icon != null ? `src="${config.assets}GroupImages/${group.Icon}" style="display: unset;"` : ""}>
           <div class="settingsUploadButton"></div>
         </div>
         <span class="settingsTitle">Invites</span>
@@ -467,14 +488,23 @@ pages.group = async function() {
       case "refresh":
         refreshPage();
 				break;
+			case "refreshPinned":
+				if(pinsButton.getAttribute("active") != null) {
+					loadPosts(undefined, true);
+				}
+				break;
     }
   }));
 
+	let observer = new IntersectionObserver(handleIntersection);
   let loadingPosts = false;
-  async function loadPosts(before) {
+  async function loadPosts(before, pins) {
     postHolder = findC("postHolder");
     loadingPosts = true;
     let getURL = "posts?groupid=" + groupID;
+		if(pins == true) {
+			getURL += "&pins=true";
+		}
     if (before != null) {
       getURL += "&before=" + before;
     } else {
@@ -498,17 +528,28 @@ pages.group = async function() {
       let likes = getObject(data.likes, "_id");
       for (let i = 0; i < posts.length; i++) {
         let post = posts[i];
-        renderPost(postHolder, post, users[post.UserID], { isLiked: (likes[post._id + userID] != null) });
+				let props = { isLiked: (likes[post._id + userID] != null), observer };
+				if(post.GroupPin) {
+					props.isPinned = true;
+				}
+				
+        renderPost(postHolder, post, users[post.UserID], props);
       }
       if (posts.length > 14) {
         loadingPosts = false;
-      } else {
+      } else if(!pins) {
         if (posts.length > 0 || before != null) {
           createTooltip(postHolder, "It all started with a BANG! 💥💥💥");
         } else {
           createTooltip(postHolder, "Hmm... Nothing yet... Start the Hangout?");
         }
-      }
+      } else if(pins) {
+				if(posts.length > 0 || before != null) {
+					createTooltip(postHolder, "I wonder why the post above me was the first pin...");
+				} else {
+					createTooltip(postHolder, "Hmm, no pins. That owner has some standards!");
+				}
+			}
       setPostUpdateSub();
       setupPostChats();
       updateChatting(posts);
@@ -520,7 +561,11 @@ pages.group = async function() {
 
   tempListen(document, "scroll", function() {
     if (postHolder != null && (window.innerHeight + window.scrollY) >= postHolder.offsetHeight - 500 && !loadingPosts) {
-      loadPosts(postHolder.lastChild.getAttribute("time"));
+      if(pinsButton.getAttribute("active") == null) {
+				loadPosts(postHolder.lastChild.getAttribute("time"), false);
+			} else {
+				loadPosts(postHolder.lastChild.getAttribute("time"), true);
+			}
     }
   });
 

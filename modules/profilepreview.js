@@ -33,7 +33,6 @@ function updateProfileSub() {
               }
             } else {
               passData[key] = passData[key] || {};
-              console.log(passData[key] || {});
               recUpdate(obj[key], passData[key] || {});
             }
           }
@@ -53,7 +52,7 @@ function updateProfileSub() {
           }
         } else if (data._id == userID) {
           if (data.data.Settings != null && data.data.Settings.ProfilePic != null) {
-            findC("accountInfoPic").src = assetURL + "ProfileImages/" + data.data.Settings.ProfilePic;
+            findC("accountInfoPic").src = config.assets + "ProfileImages/" + data.data.Settings.ProfilePic;
           } else if (data.data.User != null) {
             findC("accountInfoName").textContent = data.data.User;
           } else if (data.data.ProfileData != null && data.data.ProfileData.Socials != null) {
@@ -208,7 +207,7 @@ modules.profilepreview = async function(element, getID) {
   }
   let profileBanner;
   if (data.Settings != null && data.Settings.ProfileBanner != null) {
-    profileBanner = `<img class="previewBanner" src="${assetURL + "ProfileBanners/" + data.Settings.ProfileBanner}">`;
+    profileBanner = `<img class="previewBanner" src="${config.assets + "ProfileBanners/" + data.Settings.ProfileBanner}">`;
   } else {
     profileBanner = `<div class="previewBanner" style="background: var(--contentColor)"></div>`;
   }

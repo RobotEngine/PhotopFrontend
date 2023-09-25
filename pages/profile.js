@@ -89,7 +89,7 @@ pages.profile = async function() {
   if (user.Settings != null && user.Settings.ProfileBanner != null) {
     let existingBanner = findC("profileBanner");
     let imageProfileBanner = createElement("profileBanner", "img", findC("profileTop"));
-    imageProfileBanner.src = assetURL + "ProfileBanners/" + user.Settings.ProfileBanner;
+    imageProfileBanner.src = config.assets + "ProfileBanners/" + user.Settings.ProfileBanner;
     imageProfileBanner.setAttribute("type", "imageenlarge");
     findC("profileTop").insertBefore(imageProfileBanner, existingBanner);
     existingBanner.remove();

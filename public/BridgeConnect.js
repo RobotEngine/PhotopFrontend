@@ -662,7 +662,7 @@ function LoadEmbedPreviews() {
                   ["margin-top", "8px"],
                   ["border-radius", "6px"]
                 ]);
-                SitePreviewVideo.src = "https://exotekcdn.exotektechnolog.repl.co/" + encodeURIComponent(SiteData.VideoURL);
+                SitePreviewVideo.src = "https://config.proxy.exotektechnolog.repl.co/" + encodeURIComponent(SiteData.VideoURL);
                 SitePreviewVideo.muted = true;
                 SitePreviewVideo.loop = true;
                 SitePreviewVideo.play();

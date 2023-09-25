@@ -32,7 +32,7 @@ pages.groups = function() {
       for (let i = 0; i < groupsArr.length; i++) {
         let group = groups[groupsArr[i]];
         let thisGroup = createElement("groupSection", "div", pageHolder);
-        thisGroup.innerHTML = `${group.Icon != null ? `<img src="${assetURL}GroupImages/${group.Icon}" class="groupIcon">` : ""}<div class="groupInfo"><div class="groupName">${group.Name}</div></div>`;
+        thisGroup.innerHTML = `${group.Icon != null ? `<img src="${config.assets}GroupImages/${group.Icon}" class="groupIcon">` : ""}<div class="groupInfo"><div class="groupName">${group.Name}</div></div>`;
         thisGroup.id = groupsArr[i];
         thisGroup.setAttribute("type", "viewgroup");
         thisGroup.setAttribute("tabindex", "0");
@@ -44,7 +44,7 @@ pages.groups = function() {
       pageInviteHolder = createElement("groupsHolder-invites", "div", "pageHolder");
       function createTile(invite, group) {
         let thisInvite = createElement("groupSection", "div", pageInviteHolder);
-        thisInvite.innerHTML = `${group.Icon != undefined ? `<img src="${assetURL}GroupImages/${group.Icon}" class="groupIcon">` : ""}<div class="groupInfo"><div class="groupName">${group.Name}</div><button class="inviteTileButtons">View</button><button type="declineinvite" class="inviteTileButtons" style="background: rgb(255, 92, 92)">Decline</button></div>`;
+        thisInvite.innerHTML = `${group.Icon != undefined ? `<img src="${config.assets}GroupImages/${group.Icon}" class="groupIcon">` : ""}<div class="groupInfo"><div class="groupName">${group.Name}</div><button class="inviteTileButtons">View</button><button type="declineinvite" class="inviteTileButtons" style="background: rgb(255, 92, 92)">Decline</button></div>`;
         thisInvite.id = invite.Group;
         thisInvite.setAttribute("type", "viewgroup");
         thisInvite.setAttribute("time", invite.Timestamp);
@@ -106,7 +106,7 @@ pages.groups = function() {
       pageDiscoverHolder = createElement("groupsHolder-discover", "div", "pageHolder");
       function createTile(invite, group) {
         let thisGroup = createElement("groupSection", "div", pageInviteHolder);
-        thisGroup.innerHTML = `${group.Icon != undefined ? `<img src="${assetURL}GroupImages/${group.Icon}" class="groupIcon">` : ""}<div class="groupInfo"><div class="groupName">${group.Name}</div><button class="inviteTileButtons">View</button>></div>`;
+        thisGroup.innerHTML = `${group.Icon != undefined ? `<img src="${config.assets}GroupImages/${group.Icon}" class="groupIcon">` : ""}<div class="groupInfo"><div class="groupName">${group.Name}</div><button class="inviteTileButtons">View</button>></div>`;
         thisGroup.id = invite.Group;
         thisGroup.setAttribute("type", "viewgroup");
         thisGroup.setAttribute("time", invite.Timestamp);

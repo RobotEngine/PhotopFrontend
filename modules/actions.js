@@ -216,14 +216,13 @@ modules.actions = function() {
           }], ["Wait, no", "var(--grayColor)"]]);
         }
         let viewGroupID = getParam("group");
-        //let postedGroup = groups[viewGroupID || ""];
-        //if (postedGroup != null && postedGroup.Owner == userID) {
+        let postedGroup = groups[viewGroupID || ""];
         if (post.getAttribute("userid") == userID) {
           if (viewGroupID == null) {
             if (account.ProfileData != null && account.ProfileData.PinnedPost == post.getAttribute("postid")) {
               dropdownButtons.unshift(["Unpin Post", "#C95EFF", function() {
-                showPopUp("Unpin this Post?", "Unpinning this post will remove it from the top of your profile. It won't delete the post.", [["Unpin", "#C95EFF", function() {
-                  sendRequest("DELETE", "posts/unpin");
+                showPopUp("Unpin this Post?", "Unpinning this post will remove it from the top of your profile. It won't delete the post.", [["Unpin", "#C95EFF", async function() {
+                  await sendRequest("DELETE", "posts/unpin");
                   account.ProfileData = account.ProfileData || {};
                   delete account.ProfileData.PinnedPost;
                   refreshPage();
@@ -231,15 +230,45 @@ modules.actions = function() {
               }]);
             } else {
               dropdownButtons.unshift(["Pin Post", "#C95EFF", function() {
-                showPopUp("Pin this Post?", "Pinning this post will keep it at the top of your profile. If another post is already pinned, it will be replaced by this post.", [["Pin", "#C95EFF", function() {
-                  sendRequest("PUT", "posts/pin?postid=" + post.getAttribute("postid"));
+                showPopUp("Pin this Post?", "Pinning this post will keep it at the top of your profile. If another post is already pinned, it will be replaced by this post.", [["Pin", "#C95EFF", async function() {
+                  await sendRequest("PUT", "posts/pin?postid=" + post.getAttribute("postid"));
                   account.ProfileData = account.ProfileData || {};
                   account.ProfileData.PinnedPost = post.getAttribute("postid");
                   refreshPage();
                 }], ["Wait, no", "var(--grayColor)"]]);
               }]);
             }
-          }
+          } else if(postedGroup != null && postedGroup.Owner == userID) {
+						if(post.getAttribute("grouppin") != null) {
+							dropdownButtons.unshift(["Unpin Post", "#C95EFF", function() {
+                showPopUp("Unpin this Post?", "Unpinning this post will remove it from the Group Pins page. It won't delete the post.", [["Unpin", "#C95EFF", async function() {
+                  let [code, response] = await sendRequest("DELETE", "posts/unpin?postid=" + post.getAttribute("postid") + "&groupid=" + post.getAttribute("groupid"));
+									post.removeAttribute("grouppin");
+									post.querySelector(".postTimestamp").innerText = post.querySelector(".postTimestamp").innerText.replace(" (pinned)", "")
+
+									if(code == 200) {
+										showPopUp("Yay!", "The post has been unpinned from this group!", [["Close", "grey", null]])
+									} else {
+										showPopUp("Oops", response, [["Close", "grey", null]])
+									}
+                }], ["Wait, no", "var(--grayColor)"]]);
+              }]);
+						} else {
+							dropdownButtons.unshift(["Pin Post", "#C95EFF", function() {
+                showPopUp("Pin this Post?", "Pinning this post add it to the Group Pins page. If there are already 25 posts pinned, the oldest will be unpinned.", [["Pin", "#C95EFF", async function() {
+                  let [code, response] = await sendRequest("PUT", "posts/pin?postid=" + post.getAttribute("postid"));
+									post.setAttribute("grouppin", "");
+									post.querySelector(".postTimestamp").innerText += " (pinned)";
+
+									if(code == 200) {
+										showPopUp("Yay!", "The post has been pinned to this group!", [["Close", "grey", null]])
+									} else {
+										showPopUp("Oops", response, [["Close", "grey", null]])
+									}
+                }], ["Wait, no", "var(--grayColor)"]]);
+              }]);
+						}
+					}
           if (hasPremium()) {
             dropdownButtons.unshift(["Edit Post", "var(--premiumColor)", editPost]);
           }

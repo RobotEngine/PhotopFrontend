@@ -4,11 +4,11 @@ modules.createpost = function(holder) {
   let lim = premium ? 800 : 400
   newPost.innerHTML = `
   <div>
-  <img id="newPostUserPfp" src="` + assetURL + `ProfileImages/DefaultProfilePic"></td><td>
+  <img id="newPostUserPfp" src="` + config.assets + `ProfileImages/DefaultProfilePic"></td><td>
   </div>
   <div class="newPostSectionContent">
   <input id="imageInput" type="file" accept="image/*" multiple="true" hidden="true">
-  <span id="newPostUsername"></span>
+  <span id="newPostUsername">${account.User}</span>
   <div id="newPostArea" contenteditable="true" placeholder="Ready to Hangout?"></div>
   <div id="newPostCharCount">0/${lim}</div>
   <div id="newPostImages"></div>
@@ -16,6 +16,14 @@ modules.createpost = function(holder) {
   <button class="postActionButton" id="image">
   <svg style="position: relative; height: 100%; width: 100%; cursor: pointer; " id="CreateImageButtonSvg" viewBox="0 0 550.801 550.801"><g style="" id="CreateImageButtonG" fill="var(--themeColor)" stroke="#ffffff" stroke-width="0"><path style="" id="Svg" d="M515.828,61.201H34.972C15.659,61.201,0,76.859,0,96.172v358.458C0,473.942,15.659,489.6,34.972,489.6h480.856 c19.314,0,34.973-15.658,34.973-34.971V96.172C550.801,76.859,535.143,61.201,515.828,61.201z M515.828,96.172V350.51l-68.92-62.66 c-10.359-9.416-26.289-9.04-36.186,0.866l-69.752,69.741L203.438,194.179c-10.396-12.415-29.438-12.537-39.99-0.271L34.972,343.219 V96.172H515.828z M367.201,187.972c0-26.561,21.523-48.086,48.084-48.086c26.562,0,48.086,21.525,48.086,48.086 c0,26.561-21.523,48.085-48.086,48.085C388.725,236.058,367.201,214.533,367.201,187.972z"></path></g></svg>
   </button>
+  <!--<button class="postActionButton" id="poll">
+  <svg style="position: relative; height: 100%; width: 100%; cursor: pointer; ">
+  <path d="M0 17.5C0 7.83501 7.83502 0 17.5 0V0C27.165 0 35 7.83502 35 17.5V411.5C35 421.165 27.165 429 17.5 429V429C7.83502 429 0 421.165 0 411.5V17.5Z" fill="var(--themeColor)"/>
+  <path d="M4.5 411.5C4.5 401.835 12.335 394 22 394H520C529.665 394 537.5 401.835 537.5 411.5V411.5C537.5 421.165 529.665 429 520 429H22C12.335 429 4.5 421.165 4.5 411.5V411.5Z" fill="var(--themeColor)"/>
+  <rect x="85" y="196" width="156" height="218" rx="15" stroke="var(--themeColor)" stroke-width="30"/>
+  <rect x="298" y="37" width="156" height="377" rx="15" stroke="var(--themeColor)" stroke-width="30"/>
+  </svg>
+  </button>-->
   <button class="postActionButton hidden" id="emoji">
   <svg style="position: relative; height: 100%; width: 100%; cursor: pointer; " id="EmojiButtonSvg" viewBox="0 0 512 512"><g style="" id="EmojiButtonG" fill="var(--themeColor)" stroke="#ffffff" stroke-width="0"><path style="" id="Svg" d="m256 512c-68.38 0-132.667-26.629-181.02-74.98-48.351-48.353-74.98-112.64-74.98-181.02s26.629-132.667 74.98-181.02c48.353-48.351 112.64-74.98 181.02-74.98s132.667 26.629 181.02 74.98c48.351 48.353 74.98 112.64 74.98 181.02s-26.629 132.667-74.98 181.02c-48.353 48.351-112.64 74.98-181.02 74.98zm0-472c-119.103 0-216 96.897-216 216s96.897 216 216 216 216-96.897 216-216-96.897-216-216-216zm93.737 260.188c-9.319-5.931-21.681-3.184-27.61 6.136-.247.387-25.137 38.737-67.127 38.737s-66.88-38.35-67.127-38.737c-5.93-9.319-18.291-12.066-27.61-6.136s-12.066 18.292-6.136 27.61c1.488 2.338 37.172 57.263 100.873 57.263s99.385-54.924 100.873-57.263c5.93-9.319 3.183-21.68-6.136-27.61zm-181.737-135.188c13.807 0 25 11.193 25 25s-11.193 25-25 25-25-11.193-25-25 11.193-25 25-25zm150 25c0 13.807 11.193 25 25 25s25-11.193 25-25-11.193-25-25-25-25 11.193-25 25z"></path></g></svg>
   </button>
@@ -35,7 +43,6 @@ modules.createpost = function(holder) {
     if (findI("newPostUserPfp").src != newPic) {
       findI("newPostUserPfp").src = newPic;
     }
-    findI("newPostUsername").textContent = account.User || "";
   }
 
   let postText = findI("newPostArea");

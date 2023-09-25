@@ -1,7 +1,12 @@
 modules.webmodal = function (url, title, width, height) {
   width = width || 1000;
   height = height || 650;
-  let newWindow = window.open(url, location.host + "_social_link_authenticate", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=" + width + ", height=" + height + ", top=" + ((screen.height / 2) - (height / 2) - 100) + ", left=" + ((screen.width / 2) - (width / 2)));
+  let a = typeof window.screenX != 'undefined' ? window.screenX : window.screenLeft;
+  let i = typeof window.screenY != 'undefined' ? window.screenY : window.screenTop;
+  let g = typeof window.outerWidth!='undefined' ? window.outerWidth : document.documentElement.clientWidth;
+  let f = typeof window.outerHeight != 'undefined' ? window.outerHeight: (document.documentElement.clientHeight - 22);
+  let h = (a < 0) ? window.screen.width + a : a;
+  let newWindow = window.open(url, location.host + "_popup", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=" + width + ", height=" + height + ", top=" + parseInt(i + ((f - height) / 2.5), 10) + ", left=" + parseInt(h + ((g - width) / 2), 10));
   if (!newWindow || newWindow.closed || typeof newWindow.closed == "undefined" || newWindow.outerHeight === 0) { 
     window.location = url;
   }

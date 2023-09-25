@@ -70,7 +70,7 @@ pages.messages = async function() {
 				div.setAttribute("creator", convo.Creator);
 			} else {
 				html = `
-					<img class="messageImage" src="${assetURL + `ConversationImages/${convo.Image}`}">
+					<img class="messageImage" src="${config.assets + `ConversationImages/${convo.Image}`}">
 					<div class="messageName">
 						${convo.Name}
 					</div>

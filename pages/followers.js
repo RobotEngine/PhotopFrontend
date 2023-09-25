@@ -6,7 +6,7 @@ wireframes.followers = `
 </button>
 <span id="detailInfo" style="color: var(--fontColor)">Users Following</span>
 </div>
-<div class="followHolder"></div>
+<div class="followHolder"><div class="loading" id="followLoading"></div></div>
 `;
 
 
@@ -52,6 +52,7 @@ pages.followers = function () {
         }
       }
       loading = false;
+      findI("followLoading").hidden = true;
     } else {
       showPopUp("An Error Occurred", response, [["Back", "var(--grayColor)", goBack]]);
     }
