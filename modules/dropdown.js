@@ -5,7 +5,7 @@ modules.dropdown = async function(element, anchor, buttons) {
   let dropdown = createElement("dropdown", "div", "body", { top: rect.top + "px" });
   dropdown.id = "dropdown";
   if (anchor == "left") {
-    dropdown.style.right = window.innerWidth - rect.left - 12 + "px";
+    dropdown.style.right = window.innerWidth - rect.left - 4 + "px";
     dropdown.style.transformOrigin = "top right";
   } else {
     dropdown.style.left = rect.right + 4 + "px";
@@ -14,7 +14,13 @@ modules.dropdown = async function(element, anchor, buttons) {
   for (let i in buttons) {
     let thisButton = createElement("dropdownButton", "button", dropdown);
     thisButton.textContent = buttons[i][0];
-    thisButton.style.background = buttons[i][1];
+    thisButton.setAttribute("c", buttons[i][1])
+    thisButton.addEventListener("mouseover", function () {
+      thisButton.style.background = thisButton.getAttribute("c");
+    });
+    thisButton.addEventListener("mouseout", function () {
+      thisButton.style.background = "var(--contentColor2)";
+    });
     if (i == 0) {
       thisButton.focus();
     }

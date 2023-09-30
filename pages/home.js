@@ -7,6 +7,7 @@ pages.home = async function() {
   if (newPost == null) {
     newPost = createpost("pageHolder");
   }
+	newPostCount.home = 0;
 
 	if(!findI("signInUpBar") && !userID) {
 		let signInUpBar = createElement("stickyContainer", "div", main);
@@ -79,12 +80,14 @@ pages.home = async function() {
 
 			if(userID) {
 				postHolder.innerHTML = `
-		 			<div class="stickyContainer settingsTabs" style="margin-bottom:8px;top:unset;" id="tabs">
+		 			<div class="stickyContainer settingsTabs" style="margin-bottom:8px; top: 5px;" id="tabs">
 					  <span class="tab ${homeView == "active"?"selected":""}" id="tab-active" tabindex="0">Active</span>
-					  <span class="tab ${homeView == "recent"?"selected":""}" id="tab-recent" tabindex="0">Recent</span>
+					  <span class="tab ${homeView == "recent"?"selected":""}" id="tab-recent" tabindex="0">
+              <span id="postCounter" ${newPostCount.home == 0?"style='display:none;'":""}><span style="height: 22px; line-height: 22px; overflow-y: hidden; display: inline-block;"><span id="postCounterNum" realnum="0">0</span></span></span>
+			 				Recent
+			 			</span>
 					</div>
 				`;
-	
 				tempListen(findI("tab-active"), "click", function() {
 					homeView = "active";
 					setPage('home');
@@ -128,12 +131,19 @@ pages.home = async function() {
   }
 
   loadPosts();
+  let lastScrollPos = 0;
   
   tempListen(document, "scroll", function() {
     if (postHolder != null && (window.innerHeight + window.scrollY) >= postHolder.offsetHeight - 500 && !loadingPosts) {
 			let currentPosts = Array.from(document.querySelectorAll(".post"))
       loadPosts(currentPosts[currentPosts.length-1].getAttribute("time"));
     }
+    if (window.scrollY > lastScrollPos) {
+      findI("tabs").style.top = Math.max(parseInt(findI("tabs").style.top.replace("px", ""), 10)-5, -60) + "px";
+    } else {
+      findI("tabs").style.top = Math.min(parseInt(findI("tabs").style.top.replace("px", ""), 10)+5, 5) + "px";
+    }
+    lastScrollPos = window.scrollY;
   });
 	
 	/*

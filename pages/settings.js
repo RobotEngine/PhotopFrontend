@@ -1,4 +1,4 @@
-let themes = [["/section", "Basic"], ["Dark", "#151617"], ["Light", "#E6E9EB"], ["/section", "New"], ["Blood Moon", "linear-gradient(to bottom, #5c0701, black)"], ["Under The Sea", "linear-gradient(to bottom, #4ecbef, #0062fe)"], ["Hacker", "black"], ["Midnight Haze", "linear-gradient(135deg, #0c1762, #650f9b, #780f31)"], ["Moss Green", "radial-gradient(ellipse at bottom, #658d65, #0d2c0a)"], ["Ourple 😂", "#4638a1"], ["Peachy Mist", "linear-gradient(315deg, #f0b980, pink)"], ["Faded", "linear-gradient(315deg, #336264, #3a4048)"], ["Into the Light", "radial-gradient(circle at 30% 70%, #fbe286, #4caed3)"], ["Canyon", "radial-gradient(ellipse at bottom, #d5610f, #581703)"], ["Spocco", "linear-gradient(180deg, #ededed 20%, #bbb8b8 80%)"], ["Into the Night", "radial-gradient(circle at 50% 20%, #3e5a72, #000)"]];
+let themes = [["/section", "Basic"], ["Dark", "#151617"], ["Light", "#E6E9EB"], ["/section", "New"], ["Blood Moon", "linear-gradient(to bottom, #5c0701, black)"], ["Under The Sea", "linear-gradient(to bottom, #4ecbef, #0062fe)"], ["Hacker", "black"], ["Midnight Haze", "linear-gradient(135deg, #0c1762, #650f9b, #780f31)"], ["Moss Green", "radial-gradient(ellipse at bottom, #658d65, #0d2c0a)"], ["Ourple 😂", "#4638a1"], ["Peachy Mist", "linear-gradient(315deg, #f0b980, pink)"], ["Faded", "linear-gradient(315deg, #336264, #3a4048)"], ["Into the Light", "radial-gradient(circle at 30% 70%, #fbe286, #4caed3)"], ["Canyon", "radial-gradient(ellipse at bottom, #d5610f, #581703)"], ["Spocco", "linear-gradient(180deg, #ededed 20%, #bbb8b8 80%)"], ["Into the Night", "radial-gradient(circle at 50% 20%, #3e5a72, #000)"], ["Sunset", "radial-gradient(circle at 70% 100%, #ffeec8 -5%, #ed9437 5%, #ed9437 10%, #554cd3, #15055d)"]];
 let dispOptions = ["Embed YouTube Videos", "Embed Twitch Streams", "Embed GIFs"];
 wireframes.settings = `<div class="stickyContainer settingsTabs" id="tabs">
   <span class="tab" type="account" id="tab-account" tabindex="0">Account</span>
@@ -112,7 +112,7 @@ pages.settings = function () {
 					<button title="Manage your Premium" class = "managePremiumBtn lightBlue" style="padding:8px;" id="managePremium">Manage Premium</button>
 					<div class="settingsTitle" style="margin-top:6px;">Gifts</div>
 					<div id = "giftDivFlex1">
-						<button class = "managePremiumBtn" style="background-color:var(--contentColor3);"><div realnum="${(account.Premium || {}).GiftMonths || 0}" class="counter postChatCounter" style="height:50px;"><span id="giftCount">${(account.Premium || {}).GiftMonths || 0}</span></div>
+						<button class="managePremiumBtn" style="background-color:var(--contentColor3); color: var(--fontColor);" id="giftCounter"><div realnum="${(account.Premium || {}).GiftMonths || 0}" class="counter postChatCounter" style="height:50px;"><span id="giftCount">${(account.Premium || {}).GiftMonths || 0}</span></div>
 						
 						<div style="font-size:18px;">Month Credits</div>
 						</button>
@@ -216,15 +216,18 @@ pages.settings = function () {
 						break;
 				}
       }
+      tempListen(findI("giftCounter"), "click", function () {
+        findI("manageGifts").click();
+      });
 			tempListen(findI("manageGifts"), "click", async function () {
 				showPopUp("Premium Gifting", `
 						<div>
 							<div style="display:flex; align-items: center; width: 100%">
-								<span style="font-weight: bold"><span id="currentGifts" style="color: var(--premiumColor);">${account.Premium.GiftMonths || 0}</span> Months</span>
+								<span style="font-weight: bold"><span id="currentGifts" style="color: var(--premiumColor);">${account.Premium.GiftMonths || 0}</span> <span id="giftMonth1">Month${(account.Premium.GiftMonths || 0) == 1 ? "" : "s"}</span></span>
 								<div style="background: var(--contentColor2); display: flex; align-items: center; padding: 6px; margin-left: auto; border-radius: 14px">
                   <span style='margin-right: 8px'>Gift</span>
-                  <input id="giftLengthInput" class="settingsInput" min="0" max="${account.Premium.GiftMonths || 0}" placeholder="${account.Premium.GiftMonths || 0}" style="font-size: 20px; width: 50px; margin: 0px; font-size:17px; text-align: center; background: var(--contentColor3);">
-                  <span style="margin-left: 8px">Months</span>
+                  <input id="giftLengthInput" class="settingsInput" min="0" max="${account.Premium.GiftMonths || 0}" placeholder="1" style="font-size: 20px; width: 50px; margin: 0px; font-size:17px; text-align: center; background: var(--contentColor3);">
+                  <span style="margin-left: 8px" id="giftMonth2">Months</span>
 								  <button id="createGiftButton" style="background-color:var(--premiumColor); margin-left: 8px; font-size:17px; text-align: center">Create</button>
                 </div>
 							</div>
@@ -261,10 +264,16 @@ pages.settings = function () {
 	          const link = createElement('inviteLink', 'div', giftLinksContainer);
 	          link.innerHTML = `<span style="display:inline;margin:0px 6px 0px 2px;font-weight:bold;">${gift.Length}mo</span><div style="cursor:pointer;" title="${gift.Length} Month Gift | Click to Copy" class="link" onclick="copyClipboardText('https://app.photop.live/?gift=${gift.Code}')">?gift=${gift.Code}</div><span class="removeLink" tabindex="0">×</span>`
 	          link.setAttribute('giftid', gift.Code);
+            link.setAttribute('months', gift.Length);
 	          tempListen(link.querySelector('.removeLink'), "click", async function(e){
 							link.style.opacity = 0.5;
 							const [status, response] = await sendRequest("DELETE", `premium/gift/revoke?code=${e.target.parentElement.getAttribute('giftid')}`);
 							if(status == 200){
+                account.Premium.GiftMonths += parseInt(e.target.parentElement.getAttribute("months"));
+              findI("currentGifts").textContent = account.Premium.GiftMonths;
+              findI("giftCount").textContent = account.Premium.GiftMonths;
+              findI("giftMonth1").textContent = (account.Premium.GiftMonths == 1 ? "Month" : "Months");
+              findI("giftMonth2").textContent = (account.Premium.GiftMonths == 1 ? "Month" : "Months");
 								e.target.parentElement.remove();
 								checkGifts();
 							}else{
@@ -285,6 +294,7 @@ pages.settings = function () {
 					link.style.transition = "all 0.4s";
 					link.innerHTML = `<span style="display:inline;margin:0px 6px 0px 2px;font-weight:bold;">${giftLengthInput.value}mo</span> <div style="cursor:pointer;" title="${giftLengthInput.value} Month Gift | Click to Copy" class="link" onclick="copyClipboardText('https://app.photop.live/?gift=${id}')">?gift=${id}</div><span class="removeLink" tabindex="0">×</span>`
 					link.setAttribute('giftid', id);
+          link.setAttribute("months", giftLengthInput.value);
 					setTimeout(function() {
 						link.style.transform = "scale(1)";
 						link.style.opacity = 1;
@@ -294,9 +304,14 @@ pages.settings = function () {
 						link.style.opacity = 0.5;
 						const [status, response] = await sendRequest("DELETE", `premium/gift/revoke?code=${e.target.parentElement.getAttribute('giftid')}`);
 						if(status == 200){
+              account.Premium.GiftMonths += parseInt(e.target.parentElement.getAttribute("months"));
+              findI("currentGifts").textContent = account.Premium.GiftMonths;
+              findI("giftCount").textContent = account.Premium.GiftMonths;
+              findI("giftMonth1").textContent = (account.Premium.GiftMonths == 1 ? "Month" : "Months");
+              findI("giftMonth2").textContent = (account.Premium.GiftMonths == 1 ? "Month" : "Months");
 							e.target.parentElement.remove();
 							checkGifts();
-						}else{
+						} else {
 							link.style.opacity = 1;
 							showPopUp("An Error Occured", response, [
 								["Okay", "var(--grayColor)"]
@@ -318,6 +333,11 @@ pages.settings = function () {
 	        const [status, response] = await sendRequest("POST", "premium/gift/new", { length: parseInt(giftLengthInput.value) });
           if(status == 200){
             createGift(response);
+            account.Premium.GiftMonths -= parseInt(giftLengthInput.value);
+            findI("currentGifts").textContent = account.Premium.GiftMonths;
+            findI("giftCount").textContent = account.Premium.GiftMonths;
+            findI("giftMonth1").textContent = (account.Premium.GiftMonths == 1 ? "Month" : "Months");
+            findI("giftMonth2").textContent = (account.Premium.GiftMonths == 1 ? "Month" : "Months");
 						giftLengthInput.value = "";
           }else{
             showPopUp("An Error Occured", response, [

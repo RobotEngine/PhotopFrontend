@@ -53,11 +53,14 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
     <div class="postChatNew">
       <div class="postChatInput" contenteditable="true" placeholder="Time To Chat" onpaste="clipBoardRead(event)"></div>
       <button class="postChatButton" type="sendchat">
-        <svg viewBox="0 0 599 602" fill="none" xmlns="http://www.w3.org/2000/svg"> <mask id="mask0_931_12" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="599" height="602"> <rect width="599" height="602" fill="#D9D9D9"/> </mask> <g mask="url(#mask0_931_12)"> <path fill-rule="evenodd" clip-rule="evenodd" d="M590.724 93.2879C610.606 40.8893 559.292 -10.4246 506.893 9.45683L44.9078 184.746C-5.64812 203.928 -12.0431 272.856 34.121 301.012L149.73 371.522L372.965 195.301C393.438 179.14 420.026 205.728 403.864 226.201L227.667 449.406L299.141 566.299C327.33 612.403 396.198 605.974 415.368 555.45L590.724 93.2879Z" fill="white"/> </g> </svg>
+        <svg viewBox="0 0 599 602" fill="none" xmlns="http://www.w3.org/2000/svg"> <mask id="mask0_931_12${post._id}" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="599" height="602"> <rect width="599" height="602" fill="#D9D9D9"/> </mask> <g mask="url(#mask0_931_12${post._id})"> <path fill-rule="evenodd" clip-rule="evenodd" d="M590.724 93.2879C610.606 40.8893 559.292 -10.4246 506.893 9.45683L44.9078 184.746C-5.64812 203.928 -12.0431 272.856 34.121 301.012L149.73 371.522L372.965 195.301C393.438 179.14 420.026 205.728 403.864 226.201L227.667 449.406L299.141 566.299C327.33 612.403 396.198 605.974 415.368 555.45L590.724 93.2879Z" fill="white"/> </g> </svg>
       </button>
     </div>
   </div>
   `;
+  if (document.querySelector(`.post[postid='${post._id}']`) != undefined) {
+    document.querySelector(`.post[postid='${post._id}']`).remove();
+  }
   let newPost = createElement("post", "div", parent);
   if (props.loadToTop == true && parent.firstChild != null) {
 		if(parent.firstChild.id == "refreshPosts") {
@@ -136,6 +139,6 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
   }
 
 	if(props.observer) {
-		props.observer.observe(newPost);
+		//props.observer.observe(newPost);
 	}
 }

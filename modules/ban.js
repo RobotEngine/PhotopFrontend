@@ -13,7 +13,7 @@ modules.ban = function (id, name) {
     <option value="permanent">Permanent</option>
   </select>
 <div id="banTermTx">Check this box to terminate <b>${name}</b>'s account from Photop.</div>
-<input type="checkbox" name="term" value="term" id="banTerm"><label for="banTerm" class="radioLabel">Terminate</label>`, [["Ban " + name, "#FF5C5C", async function() {
+<input type="checkbox" name="term" value="term" id="banTerm"><label for="banTerm" class="radioLabel ban">Terminate</label>`, [["Ban " + name, "#FF5C5C", async function() {
     let popUp = findI("modalText" + popUpCode);
     let inputtedReason = popUp.querySelector("#banContext").textContent;
     if (inputtedReason.length < 1 || inputtedReason.length > 250) {
@@ -33,4 +33,7 @@ modules.ban = function (id, name) {
       showPopUp("An Error Occured", response, [["Okay", "var(--grayColor)"]]);
     }
   }, true], ["Cancel", "var(--grayColor)"]]);
+  findI("banTempUnit").addEventListener("change", function () {
+    findI("banTempNum").style.display = (findI("banTempUnit").value == "permanent" ? "none" : "inline-block");
+  });
 }

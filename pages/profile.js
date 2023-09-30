@@ -105,7 +105,7 @@ pages.profile = async function() {
   findC("profileStatus").setAttribute("userid", user._id);
   findC("profileStatus").style = "background: " + status[1];
   findC("profileStatus").title = status[0];
-  findC("profileUsername").innerHTML = `<span style="font-size: 30px;">${user.User}</span></span>`
+  findC("profileUsername").innerHTML = `<span style="font-size: 30px;" id="profileUsername">${user.User}</span></span>`
   findC("profileFollow").setAttribute("userid", user._id);
   findC("profileDate").innerHTML = `${getSVG("calendar")} <span class="profileDateSpan">Joined <b>${formatDate(user.CreationTime)}</b>`
   findC("profileDateSpan").title = formatFullDate(user.CreationTime);

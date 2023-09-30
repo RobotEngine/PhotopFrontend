@@ -13,7 +13,7 @@ let configs = {
   }
 };
 
-let config = configs["public"]; // ["testing" / "public"]
+let config = configs["testing"]; // ["testing" / "public"]
 
 const socket = new SimpleSocket({
   project_id: "61b9724ea70f1912d5e0eb11",
@@ -29,18 +29,18 @@ let week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "S
 
 let roleTypes = {
   // Role colors are determined by selecting one prominent color from the Google version of the emoji mixed with #505068.
-  "Owner": ["👑", { CanDeletePosts: true, CanDeleteChats: true, CanBanUsers: true, CanUnbanUser: true }, "#A88D48"],
-  "Admin": ["🔨", { CanDeletePosts: true, CanDeleteChats: true, CanBanUsers: true, CanUnbanUser: true }, "#b58c42"],
-  "Moderator": ["🛡️", { CanDeletePosts: true, CanDeleteChats: true, CanBanUsers: true }, "#3F6479"],
-  "Trial Moderator": ["🛡️", { CanDeletePosts: true, CanDeleteChats: true }, "#888888", "filter: contrast(0) brightness(1.5);"],
-  "Developer": ["👨‍💻", {}, "#63A835"],
-  "Contributor": ["🔧", {}, "#697F94"],
-  "Bug Hunter": ["🐛", {}, "#849040"],
-  "Verified": ["📢", {}, "#A2494F"],
-  "Partner": ["📷", {}, "#395568"],
-  "Tester": ["🧪", {}, "#288887"],
-  "Bot": ["🤖", {}, "#8B3945"],
-  "Premium": ["⭐", {}, "#d94abe", "background: linear-gradient(315deg, #ec24ae 25%, #d90d9a 50%, #f929b9 50%, #f16dc8 75%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"]
+  "Owner": ["👑", { CanDeletePosts: true, CanDeleteChats: true, CanBanUsers: true, CanUnbanUser: true }, "#A88D48", "{user} created Photop!"],
+  "Admin": ["🔨", { CanDeletePosts: true, CanDeleteChats: true, CanBanUsers: true, CanUnbanUser: true }, "#b58c42", "{user} manages the moderators and trial moderators on Photop."],
+  "Moderator": ["🛡️", { CanDeletePosts: true, CanDeleteChats: true, CanBanUsers: true }, "#3F6479", "{user} scans posts and profiles for rule-breaking content."],
+  "Trial Moderator": ["🛡️", { CanDeletePosts: true, CanDeleteChats: true }, "#888888", "{user} is a moderator in training and scans posts and profiles for rule-breaking content.", "filter: contrast(0) brightness(1.5);"],
+  "Developer": ["👨‍💻", {}, "#63A835", "{user} helps develop new features and squash bugs."],
+  "Contributor": ["🔧", {}, "#697F94", "{user} contributed to Photop in the past in some way."],
+  "Bug Hunter": ["🐛", {}, "#849040", "{user} discovered a large vulernability in Photop and reported it to the owner."],
+  "Verified": ["📢", {}, "#A2494F", "{user} is a notable, significant person."],
+  "Partner": ["📷", {}, "#395568", "{user} is partnering with Photop."],
+  "Tester": ["🧪", {}, "#288887", "{user} created their account during the inital testing phase."],
+  "Bot": ["🤖", {}, "#8B3945", "{user} is a bot. Beep boop!"],
+  "Premium": ["⭐", {}, "#d94abe", "{user} is subscribed to Photop Premium.", "background: linear-gradient(315deg, #ec24ae 25%, #d90d9a 50%, #f929b9 50%, #f16dc8 75%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"]
 };
 let roleKeyTypes = Object.keys(roleTypes);
 
@@ -428,7 +428,11 @@ function handleIntersection(entries, observer) {
 }
 
 let accountSubscribe;
-let newPostCount = 0;
+let postSubscribe;
+let newPostCount = {
+	group: 0,
+	home: 0
+};
 let recentUserPostID;
 function fetchNewPosts(post) {
   if (post != null) {
@@ -449,6 +453,7 @@ let setLocation;
 function setAccountSub(location) {
   setLocation = location || setLocation;
   let query = { task: "general", location: setLocation };
+	let postQuery = { task: "general", location: "home", fullNew: true };
   if (userID != null) {
     query.userID = userID;
     query.token = account.Realtime;
@@ -457,6 +462,28 @@ function setAccountSub(location) {
       query.location += account.Type;
     }
   }
+	if(postSubscribe != null) {
+		postSubscribe.edit(postQuery);
+	} else {
+		postSubscribe = socket.subscribe(postQuery, async function(data) {
+			if(data.type != "newpost") return;
+			let post = data.post;
+
+			if(post.GroupID || post.UserID == userID) return;
+			newPostCount.home++;
+
+			if(findI("postCounter").style.display == "none") {
+				findI("postCounter").style.display = "inline-flex";
+			}
+
+			let formattedNum = newPostCount.home;
+			if(newPostCount.home > 99) {
+				formattedNum = "99+";
+			}
+
+			findI("postCounter").innerText = formattedNum;
+ 		});
+	}
   if (accountSubscribe != null) {
     accountSubscribe.edit(query);
   } else {
@@ -482,15 +509,15 @@ function setAccountSub(location) {
             }
           }
 					if(getParam("group") == data.post.GroupID && (findI("groupPins") && findI("groupPins").getAttribute("active") == null)) {
-						newPostCount += 1;
+						newPostCount.group += 1;
 					}
-          if (data.post.GroupID != null && (findI("groupPins") && findI("groupPins").getAttribute("active") == null)) {
+          if ((data.post.GroupID != null && currentPage == "group") && (findI("groupPins") && findI("groupPins").getAttribute("active") == null)) {
             let notifHolder = findI(data.post.GroupID + "notif");
 						if (data.post.UserID == userID) {
 	            if (recentUserPostID != data.post._id) {
 	              recentUserPostID = data.post._id;
 	              fetchNewPosts(data.post);
-								newPostCount = 0;
+								newPostCount.group = 0;
 								if(findI("groupPins").getAttribute("active") != null) {
 									findI("groupPins").removeAttribute("active");
 								}
@@ -510,15 +537,15 @@ function setAccountSub(location) {
 	          }
 						refreshPosts.style.top = "62px";
 						let ending = "";
-	          if (newPostCount > 1) {
+	          if (newPostCount.group > 1) {
 	            ending = "s";
 	          }
-	          refreshPosts.innerHTML = "Show <b>" + newPostCount + "</b> Post" + ending;
+	          refreshPosts.innerHTML = "Show <b>" + newPostCount.group + "</b> Post" + ending;
 						if (postHolder.firstChild != null) {
 	            postHolder.insertBefore(refreshPosts, postHolder.firstChild);
 	          }
-	          tempListen(refreshPosts, "click", function() { newPostCount = 0; fetchNewPosts(); });
-          } else if (currentPage == "home") {
+	          tempListen(refreshPosts, "click", function() { newPostCount.group = 0; fetchNewPosts(); });
+          } else if (currentPage == "home" && !data.post.GroupID) {
             if(data.post.UserID == userID) {
 							let postHolder = findC("postHolder");
 							let renderPost = await getModule("post");
@@ -2227,13 +2254,17 @@ function getRoleHTML(roleUser, max) {
     roles.push("Premium");
   }
   for (let i = 0; i < Math.min(roles.length, maxRoles); i++) {
-    roleHTML += `<span class="roleEmoji" style="background: linear-gradient(315deg, #505068, ${roleTypes[roles[i]][2]})" title="${roles[i]}"><span style="${roleTypes[roles[i]][3] || ""}">${roleTypes[roles[i]][0]}</span></span> `;
+    roleHTML += addRole(roles[i]);
     /*
     roleHTML += `<span class="roleEmoji" title="${roles[i]}"><img src = "../Images/RoleIcons/${roles[i]
       }.png" class = "profileRole"></span> `;
     */
   }
   return roleHTML;
+}
+function addRole(type) {
+  var thisRandom = Math.random();
+  return `<span class="roleEmoji" style="background: linear-gradient(315deg, #505068, ${roleTypes[type][2]})" title="${type}" id="${"role" + thisRandom}"><span style="${roleTypes[type][4] || ""}" onclick="if (currentPage == 'profile') {showPopUp('${type}', '${roleTypes[type][3]}'.replace(\'{user}\', findI(\'profileUsername\').textContent), [['Okay', 'var(--grayColor)']])}">${roleTypes[type][0]}</span></span> `;
 }
 function checkPermision(roles, permision) {
   if (roles != null && permision != null) {
@@ -2358,13 +2389,13 @@ function reportContent(id, name, userid, type) {
       showPopUp("Nothing Selected", "Please select why this user is breaking the rules.", [["Okay", "var(--grayColor)"]]);
       return;
     }
-    findI("backBlur" + popUpCode).remove();
     selectedReason = selectedReason.value;
     let inputtedReason = popUpText.querySelector("#reportContext").textContent;
-    let popUpCode2 = showPopUp("Sending Report...", "Your report is being sent to the Photop moderators. Please wait...", null);
     if (inputtedReason.length > 200) {
-      showPopUp("Report Context Too Long", "You can only enter 200 characters in the report context. Please try to make it a little more concise.", [["Okay", "var(--grayColor)"]])
+      showPopUp("Report Context Too Long", "You can only enter 200 characters in the report context. Please try to make it a little more concise.", [["Okay", "var(--grayColor)"]]);
     } else {
+      findI("backBlur" + popUpCode).remove();
+      let popUpCode2 = showPopUp("Sending Report...", "Your report is being sent to the Photop moderators. Please wait...", null);
       let [code, response] = await sendRequest("PUT", "mod/report?type=" + type + "&contentid=" + id, { reason: selectedReason, report: inputtedReason });
       findI("backBlur" + popUpCode2).remove();
       if (code == 200) {
@@ -2671,6 +2702,17 @@ function updateDisplay(type) {
       setCSSVar("--themeColor", "#758691");
       particles = null;
       break;
+    case "Sunset":
+      setCSSVar("--leftSidebarColor", "black");
+      setCSSVar("--pageColor", "radial-gradient(circle at 70% 100%, #ffeec8 -5%, #ed9437 5%, #ed9437 10%, #554cd3, #15055d)");
+      setCSSVar("--pageColor2", "var(--pageColor)");
+      setCSSVar("--contentColor", "#151547");
+      setCSSVar("--contentColor2", "#1c1c5b");
+      setCSSVar("--contentColor3", "#22225d");
+      setCSSVar("--fontColor", "white");
+      setCSSVar("--themeColor", "#37afed");
+      particles = null;
+      break;
     default:
       setCSSVar("--leftSidebarColor", "#262630");
       setCSSVar("--pageColor", "#151617");
@@ -2718,9 +2760,11 @@ function createParticle() {
 setInterval(createParticle, (isMobile ? 1500 : 500));
 
 if (getLocalStore("display") != null) {
-  account.Settings = { Display: JSON.parse(getLocalStore("display")) };
-  updateDisplay(account.Settings.Display.Theme);
-  updateBackdrop(account.Settings.Backdrop);
+  if (account._id != undefined) {
+    account.Settings = { Display: JSON.parse(getLocalStore("display")) };
+    updateDisplay(account.Settings.Display.Theme);
+    updateBackdrop(account.Settings.Backdrop);
+  }
 }
 /*
 if (getLocalStore("lastUpdateView") != "PhotopRevamp") {

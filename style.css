@@ -230,7 +230,7 @@ html {
 
 button {
   border: none;
-  color: var(--fontColor);
+  color: white;
   background: var(--themeColor);
   padding: 6px;
   font-family: var(--secondFont);
@@ -607,14 +607,14 @@ button:active {
   justify-content: space-around;
 }
 .planAlert {
-  background: var(--pageColor2);
+  background: var(--contentColor2);
   padding: 8px;
   border-radius: 8px;
   font-size: 13px;
   margin-bottom: 4px;
 }
 .plan {
-	background: var(--pageColor2);
+	background: var(--contentColor2);
   padding: 8px;
   border-radius: 8px;
   flex-direction: row;
@@ -1479,6 +1479,42 @@ button:active {
   object-fit: cover;
   cursor: pointer;
 }
+@media only screen and (max-width: 450px) {
+  .profilePictureHolder {
+    margin-top: -20px !important;
+  }
+  .profilePicture {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 12px !important;
+  }
+  .profileStatus {
+    top: 50px !important;
+    left: 60px !important;
+  }
+  .profileFollowCounts {
+    margin-top: 8px !important;
+    width: unset !important;
+  }
+  .profileCount {
+    display: inline-block !important;
+    margin-right: 8px !important;
+  }
+  .profileBanner {
+    height: 140px !important;
+  }
+  .zoomedImage {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0 !important;
+  }
+  #backButtonArrow, #groupInvite, #groupPins, #groupSettings {
+    display: none !important;
+  }
+}
+.groupToolbar {
+  margin-left: auto;
+}
 .profilePictureHolder {
   position: relative;
   display: flex;
@@ -1585,6 +1621,7 @@ button:active {
   line-height: 30px;
   cursor: pointer;
   transition: 0.2s;
+  height: 30px;
 }
 .tab.selected {
   color: var(--themeColor);
@@ -2466,6 +2503,8 @@ td {
   float: right;
   margin-left: 8px;
   z-index: 601;
+  transition: 0.2s;
+  transform-origin: right center;
 }
 .groupMembers {
   position: fixed;
@@ -2476,6 +2515,13 @@ td {
   top: 0px;
   overflow-y: auto;
   background: var(--sidebarBG);
+}
+@media only screen and (max-width: 1075px) {
+  .groupMembers {
+    background: var(--pageColor);
+    padding-left: 4px !important;
+    margin-left: -4px;
+  }
 }
 .groupMemberSection {
   margin-top: 8px;
@@ -2536,7 +2582,6 @@ td {
   cursor: pointer;
 }
 #groupInvite {
-	margin-left:auto;
   visibility: hidden;
 }
 #groupSettings {
@@ -3738,4 +3783,23 @@ td {
   flex-shrink: 0;
   padding: 2px 4px;
   font-size: 14px;
+}
+
+#postCounter {
+	border-radius: 100px;
+  background: var(--themeColor);
+  display: inline-flex;
+  padding: 1px 4px;
+	justify-content: center;
+  align-items: center;
+	overflow-y:hidden;
+}
+#postCounterNum {
+  display: inline-block;
+  height: 22px;
+  font-size: 22px;
+  line-height: 22px;
+}
+h1, h2, p {
+  margin: 0;
 }
