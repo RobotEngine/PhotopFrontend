@@ -13,7 +13,7 @@ let configs = {
   }
 };
 
-let config = configs["testing"]; // ["testing" / "public"]
+let config = configs["public"]; // ["testing" / "public"]
 
 const socket = new SimpleSocket({
   project_id: "61b9724ea70f1912d5e0eb11",
@@ -2759,12 +2759,15 @@ function createParticle() {
 }
 setInterval(createParticle, (isMobile ? 1500 : 500));
 
-if (getLocalStore("display") != null) {
-  if (account._id != undefined) {
-    account.Settings = { Display: JSON.parse(getLocalStore("display")) };
-    updateDisplay(account.Settings.Display.Theme);
-    updateBackdrop(account.Settings.Backdrop);
-  }
+if (account._id != undefined) {
+	if (getLocalStore("display") != null) {
+		account.Settings = { Display: JSON.parse(getLocalStore("display")) };
+		updateDisplay(account.Settings.Display.Theme);
+		updateBackdrop(account.Settings.Backdrop);
+	}
+}
+if(getLocalStore("backdrop") != null) {
+	updateBackdrop(getLocalStore("backdrop"));
 }
 /*
 if (getLocalStore("lastUpdateView") != "PhotopRevamp") {
