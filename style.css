@@ -3789,10 +3789,11 @@ td {
 	border-radius: 100px;
   background: var(--themeColor);
   display: inline-flex;
-  padding: 1px 4px;
+  padding: 0 4px;
 	justify-content: center;
   align-items: center;
 	overflow-y:hidden;
+	color:white;
 }
 #postCounterNum {
   display: inline-block;
