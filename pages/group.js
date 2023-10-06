@@ -367,7 +367,7 @@ pages.group = async function() {
   } else {
     inviteButton.style.visibility = "hidden";
     settingsButton.style.visibility = "hidden";
-    let toolbar = findI("groupTopBar");
+    let toolbar = findC("groupToolbar");
     let joinButton = createElement("groupJoinButton", "button", toolbar);
     joinButton.textContent = "Join";
     toolbar.insertBefore(joinButton, menuButton);

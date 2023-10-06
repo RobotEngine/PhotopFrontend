@@ -2488,6 +2488,7 @@ td {
 }
 .groupJoinButton {
   margin-right: 8px;
+  vertical-align: top;
 }
 .inviteUsername {
   padding: 4px;
