@@ -1610,6 +1610,7 @@ button:active {
   flex-wrap: wrap;
   overflow-x: hidden;
   position: sticky;
+  transition: 0.2s;
 }
 .settingsTabs {
   font-family: var(--mainFont) !important;
@@ -2053,6 +2054,12 @@ input[type="radio"]:checked + .radioLabel:before, input[type="checkbox"]:checked
 .roleEmoji {
   border-radius: 6px;
   padding: 0 2px;
+}
+.roleEmoji.onProfile {
+  cursor: pointer;
+}
+.roleEmoji.onProfile:active {
+  filter: brightness(0.8);
 }
 .settingsTitle {
   font-weight: bold;
@@ -2523,6 +2530,23 @@ td {
     padding-left: 4px !important;
     margin-left: -4px;
   }
+  .groupMembersHolder {
+    position: fixed;
+  }
+  .groupMembersX {
+    display: block !important;
+    width: 40px;
+    height: 40px;
+    background: var(--pageColor);
+    right: 48px;
+    position: relative;
+    line-height: 15px;
+    border-radius: 100px;
+    font-size: 30px;
+  }
+}
+.groupMembersX {
+  display: none;
 }
 .groupMemberSection {
   margin-top: 8px;
@@ -2586,7 +2610,7 @@ td {
   visibility: hidden;
 }
 #groupSettings {
-  display: none;
+  visibility: hidden;
 }
 .groupCreateSection {
   display: flex;

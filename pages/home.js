@@ -139,9 +139,9 @@ pages.home = async function() {
       loadPosts(currentPosts[currentPosts.length-1].getAttribute("time"));
     }
     if (window.scrollY > lastScrollPos) {
-      findI("tabs").style.top = Math.max(parseInt(findI("tabs").style.top.replace("px", ""), 10)-5, -60) + "px";
+      findI("tabs").style.top = "-60px";
     } else {
-      findI("tabs").style.top = Math.min(parseInt(findI("tabs").style.top.replace("px", ""), 10)+5, 5) + "px";
+      findI("tabs").style.top = "5px";
     }
     lastScrollPos = window.scrollY;
   });

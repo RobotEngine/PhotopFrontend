@@ -1984,7 +1984,7 @@ function setUsernameRole(textHolder, userData, fontSize, limitSingleBadge) {
   }
   textHolder.innerHTML = fullString;
 }
-function getRoleHTML(roleUser, max) {
+function getRoleHTML(roleUser, max, isProfile) {
   let roleHTML = "";
   let roles = [];
   let maxRoles = (max || 1);
@@ -1999,7 +1999,7 @@ function getRoleHTML(roleUser, max) {
     roles.push("Premium");
   }
   for (let i = 0; i < Math.min(roles.length, maxRoles); i++) {
-    roleHTML += addRole(roles[i]);
+    roleHTML += addRole(roles[i], isProfile);
     /*
     roleHTML += `<span class="roleEmoji" title="${roles[i]}"><img src = "../Images/RoleIcons/${roles[i]
       }.png" class = "profileRole"></span> `;
@@ -2007,9 +2007,9 @@ function getRoleHTML(roleUser, max) {
   }
   return roleHTML;
 }
-function addRole(type) {
+function addRole(type, isProfile) {
   var thisRandom = Math.random();
-  return `<span class="roleEmoji" style="background: linear-gradient(315deg, #505068, ${roleTypes[type][2]})" title="${type}" id="${"role" + thisRandom}"><span style="${roleTypes[type][4] || ""}" onclick="if (currentPage == 'profile') {showPopUp('${type}', '${roleTypes[type][3]}'.replace(\'{user}\', findI(\'profileUsername\').textContent), [['Okay', 'var(--grayColor)']])}">${roleTypes[type][0]}</span></span> `;
+  return `<span class="roleEmoji${isProfile ? " onProfile" : ""}" style="background: linear-gradient(315deg, #505068, ${roleTypes[type][2]})" title="${type}" id="${"role" + thisRandom}"><span style="${roleTypes[type][4] || ""}" onclick="if (${isProfile}) {showPopUp('${type}', '${roleTypes[type][3]}'.replace(\'{user}\', findI(\'profileUsername\').textContent), [['Okay', 'var(--grayColor)']])}">${roleTypes[type][0]}</span></span> `;
 }
 function checkPermision(roles, permision) {
   if (roles != null && permision != null) {

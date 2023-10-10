@@ -1,5 +1,6 @@
 wireframes.group = `
 <div class="groupMembersHolder">
+  <button class="groupMembersX">&times;</button>
   <div class="groupMembers"></div>
 </div>
 <div class="groupMainHolder">
@@ -64,6 +65,15 @@ pages.group = async function() {
   group.LastChecked = Date.now();
 
   setAccountSub("home");
+
+  tempListen(findC("groupMembersX"), "click", function(e) {
+    groupMembersHolder.style.opacity = 0;
+    groupMembersHolder.style.transform = "scale(0.95)";
+    setTimeout(function () {
+      groupMembersHolder.style.display = "none";
+      groupMembersHolder.style.removeProperty("position");
+    }, 200);
+  });
 
   let notifHolder = findI(groupID + "notif");
   if (notifHolder != null) {
@@ -399,7 +409,7 @@ pages.group = async function() {
     let finalOptions = [...dropdownOptions];
     if (window.innerWidth < 1075) {
       finalOptions.unshift(["View Members", "var(--themeColor)", function() {
-        groupMembersHolder.style.position = "absolute";
+        groupMembersHolder.style.position = "fixed";
         groupMembersHolder.style.display = "unset";
         setTimeout(function () {
           groupMembersHolder.style.opacity = 1;
@@ -622,17 +632,6 @@ pages.group = async function() {
       updateLoadedPics();
     }
   }
-  tempListen(app, "mousedown", function(e) {
-    if (groupMembersHolder != null && groupMembersHolder.style.position == "absolute" && e.target.closest(".groupMembersHolder") == null) {
-      groupMembersHolder.style.opacity = 0;
-      groupMembersHolder.style.transform = "scale(0.95)";
-      setTimeout(function () {
-        groupMembersHolder.style.display = "none";
-        groupMembersHolder.style.removeProperty("position");
-      }, 200);
-      e.preventDefault();
-    }
-  });
   tempListen(window, "resize", resizePage);
   resizePage();
 }
