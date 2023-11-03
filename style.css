@@ -1320,8 +1320,11 @@ button:active {
   display: block;
   font-family: var(--mainFont);
   width: 100%;
+  color: var(--fontColor);
 }
-
+.dropdownButton:hover {
+  color: white;
+}
 #simpleTopBar {
   display: flex;
   flex-wrap: wrap;
@@ -1788,6 +1791,7 @@ input[type="radio"], input[type="checkbox"] {
 }
 input[type="radio"]:checked + .radioLabel, input[type="checkbox"]:checked + .radioLabel {
   background: var(--themeColor);
+  color: white;
   font-weight: bold;
 }
 input[type="radio"]:checked + .radioLabel.report, input[type="checkbox"]:checked + .radioLabel.report {
@@ -3828,4 +3832,18 @@ td {
 }
 h1, h2, p {
   margin: 0;
+}
+
+.previewOptions {
+	display:flex;
+	position:absolute;
+	justify-content:center;
+	align-items:center;
+	top:5px;
+	right:5px;
+	border-radius:100px;
+	padding:6px;
+	width:20px;
+	cursor:pointer;
+	background:rgba(0,0,0,.5);
 }

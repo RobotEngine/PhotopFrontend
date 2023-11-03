@@ -17,10 +17,6 @@ pages.home = async function() {
 		<button class="signInButton">
 			Login
 		</button>
-
-		<div id="migrateTag">
-			Still don't have an Exotek Account? Migrate before <i>October 21, 2023</i> to keep your account. <a href="#migrate" style="font-weight:1000;">Migrate Now</a>
-		</div>
 		`;
 		findC("signInButton").addEventListener("click", function() {
 			openLoginModal("signin", "Login");
@@ -66,6 +62,12 @@ pages.home = async function() {
 			if(before) {
 				getURL += `?before=${before}`;
 			}
+		} else if(homeView == "following") {
+			getURL = "posts/following";
+
+			if(before) {
+				getURL += `?before=${before}`;
+			}
 		} else if (cursorId) {
       getURL += "?cursor=" + cursorId;
     }
@@ -81,11 +83,12 @@ pages.home = async function() {
 			if(userID) {
 				postHolder.innerHTML = `
 		 			<div class="stickyContainer settingsTabs" style="margin-bottom:8px; top: 5px;" id="tabs">
-					  <span class="tab ${homeView == "active"?"selected":""}" id="tab-active" tabindex="0">Active</span>
-					  <span class="tab ${homeView == "recent"?"selected":""}" id="tab-recent" tabindex="0">
+						<span class="tab ${homeView == "recent"?"selected":""}" id="tab-recent" tabindex="0">
               <span id="postCounter" ${newPostCount.home == 0?"style='display:none;'":""}><span style="height: 22px; line-height: 22px; overflow-y: hidden; display: inline-block;"><span id="postCounterNum" realnum="0">0</span></span></span>
 			 				Recent
 			 			</span>
+					  <span class="tab ${homeView == "active"?"selected":""}" id="tab-active" tabindex="0">Active</span>
+					 	<span class="tab ${homeView == "following"?"selected":""}" id="tab-following" tabindex="0">Following</span>
 					</div>
 				`;
 				tempListen(findI("tab-active"), "click", function() {
@@ -105,6 +108,15 @@ pages.home = async function() {
 		        postHolder.remove();
 		        postHolder = null;
 		      }
+				});
+				tempListen(findI("tab-following"), "click", function() {
+					homeView = "following";
+					setPage('home');
+
+					if (postHolder != null) {
+						postHolder.remove();
+						postHolder = null;
+					}
 				});
 			}
     }

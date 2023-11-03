@@ -288,22 +288,38 @@ modules.profilepreview = async function(element, getID) {
     }
   });
 
-  if (currentPage == "group") {
-    let group = groups[getParam("group")];
-    if (group != null && group.Owner == userID && element.className != "inviteUsernameTile") {
-      let kickMember = createElement("previewActionButton", "button", preview, { color: "#FF5C5C" });
-      kickMember.textContent = "Kick Member";
-      kickMember.addEventListener("click", function() {
-        showPopUp("Kick " + data.User + "?", "Are you sure you want to kick <b>" + data.User + "</b> from your group?", [["Kick", "#FF5C5C", async function() {
-          let [code, response] = await sendRequest("PUT", "groups/moderate?groupid=" + getParam("group"), { type: "kick", data: getID });
-          if (code != 200) {
-            showPopUp("Failed to Kick", response, [["Okay", "var(--grayColor)"]]);
-          }
-        }], ["Cancel", "var(--grayColor)"]]);
-        closeProfilePreview();
-      });
-    }
-  }
+	if (currentPage == "group") {
+		let group = groups[getParam("group")];
+		if (group != null && !group.Moderators.includes(getID) && group.Owner != getID && (group.Owner == userID || group.isMod) && element.className != "inviteUsernameTile") {
+			let dropdown = [
+				["Kick User", "#FF5C5C", function() {
+				 	showPopUp("Kick " + data.User + "?", "Are you sure you want to kick <b>" + data.User + "</b> from your group?", [["Kick", "#FF5C5C", async function() {
+					 	let [code, response] = await sendRequest("PUT", "groups/moderate?groupid=" + getParam("group"), { type: "kick", data: getID });
+					 	if (code != 200) {
+						 	showPopUp("Failed to Kick", response, [["Okay", "var(--grayColor)"]]);
+					 	}
+				 	}], ["Cancel", "var(--grayColor)"]]);
+				 	closeProfilePreview();
+			 	}],
+				["Ban User", "#FF5C5C", function() {
+					showPopUp("Ban " + data.User + "?", "Are you sure you want to ban <b>" + data.User + "</b> from your group?", [["Ban", "#FF5C5C", async function() {
+						let [code, response] = await sendRequest("PUT", "groups/moderate?groupid=" + getParam("group"), { type: "ban", data: getID });
+						if (code != 200) {
+							showPopUp("Failed to Ban", response, [["Okay", "var(--grayColor)"]]);
+						}
+					}], ["Cancel", "var(--grayColor)"]]);
+				 	closeProfilePreview();
+		 		}],
+			];
+			let previewOptions = createElement("previewOptions", "div", preview)
+			previewOptions.innerHTML = `
+				<svg viewBox="0 0 41.915 41.915"><g fill="var(--themeColor)"><path style="" id="Svg" d="M11.214,20.956c0,3.091-2.509,5.589-5.607,5.589C2.51,26.544,0,24.046,0,20.956c0-3.082,2.511-5.585,5.607-5.585 C8.705,15.371,11.214,17.874,11.214,20.956z"></path><path d="M26.564,20.956c0,3.091-2.509,5.589-5.606,5.589c-3.097,0-5.607-2.498-5.607-5.589c0-3.082,2.511-5.585,5.607-5.585 C24.056,15.371,26.564,17.874,26.564,20.956z"></path><path d="M41.915,20.956c0,3.091-2.509,5.589-5.607,5.589c-3.097,0-5.606-2.498-5.606-5.589c0-3.082,2.511-5.585,5.606-5.585 C39.406,15.371,41.915,17.874,41.915,20.956z"></path></g></svg>
+			`;
+			tempListen(previewOptions, "click", function() {
+				showDropdown(previewOptions, "left", dropdown);
+			})
+		}
+	}
 
   previewRect = preview.getBoundingClientRect();
   if (previewRect.left + previewRect.width > window.innerWidth) {
