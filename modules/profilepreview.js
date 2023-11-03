@@ -291,6 +291,7 @@ modules.profilepreview = async function(element, getID) {
 	if (currentPage == "group") {
 		let group = groups[getParam("group")];
 		if (group != null && !group.Moderators.includes(getID) && group.Owner != getID && (group.Owner == userID || group.isMod) && element.className != "inviteUsernameTile") {
+			let isMod = group.Moderators.includes(getID);
 			let dropdown = [
 				["Kick User", "#FF5C5C", function() {
 				 	showPopUp("Kick " + data.User + "?", "Are you sure you want to kick <b>" + data.User + "</b> from your group?", [["Kick", "#FF5C5C", async function() {
@@ -309,8 +310,30 @@ modules.profilepreview = async function(element, getID) {
 						}
 					}], ["Cancel", "var(--grayColor)"]]);
 				 	closeProfilePreview();
-		 		}],
+		 		}]
 			];
+			if (group.Owner == userID && data._id != userID) {
+				if (isMod) {
+					dropdown.unshift(["Demote", "#FF5C5C", async function () {
+						showPopUp("Demote " + data.User + "?", "Are you sure you want to demote <b>" + data.User + "</b>? They will no longer be a moderator.", [["Demote", "#FF5C5C", async function() {
+							let [code, response] = await sendRequest("PUT", "groups/moderate?groupid=" + getParam("group"), { type: "demote", data: data._id });
+							if (code != 200) {
+								showPopUp("Failed to Demote", response, [["Okay", "var(--grayColor)"]]);
+							}
+						}], ["Cancel", "var(--grayColor)"]]);
+					}]);
+				} else {
+					dropdown.unshift(["Promote", "var(--themeColor)", async function () {
+						showPopUp("Promote " + data.User + "?", "Are you sure you want to promote <b>" + data.User + "</b>? They will become a moderator and will be able to delete posts and ban/kick users in this group.", [["Promote", "var(--themeColor)", async function() {
+							let [code, response] = await sendRequest("PUT", "groups/moderate?groupid=" + getParam("group"), { type: "promote", data: data._id });
+							if (code != 200) {
+								showPopUp("Failed to Promote", response, [["Okay", "var(--grayColor)"]]);
+							}
+						}], ["Cancel", "var(--grayColor)"]]);
+					}]);
+				}
+			}
+			
 			let previewOptions = createElement("previewOptions", "div", preview)
 			previewOptions.innerHTML = `
 				<svg viewBox="0 0 41.915 41.915"><g fill="var(--themeColor)"><path style="" id="Svg" d="M11.214,20.956c0,3.091-2.509,5.589-5.607,5.589C2.51,26.544,0,24.046,0,20.956c0-3.082,2.511-5.585,5.607-5.585 C8.705,15.371,11.214,17.874,11.214,20.956z"></path><path d="M26.564,20.956c0,3.091-2.509,5.589-5.606,5.589c-3.097,0-5.607-2.498-5.607-5.589c0-3.082,2.511-5.585,5.607-5.585 C24.056,15.371,26.564,17.874,26.564,20.956z"></path><path d="M41.915,20.956c0,3.091-2.509,5.589-5.607,5.589c-3.097,0-5.606-2.498-5.606-5.589c0-3.082,2.511-5.585,5.606-5.585 C39.406,15.371,41.915,17.874,41.915,20.956z"></path></g></svg>
