@@ -242,7 +242,9 @@ modules.actions = function() {
           if (hasPremium()) {
             dropdownButtons.unshift(["Edit Post", "var(--premiumColor)", editPost]);
           }
-          dropdownButtons.unshift(["Delete", "#FF5C5C", deletePost]);
+					if(!getParam("group")) {
+						dropdownButtons.unshift(["Delete", "#FF5C5C", deletePost]);
+					}
         } else {
           if (userID != null) {
             dropdownButtons.unshift(["Block User", "#FF8652", function() {
@@ -258,43 +260,45 @@ modules.actions = function() {
             }
             if (checkPermision(account.Role, "CanDeletePosts") == true) {
               dropdownButtons.unshift(["Delete", "#FF5C5C", deletePost]);
-            } else {
-              let groupID = getParam("group");
-              if (currentPage == "group" && groups[groupID] != null && (groups[groupID].Owner == userID || groups[groupID].Moderator)) {
-                dropdownButtons.unshift(["Delete", "#FF5C5C", deletePost]);
-                if (groups[groupID].Owner == userID) {
-                  if(postedGroup != null && postedGroup.Owner == userID) {
-                    if(post.getAttribute("grouppin") != null) {
-                      dropdownButtons.unshift(["Unpin Post", "#C95EFF", function() {
-                        showPopUp("Unpin this Post?", "Unpinning this post will remove it from the Group Pins page. It won't delete the post.", [["Unpin", "#C95EFF", async function() {
-                          let [code, response] = await sendRequest("DELETE", "posts/unpin?postid=" + post.getAttribute("postid") + "&groupid=" + post.getAttribute("groupid"));
-                          post.removeAttribute("grouppin");
-                          post.querySelector(".postTimestamp").innerText = post.querySelector(".postTimestamp").innerText.replace(" (pinned)", "")
-
-                          if (code != 200) {
-                            showPopUp("Error Unpinning Post", response, [["Close", "grey", null]])
-                          }
-                        }], ["Wait, no", "var(--grayColor)"]]);
-                      }]);
-                    } else {
-                      dropdownButtons.unshift(["Pin Post", "#C95EFF", function() {
-                        showPopUp("Pin this Post?", "Pinning this post add it to the Group Pins page. If there are already 25 posts pinned, the oldest will be unpinned.", [["Pin", "#C95EFF", async function() {
-                          let [code, response] = await sendRequest("PUT", "posts/pin?postid=" + post.getAttribute("postid"));
-                          post.setAttribute("grouppin", "");
-                          post.querySelector(".postTimestamp").innerText += " (pinned)";
-
-                          if (code != 200)  {
-                            showPopUp("Error Pinning Post", response, [["Close", "grey", null]])
-                          }
-                        }], ["Wait, no", "var(--grayColor)"]]);
-                      }]);
-                    }
-                  }
-                }
-              }
             }
           }
         }
+				
+				let groupID = getParam("group");
+				if (currentPage == "group" && groups[groupID] != null && (groups[groupID].Owner == userID || groups[groupID].Moderators.includes(userID))) {
+					if (groups[groupID].Owner == userID) {
+						if(postedGroup != null && postedGroup.Owner == userID) {
+							if(post.getAttribute("grouppin") != null) {
+								dropdownButtons.unshift(["Unpin Post", "#C95EFF", function() {
+									showPopUp("Unpin this Post?", "Unpinning this post will remove it from the Group Pins page. It won't delete the post.", [["Unpin", "#C95EFF", async function() {
+										let [code, response] = await sendRequest("DELETE", "posts/unpin?postid=" + post.getAttribute("postid") + "&groupid=" + post.getAttribute("groupid"));
+
+										if (code == 200) {
+											post.removeAttribute("grouppin");
+											post.querySelector(".postTimestamp").innerText = post.querySelector(".postTimestamp").innerText.replace(" (pinned)", "")
+										} else {
+											showPopUp("Error Unpinning Post", response, [["Close", "grey", null]])
+										}
+									}], ["Wait, no", "var(--grayColor)"]]);
+								}]);
+							} else {
+								dropdownButtons.unshift(["Pin Post", "#C95EFF", function() {
+									showPopUp("Pin this Post?", "Pinning this post add it to the Group Pins page. If there are already 25 posts pinned, the oldest will be unpinned.", [["Pin", "#C95EFF", async function() {
+										let [code, response] = await sendRequest("PUT", "posts/pin?postid=" + post.getAttribute("postid"));
+
+										if (code == 200)  {
+											post.setAttribute("grouppin", "");
+											post.querySelector(".postTimestamp").innerText += " (pinned)";
+										} else {
+											showPopUp("Error Pinning Post", response, [["Close", "grey", null]])
+										}
+									}], ["Wait, no", "var(--grayColor)"]]);
+								}]);
+							}
+						}
+					}
+					dropdownButtons.unshift(["Delete", "#FF5C5C", deletePost]);
+				}
         showDropdown(button, "right", dropdownButtons);
       },
       sendchat: async function(button, post) {
