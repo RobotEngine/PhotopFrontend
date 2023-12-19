@@ -25,15 +25,15 @@ pages.viewpost = async function() {
   }
   postHolder = createElement("postHolder", "div", pageHolder);
   
-  let [code, response] = await sendRequest("GET", "posts?postid=" + postID);
+  let [code, response] = await sendRequest("GET", "posts/get?postid=" + postID);
   if (code == 200) {
     findI("detailInfo").textContent = "/Post_" + postID;
     let lookupData = JSON.parse(response);
     if (lookupData.posts[0] != null) {
-      let [code2, response2] = await sendRequest("GET", "posts?amount=9&before=" + lookupData.posts[0].Timestamp);
+      let [code2, response2] = await sendRequest("GET", "posts/get?amount=9&before=" + lookupData.posts[0].Timestamp);
       if (code2 == 200) {
         let beforeData = JSON.parse(response2);
-        let [code3, response3] = await sendRequest("GET", "posts?amount=9&after=" + lookupData.posts[0].Timestamp);
+        let [code3, response3] = await sendRequest("GET", "posts/get?amount=9&after=" + lookupData.posts[0].Timestamp);
         if (code3 == 200) {
           let afterData = JSON.parse(response3);
           let allPosts = afterData.posts.reverse().concat(lookupData.posts, beforeData.posts);
@@ -84,7 +84,7 @@ pages.viewpost = async function() {
         loadingPosts = false;
         return;
       }
-      let [code, response] = await sendRequest("GET", "posts?before=" + postHolder.lastChild.getAttribute("time"));
+      let [code, response] = await sendRequest("GET", "posts/get?before=" + postHolder.lastChild.getAttribute("time"));
       if (code == 200) {
         let data = JSON.parse(response);
         let posts = data.posts;
@@ -104,7 +104,7 @@ pages.viewpost = async function() {
         loadingPosts = false;
         return;
       }
-      let [code, response] = await sendRequest("GET", "posts?after=" + postHolder.firstChild.getAttribute("time"));
+      let [code, response] = await sendRequest("GET", "posts/get?after=" + postHolder.firstChild.getAttribute("time"));
       if (code == 200) {
         let data = JSON.parse(response);
         let posts = data.posts;

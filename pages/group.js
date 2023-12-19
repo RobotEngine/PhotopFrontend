@@ -656,7 +656,7 @@ pages.group = async function() {
   async function loadPosts(before, pins) {
     postHolder = findC("postHolder");
     loadingPosts = true;
-    let getURL = "posts?groupid=" + groupID;
+    let getURL = "posts/get?groupid=" + groupID;
     if(pins == true) {
       getURL += "&pins=true";
     }

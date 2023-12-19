@@ -13,7 +13,10 @@ let configs = {
   }
 };
 
-let config = configs["public"]; // ["testing" / "public"]
+let config = configs["testing"]; // ["testing" / "public"]
+var cache = {
+	posts: new Array()
+}
 
 const socket = new SimpleSocket({
   project_id: "61b9724ea70f1912d5e0eb11",
@@ -332,6 +335,53 @@ function setPostUpdateSub() {
 					const postTime = postElem.querySelector(".postUser").querySelector(".postInfo").querySelector(".postTimestamp");
 					postText.innerHTML = formatText(data.text);
 					postTime.innerHTML = `${timeSince(post.getAttribute("time"), true)} <span title="${formatFullDate(data.edited)}">(edited)</span>`;
+					break;
+				case "vote":
+					let poll = post.querySelector(".poll-embed");
+					let numberElem = post.querySelector(".pollVoteCount");
+					let fullVotes = parseInt(numberElem.innerText) + data.change;
+					numberElem.innerText = fullVotes;
+					console.log(data)
+
+					if(userID == data.userID) {
+						if(data.voteRemove) {
+							poll.removeAttribute("voted");
+						} else {
+							poll.setAttribute("voted", "");
+						}
+					}
+
+					let options = post.querySelectorAll(".pollOption");
+					for(let i = 0; i < options.length; i++) {
+						let option = options[i];
+						if(userID == data.userID) {
+							if(!data.voteRemove) {
+								option.querySelector(".voteLabel").style.display = "unset";
+
+								if(option.getAttribute("vote") == data.vote) {
+									option.querySelector(".optionCheck").style.display = "unset";
+									option.querySelector(".pollOptionBackground").style.backgroundColor = "var(--themeColor)";
+									option.querySelector(".voteLabel").style.color = "white";
+								}
+							} else {
+								option.querySelector(".optionCheck").style.display = "none";
+								option.querySelector(".pollOptionBackground").style = "width:100%;";
+								option.querySelector(".voteLabel").style = "display:none;";
+							}
+						}
+
+						if(data.vote == i) {
+							let votes = parseInt(option.getAttribute("votes")) + data.change;
+							option.setAttribute("votes", votes);
+						}
+
+						let percentage = (parseInt(option.getAttribute("votes")) / fullVotes) * 100 || 0;
+						option.querySelector(".voteLabel").innerText = `${percentage}%`;
+
+						if(poll.getAttribute("voted") != null) {
+							option.querySelector(".pollOptionBackground").style.width = `${percentage || .5}%`;
+						}
+					}
 					break;
       }
     });
@@ -1418,6 +1468,7 @@ async function updateChatting(posts) {
       for (let i = 0; i < foundEmbeds.length; i++) {
         let embed = foundEmbeds[i];
         let postContent = embed.closest(".postContent");
+				let postID = embed.closest(".post").getAttribute("postid");
         if (postContent != null && embed.closest(".embed") == null) {
           let user;
           switch (embed.getAttribute("type")) {
@@ -1496,7 +1547,7 @@ async function updateChatting(posts) {
 								<div>
 								`;
 							}
-              break; 
+              break;
 					}
         }
       }

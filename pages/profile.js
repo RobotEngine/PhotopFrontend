@@ -274,7 +274,7 @@ pages.profile = async function() {
           return;
         }
         postHolder.setAttribute("loading", "");
-        let [code, response] = await sendRequest("GET", "posts?userid=" + currentProfile.user._id + "&before=" + postHolder.lastChild.getAttribute("time"));
+        let [code, response] = await sendRequest("GET", "posts/get?userid=" + currentProfile.user._id + "&before=" + postHolder.lastChild.getAttribute("time"));
         if (code == 200) {
           let data = JSON.parse(response);
           createPosts(data.posts, data.users, data.likes || []);

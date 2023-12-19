@@ -8,22 +8,30 @@ modules.createpost = function(holder) {
   </div>
   <div class="newPostSectionContent">
   <input id="imageInput" type="file" accept="image/*" multiple="true" hidden="true">
-  <span id="newPostUsername">${account.User}</span>
+  <div style="display:flex;position:relative;width:calc(100% - 45px);">
+		<span id="newPostUsername">${account.User}</span>
+		<div id="newPostCharCount">0/${lim}</div>
+	</div>
   <div id="newPostArea" contenteditable="true" placeholder="Ready to Hangout?"></div>
-  <div id="newPostCharCount">0/${lim}</div>
+	<div id="newPostPoll" style="display:none;">
+ 		<input placeholder="Poll Title" id="newPostPollTitle" class="settingsInput" maxlength="20">
+	 	<div id="newPostPollOptions">
+	 		<div class="newPostPollOptionHolder" style="scale:1;">
+				<input placeholder="Option 1" class="newPostPollOption settingsInput" maxlength="25">
+			</div>
+			<button id="newPostPollOptionCreate">+ New Option</button>
+		</div>
+ 	</div>
   <div id="newPostImages"></div>
   <div class="newPostButtons">
   <button class="postActionButton" id="image">
   <svg style="position: relative; height: 100%; width: 100%; cursor: pointer; " id="CreateImageButtonSvg" viewBox="0 0 550.801 550.801"><g style="" id="CreateImageButtonG" fill="var(--themeColor)" stroke="#ffffff" stroke-width="0"><path style="" id="Svg" d="M515.828,61.201H34.972C15.659,61.201,0,76.859,0,96.172v358.458C0,473.942,15.659,489.6,34.972,489.6h480.856 c19.314,0,34.973-15.658,34.973-34.971V96.172C550.801,76.859,535.143,61.201,515.828,61.201z M515.828,96.172V350.51l-68.92-62.66 c-10.359-9.416-26.289-9.04-36.186,0.866l-69.752,69.741L203.438,194.179c-10.396-12.415-29.438-12.537-39.99-0.271L34.972,343.219 V96.172H515.828z M367.201,187.972c0-26.561,21.523-48.086,48.084-48.086c26.562,0,48.086,21.525,48.086,48.086 c0,26.561-21.523,48.085-48.086,48.085C388.725,236.058,367.201,214.533,367.201,187.972z"></path></g></svg>
   </button>
-  <!--<button class="postActionButton" id="poll">
-  <svg style="position: relative; height: 100%; width: 100%; cursor: pointer; ">
-  <path d="M0 17.5C0 7.83501 7.83502 0 17.5 0V0C27.165 0 35 7.83502 35 17.5V411.5C35 421.165 27.165 429 17.5 429V429C7.83502 429 0 421.165 0 411.5V17.5Z" fill="var(--themeColor)"/>
-  <path d="M4.5 411.5C4.5 401.835 12.335 394 22 394H520C529.665 394 537.5 401.835 537.5 411.5V411.5C537.5 421.165 529.665 429 520 429H22C12.335 429 4.5 421.165 4.5 411.5V411.5Z" fill="var(--themeColor)"/>
-  <rect x="85" y="196" width="156" height="218" rx="15" stroke="var(--themeColor)" stroke-width="30"/>
-  <rect x="298" y="37" width="156" height="377" rx="15" stroke="var(--themeColor)" stroke-width="30"/>
-  </svg>
-  </button>-->
+  <button class="postActionButton" id="poll">
+  	<svg viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path d="M235 158.988H172.506C164.774 158.988 158.506 165.256 158.506 172.988V235C158.506 238.314 155.82 241 152.506 241H101.529C98.2156 241 95.5293 238.314 95.5293 235V172.988C95.5293 165.256 89.2613 158.988 81.5293 158.988H20C16.6863 158.988 14 156.302 14 152.988V102.012C14 98.698 16.6863 96.0117 20 96.0117H81.5293C89.2613 96.0117 95.5293 89.7437 95.5293 82.0117V20C95.5293 16.6863 98.2156 14 101.529 14H152.506C155.82 14 158.506 16.6863 158.506 20V82.0117C158.506 89.7437 164.774 96.0117 172.506 96.0117H235C238.314 96.0117 241 98.698 241 102.012V152.988C241 156.302 238.314 158.988 235 158.988Z" stroke="var(--themeColor)" stroke-width="20"></path>
+		</svg>
+  </button>
   <button class="postActionButton hidden" id="emoji">
   <svg style="position: relative; height: 100%; width: 100%; cursor: pointer; " id="EmojiButtonSvg" viewBox="0 0 512 512"><g style="" id="EmojiButtonG" fill="var(--themeColor)" stroke="#ffffff" stroke-width="0"><path style="" id="Svg" d="m256 512c-68.38 0-132.667-26.629-181.02-74.98-48.351-48.353-74.98-112.64-74.98-181.02s26.629-132.667 74.98-181.02c48.353-48.351 112.64-74.98 181.02-74.98s132.667 26.629 181.02 74.98c48.351 48.353 74.98 112.64 74.98 181.02s-26.629 132.667-74.98 181.02c-48.353 48.351-112.64 74.98-181.02 74.98zm0-472c-119.103 0-216 96.897-216 216s96.897 216 216 216 216-96.897 216-216-96.897-216-216-216zm93.737 260.188c-9.319-5.931-21.681-3.184-27.61 6.136-.247.387-25.137 38.737-67.127 38.737s-66.88-38.35-67.127-38.737c-5.93-9.319-18.291-12.066-27.61-6.136s-12.066 18.292-6.136 27.61c1.488 2.338 37.172 57.263 100.873 57.263s99.385-54.924 100.873-57.263c5.93-9.319 3.183-21.68-6.136-27.61zm-181.737-135.188c13.807 0 25 11.193 25 25s-11.193 25-25 25-25-11.193-25-25 11.193-25 25-25zm150 25c0 13.807 11.193 25 25 25s25-11.193 25-25-11.193-25-25-25-25 11.193-25 25z"></path></g></svg>
   </button>
@@ -211,6 +219,59 @@ modules.createpost = function(holder) {
   findI("image").addEventListener("click", function() {
     imageInput.click();
   });
+	findI("poll").addEventListener("click", function() {
+		let alreadyShown = findI("newPostPoll").style.display == "none"?false:true;
+
+		if(alreadyShown) {
+			findI("newPostPoll").style.display = "none";
+			findI("newPostPollTitle").value = "";
+			findI("newPostPollOptionCreate").style.opacity = 1;
+			
+			let options = findI("newPostPoll").querySelectorAll(".newPostPollOptionHolder");
+			for(let i = 0; i < options.length; i++) {
+				if(options[i].querySelector(".newPostPollOptionDelete") != null) {
+					options[i].remove();
+				} else {
+					options[i].querySelector(".newPostPollOption").value = "";
+				}
+			}
+		} else {
+			findI("newPostPoll").style.display = "inline-block";
+		}
+	});
+	findI("newPostPollOptionCreate").addEventListener("click", function() {
+		let options = findI("newPostPollOptions");
+
+		if(options.children.length == 5) return;
+		
+		let option = document.createElement("div");
+		option.innerHTML = `
+			<input class="newPostPollOption settingsInput" placeholder="Option ${options.children.length}" maxlength="25">
+			<button class="newPostPollOptionDelete">&times;</button>
+		`;
+		option.className = "newPostPollOptionHolder";
+		options.insertBefore(option, findI("newPostPollOptionCreate"));
+
+		setTimeout(function() {
+			option.style.scale = 1;
+		}, 10);
+
+		option.querySelector(".newPostPollOptionDelete").addEventListener("click", function() {
+			option.style.scale = .6;
+			option.style.opacity = 0;
+			setTimeout(function() {
+				option.remove();
+			}, 300);
+
+			if(options.children.length != 5) {
+				findI("newPostPollOptionCreate").style.opacity = 1;
+			}
+		})
+
+		if(options.children.length == 5) {
+			findI("newPostPollOptionCreate").style.opacity = .4;
+		}
+	});
   newPostArea.addEventListener("drop", function(e) {
     processUpload(e.dataTransfer.items);
     e.preventDefault();
@@ -285,14 +346,32 @@ modules.createpost = function(holder) {
       return;
     }
     findC("newPost").style.borderBottomStyle = "solid";
+		let postData = { text: newPostArea.innerText };
+		let pollShown = findI("newPostPoll").style.display == "none"?false:true;
+		if(pollShown) {
+			postData.poll = {
+				title: findI("newPostPollTitle").value,
+				options: []
+			}
+
+			let options = findI("newPostPollOptions").children;
+			for(let i=0;i<options.length;i++) {
+				let option = options[i].querySelector(".newPostPollOption");
+				if(option && option.value.length > 0) {
+					postData.poll.options.push(option.value);
+				}
+			}
+		}
+		
     let sendFormData = new FormData();
-    sendFormData.append("data", JSON.stringify({ text: newPostArea.innerText }));
+    sendFormData.append("data", JSON.stringify(postData));
     for (let i = 0; i < images.length; i++) {
       await fetch(images[i].src).then(async function(file) {
         sendFormData.append("image" + i, await file.blob());
         URL.revokeObjectURL(images[i].src);
       });
     }
+		
     let endpoint = "posts/new";
     let groupID = getParam("group");
     if (groupID != null) {

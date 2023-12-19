@@ -55,15 +55,15 @@ pages.home = async function() {
   async function loadPosts(before) {
     postHolder = findC("postHolder");
     loadingPosts = true;
-    let getURL = "posts/home";
+    let getURL = "posts/get/home";
 		if(homeView == "recent") {
-			getURL = "posts";
+			getURL = "posts/get";
 
 			if(before) {
 				getURL += `?before=${before}`;
 			}
 		} else if(homeView == "following") {
-			getURL = "posts/following";
+			getURL = "posts/get/following";
 
 			if(before) {
 				getURL += `?before=${before}`;
@@ -127,10 +127,11 @@ pages.home = async function() {
       let posts = data.posts;
       let users = getObject(data.users, "_id");
       let likes = getObject(data.likes, "_id");
+			let polls = getObject(data.polls, "_id");
       for (let i = 0; i < posts.length; i++) {
         let post = posts[i];
 				if (account.BlockedUsers == null || !account.BlockedUsers.includes(post.UserID)) {
-					renderPost(postHolder, post, users[post.UserID], { isLiked: (likes[post._id + userID] != null), observer });
+					renderPost(postHolder, post, users[post.UserID], { isLiked: (likes[post._id + userID] != null), poll: polls[post._id], observer });
 				}
       }
       if (posts.length > 14) {

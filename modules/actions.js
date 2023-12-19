@@ -104,6 +104,50 @@ modules.actions = function() {
 
     let actions = {
       // Post Actions:
+			post: async function(button, post) {
+				if(isMobile) {
+					openMobilePostView(path[0].closest(".post"));
+					return;
+				}
+				let postData = getObject(cache.posts, "_id")[post.getAttribute("postid")];
+				post.setAttribute("enlarged", "");
+
+				let backBlur = createElement("backBlur", "div", "body");
+				backBlur.id = "backBlur" + post.getAttribute("postid");
+
+				let postEnlarged = createElement("enlargedPost", "div", backBlur);
+				postEnlarged.innerHTML = `
+					<div class="enlargedPostUser">
+						<img src="${decideProfilePic(postData.user.Settings.ProfilePic)}" class="enlargedPostProfileImage" type="user" tabindex="0">
+						<div class="enlargedPostInfo">
+							<div class="enlargedPostUsername" type="user">${postData.user.User}</div>
+							<div class="enlargedPostTimestamp" title="${timeSince(postData.Timestamp, true)}">${formatFullDate(postData.Timestamp)}</div>
+						</div>
+					</div>
+					<div class="enlargedPostContent">
+						<div class="enlargedPostText">${formatText(postData.Text)}</div>
+						${postData.images.length > 0?
+							`
+								<div class="enlargedPostImages">
+									${postData.images.map(imageSrc => `<img src="${imageSrc}" class="enlargedPostImage" tabindex="0" type="imageenlarge">`).join("")}
+								</div>
+							`:""}
+					</div>
+				`;
+
+				let chatEnlarged = createElement("enlargedChat", "div", backBlur);
+				chatEnlarged.innerHTML = `
+					//
+				`;
+
+				setTimeout(function() {
+					backBlur.style.opacity = 1;
+					postEnlarged.style.opacity = 1;
+					postEnlarged.style.scale = 1;
+
+					chatEnlarged.style.transform = "translateX(320px)";
+				}, 10);
+			},
       like: async function(button, post) {
         if (userID == null) {
           promptLogin('Join the hangout today! You must <b>sign in</b> or <b>sign up</b> before being able to <b style="color: #FF5786">Like</b> a post!')
@@ -123,12 +167,20 @@ modules.actions = function() {
             setTimeout(function() {
               svg.style.animation = null;
             }, 800);
+
+						let cached = getObject(cache.posts, "_id");
+						let post = cached[post.getAttribute("postid")];
+						post.props.isLiked = true;
           } else {
             button.removeAttribute("isLiked");
             button.parentElement.style.removeProperty("color");
             icon.removeAttribute("fill");
             icon.setAttribute("stroke", "#999");
             changeCounter(likeAmount, parseInt(likeAmount.getAttribute("realnum"),10)-1);
+
+						let cached = getObject(cache.posts, "_id");
+						let post = cached[post.getAttribute("postid")];
+						post.props.isLiked = false;
           }
         }
         if (button.hasAttribute("isLiked") == false) {
@@ -208,7 +260,7 @@ modules.actions = function() {
         function deletePost() {
           showPopUp("Delete Post?", "Are you sure you want to <b>permanently</b> delete this post?", [["Delete", "#FF5C5C", async function() {
             post.style.opacity = "0.5";
-            let [code, response] = await sendRequest("DELETE", "posts/delete?postid=" + post.getAttribute("postid"));
+            let [code, response] = await sendRequest("DELETE", "posts/edit/delete?postid=" + post.getAttribute("postid"));
             if (code != 200) {
               post.style.opacity = "1";
               showPopUp("Error Deleting", response, [["Okay", "var(--grayColor)"]]);
@@ -222,7 +274,7 @@ modules.actions = function() {
             if (account.ProfileData != null && account.ProfileData.PinnedPost == post.getAttribute("postid")) {
               dropdownButtons.unshift(["Unpin Post", "#C95EFF", function() {
                 showPopUp("Unpin this Post?", "Unpinning this post will remove it from the top of your profile. It won't delete the post.", [["Unpin", "#C95EFF", async function() {
-                  await sendRequest("DELETE", "posts/unpin");
+                  await sendRequest("DELETE", "posts/edit/unpin");
                   account.ProfileData = account.ProfileData || {};
                   delete account.ProfileData.PinnedPost;
                   refreshPage();
@@ -231,7 +283,7 @@ modules.actions = function() {
             } else {
               dropdownButtons.unshift(["Pin Post", "#C95EFF", function() {
                 showPopUp("Pin this Post?", "Pinning this post will keep it at the top of your profile. If another post is already pinned, it will be replaced by this post.", [["Pin", "#C95EFF", async function() {
-                  await sendRequest("PUT", "posts/pin?postid=" + post.getAttribute("postid"));
+                  await sendRequest("PUT", "posts/edit/pin?postid=" + post.getAttribute("postid"));
                   account.ProfileData = account.ProfileData || {};
                   account.ProfileData.PinnedPost = post.getAttribute("postid");
                   refreshPage();
@@ -265,13 +317,13 @@ modules.actions = function() {
         }
 				
 				let groupID = getParam("group");
-				if (currentPage == "group" && groups[groupID] != null && (groups[groupID].Owner == userID || groups[groupID].Moderators.includes(userID))) {
+				if (currentPage == "group" && groups[groupID] != null && (groups[groupID].Owner == userID || groups[groupID].Moderators.includes(userID) || userID == post.getAttribute("userid"))) {
 					if (groups[groupID].Owner == userID) {
 						if(postedGroup != null && postedGroup.Owner == userID) {
 							if(post.getAttribute("grouppin") != null) {
 								dropdownButtons.unshift(["Unpin Post", "#C95EFF", function() {
 									showPopUp("Unpin this Post?", "Unpinning this post will remove it from the Group Pins page. It won't delete the post.", [["Unpin", "#C95EFF", async function() {
-										let [code, response] = await sendRequest("DELETE", "posts/unpin?postid=" + post.getAttribute("postid") + "&groupid=" + post.getAttribute("groupid"));
+										let [code, response] = await sendRequest("DELETE", "posts/edit/unpin?postid=" + post.getAttribute("postid") + "&groupid=" + post.getAttribute("groupid"));
 
 										if (code == 200) {
 											post.removeAttribute("grouppin");
@@ -284,7 +336,7 @@ modules.actions = function() {
 							} else {
 								dropdownButtons.unshift(["Pin Post", "#C95EFF", function() {
 									showPopUp("Pin this Post?", "Pinning this post add it to the Group Pins page. If there are already 25 posts pinned, the oldest will be unpinned.", [["Pin", "#C95EFF", async function() {
-										let [code, response] = await sendRequest("PUT", "posts/pin?postid=" + post.getAttribute("postid"));
+										let [code, response] = await sendRequest("PUT", "posts/edit/pin?postid=" + post.getAttribute("postid"));
 
 										if (code == 200)  {
 											post.setAttribute("grouppin", "");
@@ -708,11 +760,24 @@ modules.actions = function() {
         }]);
 
 				showDropdown(button, (message.getAttribute("self") == null?"left":"right"), dropdownButtons);
+			},
+
+			// Polls
+			vote: async function(option) {
+				let voteNumber = parseInt(option.getAttribute("vote"));
+				let post = option.closest(".post");
+
+				let [code, response] = await sendRequest("POST", `posts/vote?postid=${post.getAttribute("postid")}`, {
+					Vote: voteNumber
+				});
+				if(code != 200) {
+					showPopUp("Oops..", response, [["Close", "grey", null]]);
+				}
 			}
     };
     if (actions[type] != null) {
       actions[type](button, button.closest(".post"));
-    } else if (path[0].closest(".postPost") != null) {
+    }/* else if (path[0].closest(".postPost") != null) {
       if (isMobile == false) {
         let postContent = path[0].closest(".postPost").querySelector(".postContent");
         if (postContent.hasAttribute("enlarged") == false) {
@@ -740,6 +805,6 @@ modules.actions = function() {
       } else {
         openMobilePostView(path[0].closest(".post"));
       }
-    }
+    }*/
   });
 }

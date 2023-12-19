@@ -9,6 +9,7 @@
   --contentColor: #1f1f28;
   --contentColor2: #24242e;
   --contentColor3: #2a2a37;
+	--contentColor4:#373748;
   --borderColor: #323242;
   --grayColor: #555555;
   --signInColor: #5ab7fa;
@@ -719,12 +720,13 @@ button:active {
 }
 
 #newPostCharCount {
-  width: calc(100% - 42px);
+	position:absolute;
   color: gray;
   font-size: 12px;
   font-weight: bold;
-  text-align: right;
-  margin-top: 4px;
+  right:0px;
+	bottom:0px;
+  margin-bottom: 4px;
 }
 
 #premiumMarketShowcase {
@@ -3846,4 +3848,219 @@ h1, h2, p {
 	width:20px;
 	cursor:pointer;
 	background:rgba(0,0,0,.5);
+}
+
+#newPostPoll {
+	padding:6px;
+	padding-bottom:2px;
+	height:fit-content;
+	width:65%;
+	background:var(--contentColor2);
+	border-radius:8px;
+	margin-top:6px;
+}
+#newPostPollTitle {
+	background:var(--contentColor3);
+	border-radius:6px;
+	margin-top:0;
+}
+#newPostPollOptions {
+	margin-top:6px;
+}
+.newPostPollOption {
+	width:100%;
+	background:var(--contentColor3);
+	border-radius:6px;
+	margin-top:0;
+}
+#newPostPollOptionCreate {
+	width:100%;
+	text-align:center;
+	background:var(--contentColor3);
+	margin-bottom:4px;
+	color:var(--themeColor);
+	border-radius:6px;
+}
+
+.poll-embed {
+	background: var(--contentColor2);
+	border-radius: 12px;
+	margin-top: 6px;
+	width: calc(100% - 8px);
+}
+.pollInfo {
+	display: flex;
+	align-items: center;
+	padding: 4px 8px;
+	border: solid;
+	border-width: 0;
+	border-bottom-width: 2px;
+	border-color: var(--contentColor3);
+}
+.pollTitle {
+	font-weight:bold;
+}
+.pollVotes {
+	margin-left:auto;
+	font-size:14px;
+	color:grey;
+}
+.pollOptions {
+	display: flex;
+	flex-direction: column;
+	margin-top: 5px;
+	gap: 3px;
+	padding: 4px;
+	padding-top: 0;
+}
+.pollOption {
+	display:flex;
+	padding:2px;
+	cursor: pointer;
+	transition:scale .2s;
+}
+.pollOption:active {
+	scale:0.95;
+}
+.pollOptionInfo {
+	position:relative;
+	width:100%;
+	display: flex;
+	font-size: 17px;
+	border-radius: 8px;
+}
+.pollOptionBackground {
+	position:absolute;
+	width:100%;
+	height:100%;
+	background:var(--contentColor3);
+	border-radius:8px;
+	transition:width 0.4s;
+}
+.optionBubble {
+	display: flex;
+	position:relative;
+	align-items: center;
+	justify-content: center;
+	min-width: 18px;
+	height: 18px;
+	background: transparent;
+	overflow:visible;
+	
+	margin:auto 4px auto 0;
+
+	border:solid;
+	border-width:2px;
+	border-radius: 100px;
+	border-color:grey;
+
+	transition:background 0.2s;
+}
+.optionCheck {
+	position:absolute;
+	width:18px;
+	height:18px;
+	margin-top:-6px;
+	margin-left:4px;
+}
+.newPostPollOptionDelete {
+	position:absolute;
+	color:red;
+	border-radius:100px;
+	padding:0px 6px;
+	background:var(--contentColor2);
+	right:4px;
+	top:6px;
+	font-size:13px;
+}
+.newPostPollOptionHolder {
+	position:relative;
+	margin-bottom:4px;
+	scale: 1.1;
+	transition:opacity .3s, scale .3s;
+}
+.voteLabel {
+	margin:auto 8px auto auto;
+	z-index:1;
+	font-size:14px;
+	color:grey;
+}
+.optionName {
+	margin:6px 0 6px 8px;
+	z-index:1;
+}
+
+.enlargedPost {
+	width:60vw;
+	height:70vh;
+	max-width:600px;
+	max-height:315px;
+
+	position:relative;
+	display:flex;
+	flex-direction: column;
+	box-sizing: border-box;
+	background:var(--contentColor);
+	border-radius:15px;
+	padding:6px;
+	overflow:hidden;
+	z-index:1;
+	transform:translateX(-160px);
+
+	opacity:0;
+	scale:0.9;
+	transition:opacity 0.2s, scale 0.2s;
+}
+.enlargedPostUser {
+	display:flex;
+	margin-bottom:8px;
+}
+.enlargedPostProfileImage {
+	width: 55px;
+	height: 55px;
+	object-fit: cover;
+	border-radius: 10px;
+}
+.enlargedPostInfo {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	margin-left: 6px;
+}
+.enlargedPostUsername {
+	width: fit-content;
+	font-size: 22px;
+	line-height: 20px;
+	font-weight: 500;
+}
+.enlargedPostTimestamp {
+	margin-top: 1.5px;
+	font-size: 15px;
+	font-weight: 400;
+	color: #999;
+}
+.enlargedPostContent {
+	padding-left: 4px;
+	margin-bottom: 8px;
+	font-size: 22px;
+	overflow-y: auto;
+	transition: all .1s ease;
+}
+.enlargedPostText {
+	overflow-wrap: break-word;
+	white-space: break-spaces;
+}
+
+.enlargedChat {
+	position:absolute;
+	width:40vw;
+	height:70vh;
+	max-width:350px;
+	max-height:315px;
+
+	margin-left:10px;
+	border-radius:15px;
+	background:var(--contentColor);
+
+	transition:transform 0.2s;
 }

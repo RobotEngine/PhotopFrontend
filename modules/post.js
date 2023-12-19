@@ -78,6 +78,7 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
   newPost.setAttribute("name", user.User);
   newPost.setAttribute("time", post.Timestamp);
   newPost.setAttribute("text", post.Text);
+	newPost.setAttribute("type", "post");
 	if(post.GroupID) {
 		newPost.setAttribute("groupid", post.GroupID);
 	}
@@ -110,15 +111,72 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
     } 
   }
   newPost.querySelector(".postText").innerHTML += returnHTML;*/
-	
-  if (post.Media != null && post.Media.ImageCount > 0) {
-    let postImages = createElement("postImages", "div", newPost.querySelector(".postContent"));
-    for (let i = 0; i < post.Media.ImageCount; i++) {
-      let image = createElement("postImage", "img", postImages);
-      image.src = config.assets + "PostImages/" + post._id + i;
-      image.setAttribute("type", "imageenlarge");
-      image.setAttribute("tabindex", 0);
-    }
+
+	let images = [];
+  if (post.Media != null) {
+		if(post.Media.ImageCount && post.Media.ImageCount > 0) {
+			let postImages = createElement("postImages", "div", newPost.querySelector(".postContent"));
+			for (let i = 0; i < post.Media.ImageCount; i++) {
+				let imageSource = config.assets + "PostImages/" + post._id + i;
+				let image = createElement("postImage", "img", postImages);
+				image.src = imageSource;
+				image.setAttribute("type", "imageenlarge");
+				image.setAttribute("tabindex", 0);
+
+				images.push({ imageSource })
+			}
+		}
+
+		let voteData = props.poll;
+		if(post.Media.Poll && voteData) {
+			let postContent = newPost.querySelector(".postContent");
+			let poll = createElement("poll-embed", "div", postContent);
+			let hasVoted = voteData.HasVoted > -1;
+			poll.setAttribute("type", "poll");
+			if(hasVoted) {
+				poll.setAttribute("voted", "");
+			}
+			
+			let pollData = post.Media.Poll;
+			poll.innerHTML = `
+	 			<div class="pollInfo">
+		 			<div class="pollTitle">${pollData.Title}</div>
+					<div class="pollVotes"><span class="pollVoteCount">${voteData.FullVotes}</span> Votes</div>
+ 				</div>
+		 		<div class="pollOptions"></div>
+			`;
+
+			let pollOptions = poll.querySelector(".pollOptions");
+			for(let i=0;i<pollData.Options.length;i++) {
+				let optionText = pollData.Options[i];
+				let optionPercent = voteData.Votes[i];
+				if(optionText) {
+					let option = createElement("pollOption", "div", pollOptions);
+					option.setAttribute("vote", i);
+					option.setAttribute("type", "vote");
+					option.setAttribute("name", optionText);
+					option.setAttribute("votes", optionPercent > 0?(voteData.FullVotes / optionPercent) * 100:0);
+
+					option.innerHTML = `
+						<span class="optionBubble">
+							<svg viewBox="0 0 90 88" fill="none" xmlns="http://www.w3.org/2000/svg" class="optionCheck" style="${hasVoted && voteData.HasVoted == i?'':'display:none;'}">
+							<mask id="mask0_1092_15" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="90" height="88">
+							<rect width="90" height="88" fill="var(--themeColor)"/>
+							</mask>
+							<g mask="url(#mask0_1092_15)">
+							<path d="M9 54.8824L29.4561 75.3384C35.2156 81.098 44.9175 79.5684 48.6257 72.3162L81 9" stroke="var(--themeColor)" stroke-width="16" stroke-linecap="round"/>
+							</g>
+							</svg>
+	 					</span>
+						<span class="pollOptionInfo">
+			 				<div class="pollOptionBackground" style="${hasVoted?`${voteData.HasVoted == i?"background:var(--themeColor);":""}width:${optionPercent || 0.5}%;`:""}"></div>
+							<span class="optionName">${option.getAttribute("name")}</span>
+							<span class="voteLabel" style="${hasVoted?(voteData.HasVoted == i?"color:white;":""):"display:none;"}"><span class="voteCount">${optionPercent}</span>%</span>
+	 					</span>
+	 				`;
+				}
+			}
+		}
   }
 
   if (props.isLiked == true) {
@@ -141,4 +199,6 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
 	if(props.observer) {
 		//props.observer.observe(newPost);
 	}
+
+	cache.posts.push({ ...post, user, props, images });
 }
