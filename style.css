@@ -831,7 +831,7 @@ button:active {
 .newPostImageContainer {
   position: relative;
   width: fit-content;
-  margin: 4px 8px 8px 0px;
+  margin: 8px 8px 8px 0px;
 }
 
 .newPostImage {
@@ -2398,35 +2398,6 @@ td {
   color: var(--themeColor);
   cursor: pointer;
 }
-@-webkit-keyframes wobble-hor-bottom {
-  0%,
-  100% {
-    -webkit-transform: translateX(0%);
-            transform: translateX(0%);
-    -webkit-transform-origin: 50% 50%;
-            transform-origin: 50% 50%;
-  }
-  15% {
-    -webkit-transform: translateX(-30px) rotate(-6deg);
-            transform: translateX(-30px) rotate(-6deg);
-  }
-  30% {
-    -webkit-transform: translateX(15px) rotate(6deg);
-            transform: translateX(15px) rotate(6deg);
-  }
-  45% {
-    -webkit-transform: translateX(-15px) rotate(-3.6deg);
-            transform: translateX(-15px) rotate(-3.6deg);
-  }
-  60% {
-    -webkit-transform: translateX(9px) rotate(2.4deg);
-            transform: translateX(9px) rotate(2.4deg);
-  }
-  75% {
-    -webkit-transform: translateX(-6px) rotate(-1.2deg);
-            transform: translateX(-6px) rotate(-1.2deg);
-  }
-}
 @keyframes like {
   0%,
   100% {
@@ -2967,6 +2938,56 @@ td {
   }
   10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90% {
     transform: translateX(5px);
+  }
+}
+.particle-fireworks1 {
+  position: fixed;
+  z-index: 999;
+  animation: particleFirework11 3s cubic-bezier(0,.75,.6,1), particleFirework12 3s ease;
+  width: 32px;
+  height: 16px;
+  opacity: 0;
+  transform: translateX(50px);
+}
+@keyframes particleFirework11 {
+  0% {
+    top: 100%;
+    opacity: 3;
+  }
+  100% {
+    top: 25%;
+    opacity: 0;
+  }
+}
+@keyframes particleFirework12 {
+  5%, 15%, 25%, 35%, 45%, 55%, 65%, 75%, 85%, 95% {
+    transform: translateX(50px);
+  }
+  10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90% {
+    transform: translateX(52px);
+  }
+}
+.particle-fireworks2 {
+  position: fixed;
+  z-index: 999;
+  opacity: 0;
+  animation: particleFirework2 0.75s linear;
+  width: 150px;
+  height: 150px;
+  top: 25%;
+}
+@keyframes particleFirework2 {
+  0% {
+    opacity: 1;
+    transform: scale(0);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(2);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.9, 1.8);
   }
 }
 

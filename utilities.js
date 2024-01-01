@@ -622,7 +622,15 @@ function checkPermision(roles, permision) {
 }
 
 function promptLogin(desc) {
-	showPopUp("It's Better Together", desc, [["Sign Up", "var(--signUpColor)", function() { openLoginModal("signup", "Create Account"); }], ["Sign In", "var(--signInColor)", function() { openLoginModal("signin", "Sign In"); }], ["Later", "var(--grayColor)"]]);
+	showPopUp(
+		"It's Better Together",
+	 	desc,
+		[
+		["Login", "var(--signInColor)", function() {
+			openLoginModal("signin", "Login");
+		}
+		], ["Later", "var(--grayColor)"]]
+	);
 }
 
 function abbr(num) {

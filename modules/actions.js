@@ -104,53 +104,9 @@ modules.actions = function() {
 
     let actions = {
       // Post Actions:
-			post: async function(button, post) {
-				if(isMobile) {
-					openMobilePostView(path[0].closest(".post"));
-					return;
-				}
-				let postData = getObject(cache.posts, "_id")[post.getAttribute("postid")];
-				post.setAttribute("enlarged", "");
-
-				let backBlur = createElement("backBlur", "div", "body");
-				backBlur.id = "backBlur" + post.getAttribute("postid");
-
-				let postEnlarged = createElement("enlargedPost", "div", backBlur);
-				postEnlarged.innerHTML = `
-					<div class="enlargedPostUser">
-						<img src="${decideProfilePic(postData.user.Settings.ProfilePic)}" class="enlargedPostProfileImage" type="user" tabindex="0">
-						<div class="enlargedPostInfo">
-							<div class="enlargedPostUsername" type="user">${postData.user.User}</div>
-							<div class="enlargedPostTimestamp" title="${timeSince(postData.Timestamp, true)}">${formatFullDate(postData.Timestamp)}</div>
-						</div>
-					</div>
-					<div class="enlargedPostContent">
-						<div class="enlargedPostText">${formatText(postData.Text)}</div>
-						${postData.images.length > 0?
-							`
-								<div class="enlargedPostImages">
-									${postData.images.map(imageSrc => `<img src="${imageSrc}" class="enlargedPostImage" tabindex="0" type="imageenlarge">`).join("")}
-								</div>
-							`:""}
-					</div>
-				`;
-
-				let chatEnlarged = createElement("enlargedChat", "div", backBlur);
-				chatEnlarged.innerHTML = `
-					//
-				`;
-
-				setTimeout(function() {
-					backBlur.style.opacity = 1;
-					postEnlarged.style.opacity = 1;
-					postEnlarged.style.scale = 1;
-
-					chatEnlarged.style.transform = "translateX(320px)";
-				}, 10);
-			},
       like: async function(button, post) {
         if (userID == null) {
-          promptLogin('Join the hangout today! You must <b>sign in</b> or <b>sign up</b> before being able to <b style="color: #FF5786">Like</b> a post!')
+          promptLogin('Join the hangout today! You must <b>login</b> before being able to <b style="color: #FF5786">Like</b> a post!')
           return;
         }
         function updateLike(type) {
@@ -199,7 +155,7 @@ modules.actions = function() {
       },
       quote: async function(button, post) {
         if (userID == null) {
-          promptLogin('Join the hangout today! You must <b>sign in</b> or <b>sign up</b> before being able to <b style="color: #C95EFF">Quote</b> a post!')
+          promptLogin('Join the hangout today! You must <b>login</b> before being able to <b style="color: #C95EFF">Quote</b> a post!')
           return;
         }
         let postTextArea = findI("newPostArea");
@@ -213,7 +169,7 @@ modules.actions = function() {
       actionchat: async function(button, post) {
         if (isMobile != true) {
           if (userID == null) {
-            promptLogin('Join the hangout today! You must <b>sign in</b> or <b>sign up</b> before being able to <b style="color: var(--themeColor)">Chat</b> on a post!')
+            promptLogin('Join the hangout today! You must <b>login</b> before being able to <b style="color: var(--themeColor)">Chat</b> on a post!')
             return;
           }
           post.querySelector(".postChatInput").focus();
@@ -357,7 +313,7 @@ modules.actions = function() {
         let premium = hasPremium();
         let limit = premium ? 400 : 200;
         if (userID == null) {
-          promptLogin('Join the hangout today! You must <b>sign in</b> or <b>sign up</b> before being able to <b style="color: var(--themeColor)">Chat</b> on a post!')
+          promptLogin('Join the hangout today! You must <b>login</b> before being able to <b style="color: var(--themeColor)">Chat</b> on a post!')
           return;
         }
         let renderChat = await getModule("chat");
@@ -760,24 +716,11 @@ modules.actions = function() {
         }]);
 
 				showDropdown(button, (message.getAttribute("self") == null?"left":"right"), dropdownButtons);
-			},
-
-			// Polls
-			vote: async function(option) {
-				let voteNumber = parseInt(option.getAttribute("vote"));
-				let post = option.closest(".post");
-
-				let [code, response] = await sendRequest("POST", `posts/vote?postid=${post.getAttribute("postid")}`, {
-					Vote: voteNumber
-				});
-				if(code != 200) {
-					showPopUp("Oops..", response, [["Close", "grey", null]]);
-				}
 			}
     };
     if (actions[type] != null) {
       actions[type](button, button.closest(".post"));
-    }/* else if (path[0].closest(".postPost") != null) {
+    } else if (path[0].closest(".postPost") != null) {
       if (isMobile == false) {
         let postContent = path[0].closest(".postPost").querySelector(".postContent");
         if (postContent.hasAttribute("enlarged") == false) {

@@ -38,7 +38,7 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
       </div>
     </div>  
   </div>
-  <div class="postChat">
+  <div class="postChat" type="chatBox">
     <div class="postChatInfo">
       <div class="postChatLiveCircle"></div>
       <span class="postChatLive">Live</span>

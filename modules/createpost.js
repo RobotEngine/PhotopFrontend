@@ -217,15 +217,26 @@ modules.createpost = function(holder) {
   tempListen(document, "scroll", checkForMentions);
 
   findI("image").addEventListener("click", function() {
+    let pollCreating = findI("newPostPoll").style.display == "none"?false:true;
+    if(pollCreating) return;
+    
     imageInput.click();
   });
+<<<<<<< HEAD
 	findI("poll").addEventListener("click", function() {
+=======
+	findI("poll").addEventListener("click", async function() {
+>>>>>>> 72f4242 (added polls and new years)
 		let alreadyShown = findI("newPostPoll").style.display == "none"?false:true;
 
 		if(alreadyShown) {
 			findI("newPostPoll").style.display = "none";
 			findI("newPostPollTitle").value = "";
 			findI("newPostPollOptionCreate").style.opacity = 1;
+<<<<<<< HEAD
+=======
+      findI("image").style.opacity = 1;
+>>>>>>> 72f4242 (added polls and new years)
 			
 			let options = findI("newPostPoll").querySelectorAll(".newPostPollOptionHolder");
 			for(let i = 0; i < options.length; i++) {
@@ -237,6 +248,17 @@ modules.createpost = function(holder) {
 			}
 		} else {
 			findI("newPostPoll").style.display = "inline-block";
+<<<<<<< HEAD
+=======
+      findI("image").style.opacity = .4;
+      findI("newPostPollTitle").focus()
+
+      let images = document.getElementsByClassName("newPostImage");
+      findI("newPostImages").innerHTML = "";
+      for (let i = 0; i < images.length; i++) {
+        URL.revokeObjectURL(images[i].src);
+      }
+>>>>>>> 72f4242 (added polls and new years)
 		}
 	});
 	findI("newPostPollOptionCreate").addEventListener("click", function() {
@@ -251,6 +273,10 @@ modules.createpost = function(holder) {
 		`;
 		option.className = "newPostPollOptionHolder";
 		options.insertBefore(option, findI("newPostPollOptionCreate"));
+<<<<<<< HEAD
+=======
+    option.querySelector(".newPostPollOption").focus()
+>>>>>>> 72f4242 (added polls and new years)
 
 		setTimeout(function() {
 			option.style.scale = 1;
@@ -333,8 +359,8 @@ modules.createpost = function(holder) {
       return;
     }
     let images = document.getElementsByClassName("newPostImage");
-    if (newPostArea.innerText.length < 1 && images.length < 1) {
-      showPopUp("Write a Post", "Your post must either have text or at least an image.", [["Okay", "var(--grayColor)"]]);
+    if (newPostArea.innerText.length < 1 && images.length < 1 && newPostPoll.style.display == "none") {
+      showPopUp("Write a Post", "Your post must either have text, poll, or at least an image.", [["Okay", "var(--grayColor)"]]);
       return;
     }
     if ((newPostArea.innerText.length > 400 && !premium) || (newPostArea.innerText.length > 400 * 2 && premium)) {
@@ -361,6 +387,15 @@ modules.createpost = function(holder) {
 					postData.poll.options.push(option.value);
 				}
 			}
+<<<<<<< HEAD
+=======
+
+      if(postData.poll.options.length == 0) {
+        showPopUp("Oops", "Looks like your options dont have any text.", [["Close", "grey", null]])
+        newPost.style.borderBottomStyle = "none";
+        return;
+      }
+>>>>>>> 72f4242 (added polls and new years)
 		}
 		
     let sendFormData = new FormData();
@@ -381,6 +416,11 @@ modules.createpost = function(holder) {
     let [code, response] = await sendRequest("POST", endpoint, sendFormData, true);
     posting = false;
     if (code == 200) {
+      let alreadyShown = findI("newPostPoll").style.display == "none"?false:true;
+      if(alreadyShown) {
+        findI("poll").click()
+      }
+
       newPostArea.innerText = "";
       newPostImages.innerHTML = "";
       newPostCharCount.textContent = `0/${lim}`;
@@ -388,7 +428,22 @@ modules.createpost = function(holder) {
         recentUserPostID = response;
 				if(getParam("group") != null) {
 					fetchNewPosts();
-				}
+				} else {
+          let createdPostData = JSON.parse(response)
+          let postHolder = findC("postHolder");
+          let renderPost = await getModule("post");
+          renderPost(postHolder, createdPostData, account, {
+            loadToTop: true, 
+            newPost: true, 
+            poll: {
+              _id: createdPostData._id,
+              Votes: [0,0,0,0],
+              HasVoted: -1,
+              FullVotes: 0
+            }});
+          setPostUpdateSub();
+          setupPostChats();
+        }
       }
     } else {
       showPopUp("An Error Occured", response, [["OK", "var(--grayColor)"]]);

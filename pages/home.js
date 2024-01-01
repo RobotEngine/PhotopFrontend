@@ -13,10 +13,14 @@ pages.home = async function() {
 		let signInUpBar = createElement("stickyContainer", "div", main);
 		signInUpBar.id = "signInUpBar";
 		signInUpBar.innerHTML = `
-		<span class="signInUpText">Ready to Join the Hangout?</span>
-		<button class="signInButton">
-			Login
-		</button>
+		<div id="signInHolder">
+      <span class="signInUpText">
+        Ready to Join the Hangout?
+      </span>
+      <button class="signInButton">
+        Login
+      </button>
+    </div>
 		`;
 		findC("signInButton").addEventListener("click", function() {
 			openLoginModal("signin", "Login");

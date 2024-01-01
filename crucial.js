@@ -14,7 +14,7 @@ let configs = {
 };
 
 let config = configs["testing"]; // ["testing" / "public"]
-var cache = {
+let cache = {
 	posts: new Array()
 }
 
@@ -193,14 +193,6 @@ function setAccountSub(location) {
 	            postHolder.insertBefore(refreshPosts, postHolder.firstChild);
 	          }
 	          tempListen(refreshPosts, "click", function() { newPostCount.group = 0; fetchNewPosts(); });
-          } else if (currentPage == "home" && !data.post.GroupID) {
-            if(data.post.UserID == userID) {
-							let postHolder = findC("postHolder");
-							let renderPost = await getModule("post");
-							renderPost(postHolder, data.post, account, {loadToTop: true, newPost: true});
-							setPostUpdateSub();
-							setupPostChats();
-						}
           }
           break;
         case "checked":
@@ -341,7 +333,6 @@ function setPostUpdateSub() {
 					let numberElem = post.querySelector(".pollVoteCount");
 					let fullVotes = parseInt(numberElem.innerText) + data.change;
 					numberElem.innerText = fullVotes;
-					console.log(data)
 
 					if(userID == data.userID) {
 						if(data.voteRemove) {
@@ -372,10 +363,12 @@ function setPostUpdateSub() {
 
 						if(data.vote == i) {
 							let votes = parseInt(option.getAttribute("votes")) + data.change;
-							option.setAttribute("votes", votes);
+              if(votes > -1) {
+                option.setAttribute("votes", votes);
+              }
 						}
 
-						let percentage = (parseInt(option.getAttribute("votes")) / fullVotes) * 100 || 0;
+						let percentage = Math.floor((parseInt(option.getAttribute("votes")) / fullVotes) * 100 || 0);
 						option.querySelector(".voteLabel").innerText = `${percentage}%`;
 
 						if(poll.getAttribute("voted") != null) {
@@ -492,12 +485,14 @@ async function init() {
 	    let signInUpBar = createElement("stickyContainer", "div", main);
 	    signInUpBar.id = "signInUpBar";
 	    signInUpBar.innerHTML = `
-	    <span class="signInUpText">
-		 		Ready to Join the Hangout?
-	 		</span>
-	    <button class="signInButton">
-	      Login
-	    </button>
+      <div id="signInHolder">
+        <span class="signInUpText">
+          Ready to Join the Hangout?
+        </span>
+        <button class="signInButton">
+          Login
+        </button>
+      </div>
 	    `;
 	    findC("signInButton").addEventListener("click", function() {
 	      openLoginModal("signin", "Login");
@@ -1763,6 +1758,11 @@ window.addEventListener("keydown", async function(e) {
 		}
 	}*/
 });
+window.addEventListener("click", function(event) {
+  if(event.target.className == "backBlur") {
+    event.target.remove()
+  }
+})
 
 function reportContent(id, name, userid, type) {
   let reportReasons = ["Abusive or Hateful Behavior", "Age", "Child Exploitation", "Glorification of Violence", "Impersonation", "Misleading Information", "Platform Manipulation", "Sensitive Media", "Suicide or Self-Harm", "Other"];
@@ -2058,23 +2058,34 @@ function updateDisplay(type) {
       setCSSVar("--themeColor", "#758691");
       particles = null;
       break;
-      case "Sunset":
-        setCSSVar("--leftSidebarColor", "black");
-        setCSSVar("--pageColor", "radial-gradient(circle at 70% 100%, #ffeec8 -5%, #ed9437 5%, #ed9437 10%, #554cd3, #15055d)");
-        setCSSVar("--pageColor2", "var(--pageColor)");
-        setCSSVar("--contentColor", "#151547");
-        setCSSVar("--contentColor2", "#1c1c5b");
-        setCSSVar("--contentColor3", "#22225d");
-        setCSSVar("--fontColor", "white");
-        setCSSVar("--themeColor", "#37afed");
-        particles = null;
-        break;
-      case "Sky":
-        updateSky();
-        skyInt = setInterval(updateSky, 1000);
-        setCSSVar("--themeColor", "#3f51b5");
-        particles = null;
-        break;
+    case "Sunset":
+      setCSSVar("--leftSidebarColor", "black");
+      setCSSVar("--pageColor", "radial-gradient(circle at 70% 100%, #ffeec8 -5%, #ed9437 5%, #ed9437 10%, #554cd3, #15055d)");
+      setCSSVar("--pageColor2", "var(--pageColor)");
+      setCSSVar("--contentColor", "#151547");
+      setCSSVar("--contentColor2", "#1c1c5b");
+      setCSSVar("--contentColor3", "#22225d");
+      setCSSVar("--fontColor", "white");
+      setCSSVar("--themeColor", "#37afed");
+      particles = null;
+      break;
+    case "Sky":
+      updateSky();
+      skyInt = setInterval(updateSky, 1000);
+      setCSSVar("--themeColor", "#3f51b5");
+      particles = null;
+      break;
+    case "New Year":
+      setCSSVar("--leftSidebarColor", "black");
+      setCSSVar("--pageColor", "radial-gradient(circle at 50% 20%, #3e5a72, #000)");
+      setCSSVar("--pageColor2", "var(--pageColor)");
+      setCSSVar("--contentColor", "#1f1f28");
+      setCSSVar("--contentColor2", "#24242e");
+      setCSSVar("--contentColor3", "#2a2a37");
+      setCSSVar("--fontColor", "#ffffff");
+      setCSSVar("--themeColor", "#5AB7FA");
+      particles = "fireworks";
+      break;
     default:
       setCSSVar("--leftSidebarColor", "#262630");
       setCSSVar("--pageColor", "#151617");
@@ -2087,7 +2098,49 @@ function updateDisplay(type) {
       particles = null;
       break;
   }
+  clearInterval(particleInt);
+  switch (particles) {
+    case "snow":
+      function createParticle() {
+        if (!viewingTab) {
+          return;
+        }
+        let thisParticle = createElement("particle-snow", "div", findC("body"));
+        thisParticle.style.left = (Math.random()*100) + "%";
+        setTimeout(function () {
+          thisParticle.remove();
+        }, 15000);
+      }
+      particleInt = setInterval(createParticle, (isMobile ? 1500 : 500));
+      break;
+    case "fireworks":
+      function createParticle() {
+        if (!viewingTab) {
+          return;
+        }
+        let thisParticle = createElement("particle-fireworks1", "img", findC("body"));
+        thisParticle.src = "/Images/Holidays/fireworkParticle1.png";
+        thisParticle.style.left = (Math.random()*100) + "%";
+        if (Math.random() >= 0.1) {
+          thisParticle.style.zIndex = -999;
+        }
+        thisParticle.style.filter = "hue-rotate(" + (Math.floor(Math.random() * 360)) + "deg)";
+        setTimeout(function () {
+          thisParticle.classList.add("particle-fireworks2");
+          thisParticle.classList.remove("particle-fireworks1");
+          thisParticle.src = "/Images/Holidays/fireworkParticle2.png";
+          setTimeout(function () {
+            thisParticle.remove();
+          }, 750);
+        }, 3000);
+      }
+      createParticle();
+      particleInt = setInterval(createParticle, 1000);
+      break;
+  }
 }
+let createParticle = function () {};
+let particleInt = 0;
 let GradientSky = {
   gradients: [
     { // 12 AM
@@ -2383,18 +2436,6 @@ function updateBackdrop(imageID) {
     findI("backdrop").style.opacity = 0;
   }
 }
-
-function createParticle() {
-  if (particles == null || !viewingTab) {
-    return;
-  }
-  let thisParticle = createElement("particle-" + particles, "div", findC("body"));
-  thisParticle.style.left = (Math.random()*100) + "%";
-  setTimeout(function () {
-    thisParticle.remove();
-  }, 15000);
-}
-setInterval(createParticle, (isMobile ? 1500 : 500));
 
 if (account._id != undefined) {
 	if (getLocalStore("display") != null) {

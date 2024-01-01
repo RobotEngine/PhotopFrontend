@@ -1,4 +1,4 @@
- modules.gift = async function (giftid) {
+modules.gift = async function (giftid) {
   let [code, response] = await sendRequest("GET", `premium/gift/solve?code=${giftid}`);
   if(code == 200){
     includePremiumEmbedCode = giftid;

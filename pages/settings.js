@@ -1,5 +1,5 @@
 let d = new Date();
-let themes = [["/section", "Basic"], ["Dark", "#151617"], ["Light", "#E6E9EB"], ["/section", "New"], ["Blood Moon", "linear-gradient(to bottom, #5c0701, black)"], ["Under The Sea", "linear-gradient(to bottom, #4ecbef, #0062fe)"], ["Hacker", "black"], ["Midnight Haze", "linear-gradient(135deg, #0c1762, #650f9b, #780f31)"], ["Moss Green", "radial-gradient(ellipse at bottom, #658d65, #0d2c0a)"], ["Ourple 😂", "#4638a1"], ["Peachy Mist", "linear-gradient(315deg, #f0b980, pink)"], ["Faded", "linear-gradient(315deg, #336264, #3a4048)"], ["Into the Light", "radial-gradient(circle at 30% 70%, #fbe286, #4caed3)"], ["Canyon", "radial-gradient(ellipse at bottom, #d5610f, #581703)"], ["Spocco", "linear-gradient(180deg, #ededed 20%, #bbb8b8 80%)"], ["Into the Night", "radial-gradient(circle at 50% 20%, #3e5a72, #000)"], ["Sunset", "radial-gradient(circle at 70% 100%, #ffeec8 -5%, #ed9437 5%, #ed9437 10%, #554cd3, #15055d)"], ["Sky", GradientSky.getGradient(d.getHours(), d.getMinutes()/60)]];
+let themes = [["/section", "Basic"], ["Dark", "#151617"], ["Light", "#E6E9EB"], ["/section", "New"], ["Blood Moon", "linear-gradient(to bottom, #5c0701, black)"], ["Under The Sea", "linear-gradient(to bottom, #4ecbef, #0062fe)"], ["Hacker", "black"], ["Midnight Haze", "linear-gradient(135deg, #0c1762, #650f9b, #780f31)"], ["Moss Green", "radial-gradient(ellipse at bottom, #658d65, #0d2c0a)"], ["Ourple 😂", "#4638a1"], ["Peachy Mist", "linear-gradient(315deg, #f0b980, pink)"], ["Faded", "linear-gradient(315deg, #336264, #3a4048)"], ["Into the Light", "radial-gradient(circle at 30% 70%, #fbe286, #4caed3)"], ["Canyon", "radial-gradient(ellipse at bottom, #d5610f, #581703)"], ["Spocco", "linear-gradient(180deg, #ededed 20%, #bbb8b8 80%)"], ["Into the Night", "radial-gradient(circle at 50% 20%, #3e5a72, #000)"], ["Sunset", "radial-gradient(circle at 70% 100%, #ffeec8 -5%, #ed9437 5%, #ed9437 10%, #554cd3, #15055d)"], ["Sky", GradientSky.getGradient(d.getHours(), d.getMinutes()/60)], ["New Year", "NewYear"]];
 let dispOptions = ["Embed YouTube Videos", "Embed Twitch Streams", "Embed GIFs"];
 wireframes.settings = `<div class="stickyContainer settingsTabs" id="tabs">
   <span class="tab" type="account" id="tab-account" tabindex="0">Account</span>
@@ -975,7 +975,17 @@ function addThemeOption(index) {
     return;
   }
   let thisThemeOption = createElement("themeOption", "div", findI("themeSelector"));
-  thisThemeOption.style.background = themes[index][1];
+  if (themes[index][1] == "Snowtop") {
+    thisThemeOption.style.backgroundImage = "url(https://app.photop.live/Images/Holidays/FunSnowPile.png)";
+    thisThemeOption.style.backgroundSize = "cover";
+    thisThemeOption.style.backgroundColor = "#151617";
+  } else if (themes[index][1] == "NewYear") {
+    thisThemeOption.style.backgroundImage = "url(https://app.photop.live/Images/Holidays/fireworkParticle2.png)";
+    thisThemeOption.style.backgroundSize = "cover";
+    thisThemeOption.style.backgroundColor = "#151617";
+  } else {
+    thisThemeOption.style.background = themes[index][1];
+  }
   thisThemeOption.title = themes[index][0];
   if (account.Settings.Display.Theme == themes[index][0]) {
     thisThemeOption.classList.add("themeSelected");
