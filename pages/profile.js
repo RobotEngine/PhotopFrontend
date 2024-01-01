@@ -251,14 +251,15 @@ pages.profile = async function() {
     posts: async function() {
       let postHolder = createElement("profileHolder-posts", "div", "pageHolder");
       postHolder.setAttribute("loading", "");
-      async function createPosts(posts, usersLoad, likesLoad) {
+      async function createPosts(posts, usersLoad, likesLoad, pollsLoad) {
         let renderPost = await getModule("post");
 
+        let polls = getObject(pollsLoad, "_id")
         let users = getObject(usersLoad, "_id");
         let likes = getObject(likesLoad, "_id");
         for (let i = 0; i < posts.length; i++) {
           let post = posts[i];
-          renderPost(postHolder, post, users[post.UserID], { isLiked: (likes[post._id + userID] != null), isPinned: (user.ProfileData != null && post._id == user.ProfileData.PinnedPost), jumpToFeed: true });
+          renderPost(postHolder, post, users[post.UserID], { isLiked: (likes[post._id + userID] != null), isPinned: (user.ProfileData != null && post._id == user.ProfileData.PinnedPost), jumpToFeed: true, poll: polls[post._id] });
         }
         if (posts.length < 15) {
           postHolder.setAttribute("allDownPostsLoaded", "");
@@ -277,12 +278,13 @@ pages.profile = async function() {
         let [code, response] = await sendRequest("GET", "posts/get?userid=" + currentProfile.user._id + "&before=" + postHolder.lastChild.getAttribute("time"));
         if (code == 200) {
           let data = JSON.parse(response);
-          createPosts(data.posts, data.users, data.likes || []);
+          createPosts(data.posts, data.users, data.likes || [], data.polls || []);
         }
         postHolder.removeAttribute("loading");
       }
       if (currentProfile.posts.length > 0) {
-        createPosts(currentProfile.posts, currentProfile.users, currentProfile.likes);
+        console.log(currentProfile)
+        createPosts(currentProfile.posts, currentProfile.users, currentProfile.likes, currentProfile.polls);
       } else {
         createTooltip(postHolder, "This user hasn't posted, yet...");
       }
@@ -291,8 +293,9 @@ pages.profile = async function() {
       let postHolder = createElement("profileHolder-likes", "div", "pageHolder");
       postHolder.setAttribute("loading", "");
       let lastLikeTime = 0;
-      async function createPosts(userLikes, postsLoad, usersLoad, likesLoad) {
+      async function createPosts(userLikes, postsLoad, usersLoad, likesLoad, pollsLoad) {
         let renderPost = await getModule("post");
+        let polls = getObject(pollsLoad, "_id");
         let posts = getObject(postsLoad, "_id");
         let users = getObject(usersLoad, "_id");
         let likes = getObject(likesLoad, "_id");
@@ -321,12 +324,12 @@ pages.profile = async function() {
         let [code, response] = await sendRequest("GET", "user/likes?userid=" + currentProfile.user._id + "&before=" + lastLikeTime);
         if (code == 200) {
           let data = JSON.parse(response);
-          createPosts(data.userLikes, data.posts, data.users, data.likes || []);
+          createPosts(data.userLikes, data.posts, data.users, data.likes || [], data.polls || []);
         }
         postHolder.removeAttribute("loading");
       }
       if (currentProfile.userLikes.length > 0) {
-        createPosts(currentProfile.userLikes, currentProfile.likePosts, currentProfile.users, currentProfile.likes);
+        createPosts(currentProfile.userLikes, currentProfile.likePosts, currentProfile.users, currentProfile.likes, currentProfile.polls);
       } else {
         createTooltip(postHolder, "This user hasn't liked anything, yet...");
       }

@@ -679,11 +679,12 @@ pages.group = async function() {
     if (code == 200) {
       let data = JSON.parse(response);
       let posts = data.posts;
+      let polls = getObject(data.polls, "_id");
       let users = getObject(data.users, "_id");
       let likes = getObject(data.likes, "_id");
       for (let i = 0; i < posts.length; i++) {
         let post = posts[i];
-        let props = { isLiked: (likes[post._id + userID] != null), observer };
+        let props = { isLiked: (likes[post._id + userID] != null), observer, poll: polls[post._id] };
         if(post.GroupPin) {
           props.isPinned = true;
         }

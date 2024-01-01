@@ -141,7 +141,7 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
 			poll.innerHTML = `
 	 			<div class="pollInfo">
 		 			<div class="pollTitle">${cleanString(pollData.Title)}</div>
-					<div class="pollVotes"><span class="pollVoteCount">${voteData.FullVotes}</span> Votes</div>
+					<div class="pollVotes"><span class="pollVoteCount">${pollData.FullVotes}</span> Votes</div>
  				</div>
 		 		<div class="pollOptions"></div>
 			`;
@@ -149,13 +149,13 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
 			let pollOptions = poll.querySelector(".pollOptions");
 			for(let i=0;i<pollData.Options.length;i++) {
 				let optionText = pollData.Options[i];
-				let optionPercent = voteData.FullVotes > 0 && voteData.Votes[i] > 0?((voteData.Votes[i]/voteData.FullVotes)*100):0;
+				let optionPercent = pollData.FullVotes > 0 && pollData.Votes[i] > 0?((pollData.Votes[i]/pollData.FullVotes)*100):0;
 				if(optionText) {
 					let option = createElement("pollOption", "div", pollOptions);
 					option.setAttribute("vote", i);
 					option.setAttribute("type", "vote");
 					option.setAttribute("name", optionText);
-					option.setAttribute("votes", voteData.Votes[i]);
+					option.setAttribute("votes", pollData.Votes[i]);
 
 					option.innerHTML = `
 						<span class="optionBubble">
@@ -202,6 +202,6 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
 
   let cachedPosts = getObject(cache.posts, '_id')
   if(!cachedPosts[post._id]) {
-    cache.posts.push({ ...post, user, props, images });
+    //cache.posts.push({ ...post, user, props, images });
   }
 }

@@ -13,9 +13,9 @@ let configs = {
   }
 };
 
-let config = configs["public"]; // ["testing" / "public"]
+let config = configs["testing"]; // ["testing" / "public"]
 let cache = {
-	posts: new Array()
+	posts: new Array() // CHANGE IT TO OBJECT (robot request)
 }
 
 const socket = new SimpleSocket({
@@ -1480,7 +1480,11 @@ async function updateChatting(posts) {
               thisEmbed.querySelector(".embedUsername").innerHTML = getRoleHTML(user) + user.User;
               thisEmbed.querySelector(".embedTimestamp").innerHTML = `${timeSince(post.Timestamp, true)} ${post.Edited ? `<span title="${formatFullDate(post.Edited)}">(edited)</span>` : ""}`;
               thisEmbed.querySelector(".embedTimestamp").title = formatFullDate(post.Timestamp);
-              thisEmbed.querySelector(".embedText").innerHTML = formatText(post.Text);
+              if(post.Text && post.Text.length > 0) {
+                thisEmbed.querySelector(".embedText").innerHTML = `<div>${formatText(post.Text)}</div>${post.Media && post.Media.Poll?'<i><div style="margin-top:3px;color:var(--themeColor);font-size:12px;">Click to view poll</div></i>':""}`;
+              } else if(post.Media && post.Media.Poll) {
+                thisEmbed.querySelector(".embedText").innerHTML = `<div>${cleanString(post.Media.Poll.Title)}</div><i><div style="margin-top:3px;color:var(--themeColor);font-size:12px;">Click to view poll</div></i>`;
+              }
               thisEmbed.setAttribute("type", "postlink");
               thisEmbed.setAttribute("postid", post._id);
               if (post.Media != null && post.Media.ImageCount > 0) {

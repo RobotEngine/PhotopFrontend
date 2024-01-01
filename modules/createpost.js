@@ -274,11 +274,11 @@ modules.createpost = function(holder) {
 			option.style.opacity = 0;
 			setTimeout(function() {
 				option.remove();
-			}, 300);
 
-			if(options.children.length != 5) {
-				findI("newPostPollOptionCreate").style.opacity = 1;
-			}
+        if(options.children.length != 5) {
+          findI("newPostPollOptionCreate").style.opacity = 1;
+        }
+			}, 300);
 		})
 
 		if(options.children.length == 5) {

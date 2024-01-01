@@ -3925,6 +3925,7 @@ h1, h2, p {
 	margin-left:auto;
 	font-size:14px;
 	color:grey;
+  min-width:fit-content;
 }
 .pollOptions {
 	display: flex;
@@ -4005,6 +4006,7 @@ h1, h2, p {
 	z-index:1;
 	font-size:14px;
 	color:grey;
+  min-width:fit-content;
 }
 .optionName {
 	margin:6px 0 6px 8px;
