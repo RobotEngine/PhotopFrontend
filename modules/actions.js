@@ -209,8 +209,8 @@ modules.actions = function() {
               svg.style.animation = null;
             }, 800);
 
-						let cached = getObject(cache.posts, "_id");
-						let post = cached[post.getAttribute("postid")];
+						//let cached = getObject(cache.posts, "_id");
+						//let post = cached[post.getAttribute("postid")];
 						post.props.isLiked = true;
           } else {
             button.removeAttribute("isLiked");
@@ -219,8 +219,8 @@ modules.actions = function() {
             icon.setAttribute("stroke", "#999");
             changeCounter(likeAmount, parseInt(likeAmount.getAttribute("realnum"),10)-1);
 
-						let cached = getObject(cache.posts, "_id");
-						let post = cached[post.getAttribute("postid")];
+						//let cached = getObject(cache.posts, "_id");
+						//let post = cached[post.getAttribute("postid")];
 						post.props.isLiked = false;
           }
         }
