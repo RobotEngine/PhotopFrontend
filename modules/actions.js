@@ -211,7 +211,7 @@ modules.actions = function() {
 
 						//let cached = getObject(cache.posts, "_id");
 						//let post = cached[post.getAttribute("postid")];
-						post.props.isLiked = true;
+						//post.props.isLiked = true;
           } else {
             button.removeAttribute("isLiked");
             button.parentElement.style.removeProperty("color");
@@ -221,7 +221,7 @@ modules.actions = function() {
 
 						//let cached = getObject(cache.posts, "_id");
 						//let post = cached[post.getAttribute("postid")];
-						post.props.isLiked = false;
+						//post.props.isLiked = false;
           }
         }
         if (button.hasAttribute("isLiked") == false) {
