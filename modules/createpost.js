@@ -222,21 +222,14 @@ modules.createpost = function(holder) {
     
     imageInput.click();
   });
-<<<<<<< HEAD
-	findI("poll").addEventListener("click", function() {
-=======
 	findI("poll").addEventListener("click", async function() {
->>>>>>> 72f4242 (added polls and new years)
 		let alreadyShown = findI("newPostPoll").style.display == "none"?false:true;
 
 		if(alreadyShown) {
 			findI("newPostPoll").style.display = "none";
 			findI("newPostPollTitle").value = "";
 			findI("newPostPollOptionCreate").style.opacity = 1;
-<<<<<<< HEAD
-=======
       findI("image").style.opacity = 1;
->>>>>>> 72f4242 (added polls and new years)
 			
 			let options = findI("newPostPoll").querySelectorAll(".newPostPollOptionHolder");
 			for(let i = 0; i < options.length; i++) {
@@ -248,8 +241,6 @@ modules.createpost = function(holder) {
 			}
 		} else {
 			findI("newPostPoll").style.display = "inline-block";
-<<<<<<< HEAD
-=======
       findI("image").style.opacity = .4;
       findI("newPostPollTitle").focus()
 
@@ -258,7 +249,6 @@ modules.createpost = function(holder) {
       for (let i = 0; i < images.length; i++) {
         URL.revokeObjectURL(images[i].src);
       }
->>>>>>> 72f4242 (added polls and new years)
 		}
 	});
 	findI("newPostPollOptionCreate").addEventListener("click", function() {
@@ -273,10 +263,7 @@ modules.createpost = function(holder) {
 		`;
 		option.className = "newPostPollOptionHolder";
 		options.insertBefore(option, findI("newPostPollOptionCreate"));
-<<<<<<< HEAD
-=======
     option.querySelector(".newPostPollOption").focus()
->>>>>>> 72f4242 (added polls and new years)
 
 		setTimeout(function() {
 			option.style.scale = 1;
@@ -387,15 +374,12 @@ modules.createpost = function(holder) {
 					postData.poll.options.push(option.value);
 				}
 			}
-<<<<<<< HEAD
-=======
 
       if(postData.poll.options.length == 0) {
         showPopUp("Oops", "Looks like your options dont have any text.", [["Close", "grey", null]])
         newPost.style.borderBottomStyle = "none";
         return;
       }
->>>>>>> 72f4242 (added polls and new years)
 		}
 		
     let sendFormData = new FormData();

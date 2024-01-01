@@ -4085,3 +4085,12 @@ h1, h2, p {
 
 	transition:transform 0.2s;
 }
+.postChatInfo[enlarged] {
+  border-radius: 15px 15px 0 0;
+}
+
+#signInHolder {
+  display: flex;
+  align-items: center;
+  width:100%;
+}

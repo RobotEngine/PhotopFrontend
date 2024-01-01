@@ -78,7 +78,7 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
   newPost.setAttribute("name", user.User);
   newPost.setAttribute("time", post.Timestamp);
   newPost.setAttribute("text", post.Text);
-	newPost.setAttribute("type", "post");
+	//newPost.setAttribute("type", "post");
 	if(post.GroupID) {
 		newPost.setAttribute("groupid", post.GroupID);
 	}
@@ -140,7 +140,7 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
 			let pollData = post.Media.Poll;
 			poll.innerHTML = `
 	 			<div class="pollInfo">
-		 			<div class="pollTitle">${pollData.Title}</div>
+		 			<div class="pollTitle">${cleanString(pollData.Title)}</div>
 					<div class="pollVotes"><span class="pollVoteCount">${voteData.FullVotes}</span> Votes</div>
  				</div>
 		 		<div class="pollOptions"></div>
@@ -149,13 +149,13 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
 			let pollOptions = poll.querySelector(".pollOptions");
 			for(let i=0;i<pollData.Options.length;i++) {
 				let optionText = pollData.Options[i];
-				let optionPercent = voteData.Votes[i];
+				let optionPercent = voteData.FullVotes > 0 && voteData.Votes[i] > 0?((voteData.Votes[i]/voteData.FullVotes)*100):0;
 				if(optionText) {
 					let option = createElement("pollOption", "div", pollOptions);
 					option.setAttribute("vote", i);
 					option.setAttribute("type", "vote");
 					option.setAttribute("name", optionText);
-					option.setAttribute("votes", optionPercent > 0?(voteData.FullVotes / optionPercent) * 100:0);
+					option.setAttribute("votes", voteData.Votes[i]);
 
 					option.innerHTML = `
 						<span class="optionBubble">
@@ -169,9 +169,9 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
 							</svg>
 	 					</span>
 						<span class="pollOptionInfo">
-			 				<div class="pollOptionBackground" style="${hasVoted?`${voteData.HasVoted == i?"background:var(--themeColor);":""}width:${optionPercent || 0.5}%;`:""}"></div>
-							<span class="optionName">${option.getAttribute("name")}</span>
-							<span class="voteLabel" style="${hasVoted?(voteData.HasVoted == i?"color:white;":""):"display:none;"}"><span class="voteCount">${optionPercent}</span>%</span>
+			 				<div class="pollOptionBackground" style="${hasVoted?`${voteData.HasVoted == i?"background:var(--themeColor);":""}width:${Math.floor(optionPercent) || 0.5}%;`:""}"></div>
+							<span class="optionName">${formatText(option.getAttribute("name"))}</span>
+							<span class="voteLabel" style="${hasVoted?(voteData.HasVoted == i?"color:white;":""):"display:none;"}"><span class="voteCount">${Math.floor(optionPercent)}</span>%</span>
 	 					</span>
 	 				`;
 				}
@@ -200,5 +200,8 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
 		//props.observer.observe(newPost);
 	}
 
-	cache.posts.push({ ...post, user, props, images });
+  let cachedPosts = getObject(cache.posts, '_id')
+  if(!cachedPosts[post._id]) {
+    cache.posts.push({ ...post, user, props, images });
+  }
 }

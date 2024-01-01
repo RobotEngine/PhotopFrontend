@@ -13,7 +13,7 @@ let configs = {
   }
 };
 
-let config = configs["testing"]; // ["testing" / "public"]
+let config = configs["public"]; // ["testing" / "public"]
 let cache = {
 	posts: new Array()
 }
