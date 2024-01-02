@@ -13,7 +13,7 @@ let configs = {
   }
 };
 
-let config = configs["public"]; // ["testing" / "public"]
+let config = configs["testing"]; // ["testing" / "public"]
 let cache = {
 	posts: new Array() // CHANGE IT TO OBJECT (robot request)
 }
@@ -330,9 +330,9 @@ function setPostUpdateSub() {
 					break;
 				case "vote":
 					let poll = post.querySelector(".poll-embed");
-					let numberElem = post.querySelector(".pollVoteCount");
+					let numberElem = post.querySelector(".pollVotes");
 					let fullVotes = parseInt(numberElem.innerText) + data.change;
-					numberElem.innerText = fullVotes;
+					numberElem.innerText = `${fullVotes} Vote${fullVotes > 1 || fullVotes == 0?"s":""}`;
 
 					if(userID == data.userID) {
 						if(data.voteRemove) {

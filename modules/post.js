@@ -141,7 +141,7 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
 			poll.innerHTML = `
 	 			<div class="pollInfo">
 		 			<div class="pollTitle">${cleanString(pollData.Title)}</div>
-					<div class="pollVotes"><span class="pollVoteCount">${pollData.FullVotes}</span> Votes</div>
+					<div class="pollVotes">${pollData.FullVotes} Vote${pollData.FullVotes > 1 || pollData.FullVotes == 0?"s":""}</div>
  				</div>
 		 		<div class="pollOptions"></div>
 			`;
@@ -169,7 +169,7 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
 							</svg>
 	 					</span>
 						<span class="pollOptionInfo">
-			 				<div class="pollOptionBackground" style="${hasVoted?`${voteData.HasVoted == i?"background:var(--themeColor);":"background:var(--contentColor4);"}width:${Math.floor(optionPercent) || (post.UserID == userID && pollData.FullVotes == 0?100:0.5)}%;`:`${pollData.FullVotes > 0?`width:${optionPercent || 0.5}%;background:var(--contentColor4);`:""}`}"></div>
+			 				<div class="pollOptionBackground" style="${hasVoted?`${voteData.HasVoted == i?"background:var(--themeColor);":(post.UserID == userID?"background:var(--contentColor4);":"")}width:${Math.floor(optionPercent) || (post.UserID == userID && pollData.FullVotes == 0?100:0.5)}%;`:`${pollData.FullVotes > 0 && post.UserID == userID?`width:${optionPercent || 0.5}%;background:var(--contentColor4);`:""}`}"></div>
 							<span class="optionName">${formatText(option.getAttribute("name"))}</span>
 							<span class="voteLabel" style="${hasVoted || post.UserID == userID?(voteData.HasVoted == i?"color:white;":""):"display:none;"}"><span class="voteCount">${Math.floor(optionPercent)}</span>%</span>
 	 					</span>
