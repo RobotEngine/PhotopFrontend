@@ -169,9 +169,9 @@ ${post.Edited ? `<span title=\"${formatFullDate(post.Edited)}\">(edited)</span>`
 							</svg>
 	 					</span>
 						<span class="pollOptionInfo">
-			 				<div class="pollOptionBackground" style="${hasVoted?`${voteData.HasVoted == i?"background:var(--themeColor);":""}width:${Math.floor(optionPercent) || 0.5}%;`:""}"></div>
+			 				<div class="pollOptionBackground" style="${hasVoted?`${voteData.HasVoted == i?"background:var(--themeColor);":"background:var(--contentColor4);"}width:${Math.floor(optionPercent) || (post.UserID == userID && pollData.FullVotes == 0?100:0.5)}%;`:`${pollData.FullVotes > 0?`width:${optionPercent || 0.5}%;background:var(--contentColor4);`:""}`}"></div>
 							<span class="optionName">${formatText(option.getAttribute("name"))}</span>
-							<span class="voteLabel" style="${hasVoted?(voteData.HasVoted == i?"color:white;":""):"display:none;"}"><span class="voteCount">${Math.floor(optionPercent)}</span>%</span>
+							<span class="voteLabel" style="${hasVoted || post.UserID == userID?(voteData.HasVoted == i?"color:white;":""):"display:none;"}"><span class="voteCount">${Math.floor(optionPercent)}</span>%</span>
 	 					</span>
 	 				`;
 				}

@@ -36,12 +36,14 @@ pages.viewpost = async function() {
         let [code3, response3] = await sendRequest("GET", "posts/get?amount=9&after=" + lookupData.posts[0].Timestamp);
         if (code3 == 200) {
           let afterData = JSON.parse(response3);
-          let allPosts = afterData.posts.reverse().concat(lookupData.posts, beforeData.posts);
+          let allPosts = [...new Set([...afterData.posts.reverse(), ...lookupData.posts, ...beforeData.posts])];
+          let allPolls = [...new Set([...afterData.polls || [], ...lookupData.polls || [], ...beforeData.polls || []])];
           let users = getObject(afterData.users.concat(lookupData.users, beforeData.users), "_id");
           let likes = getObject((afterData.likes || []).concat((lookupData.likes || []), (beforeData.likes || [])), "_id");
+          let polls = getObject(allPolls, "_id");
           for (let i = 0; i < allPosts.length; i++) {
             let post = allPosts[i];
-            renderPost(postHolder, post, users[post.UserID], { isLiked: (likes[post._id + userID] != null) });
+            renderPost(postHolder, post, users[post.UserID], { isLiked: (likes[post._id + userID] != null), poll: polls[post._id] });
           }
           if (beforeData.posts.length < 9) {
             postHolder.setAttribute("allLoadedDown", "");
@@ -90,9 +92,10 @@ pages.viewpost = async function() {
         let posts = data.posts;
         let users = getObject(data.users, "_id");
         let likes = getObject(data.likes, "_id");
+        let polls = getObject(data.polls, "_id");
         for (let i = 0; i < posts.length; i++) {
           let post = posts[i];
-          renderPost(postHolder, post, users[post.UserID], { isLiked: (likes[post._id + userID] != null) });
+          renderPost(postHolder, post, users[post.UserID], { isLiked: (likes[post._id + userID] != null), poll: polls[post._id] });
         }
         if (posts.length < 15) {
           postHolder.setAttribute("allLoadedDown", "");
@@ -110,9 +113,10 @@ pages.viewpost = async function() {
         let posts = data.posts;
         let users = getObject(data.users, "_id");
         let likes = getObject(data.likes, "_id");
+        let polls = getObject(data.polls, "_id");
         for (let i = 0; i < posts.length; i++) {
           let post = posts[i];
-          renderPost(postHolder, post, users[post.UserID], { isLiked: (likes[post._id + userID] != null), loadToTop: true });
+          renderPost(postHolder, post, users[post.UserID], { isLiked: (likes[post._id + userID] != null), loadToTop: true, poll: polls[post._id] });
         }
         if (posts.length < 15) {
           postHolder.setAttribute("allLoadedUp", "");

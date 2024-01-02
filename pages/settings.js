@@ -795,7 +795,7 @@ pages.settings = function () {
         <a class="settingsLink" href="https://photop.live/?from=photopweb" target="_blank">About Photop</a>
         <a class="settingsLink" href="https://twitter.com/PhotopMedia" target="_blank">Photop Twitter</a>
         <a class="settingsLink" href="https://discord.com/invite/gnBVPbrAPd" target="_blank">Photop Discord</a>
-        <div style="font-size: 16px; text-align: center;">©2022 Exotek LLC - All rights reserved</div>
+        <div style="font-size: 16px; text-align: center;">©2024 Exotek LLC - All rights reserved</div>
       </div>`;
       for (var i in themes) {
         addThemeOption(i);

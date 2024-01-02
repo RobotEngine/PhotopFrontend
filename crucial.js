@@ -13,7 +13,7 @@ let configs = {
   }
 };
 
-let config = configs["public"]; // ["testing" / "public"]
+let config = configs["testing"]; // ["testing" / "public"]
 let cache = {
 	posts: new Array() // CHANGE IT TO OBJECT (robot request)
 }
@@ -348,6 +348,7 @@ function setPostUpdateSub() {
 						if(userID == data.userID) {
 							if(!data.voteRemove) {
 								option.querySelector(".voteLabel").style.display = "unset";
+                option.querySelector(".pollOptionBackground").style.background = "var(--contentColor4)";
 
 								if(option.getAttribute("vote") == data.vote) {
 									option.querySelector(".optionCheck").style.display = "unset";
@@ -355,9 +356,14 @@ function setPostUpdateSub() {
 									option.querySelector(".voteLabel").style.color = "white";
 								}
 							} else {
-								option.querySelector(".optionCheck").style.display = "none";
+                if(post.getAttribute("userid") != userID) {
+                  option.querySelector(".voteLabel").style = "display:none;";
+                } else {
+                  option.querySelector(".voteLabel").style.color = "grey";
+                }
+
+                option.querySelector(".optionCheck").style.display = "none";
 								option.querySelector(".pollOptionBackground").style = "width:100%;";
-								option.querySelector(".voteLabel").style = "display:none;";
 							}
 						}
 
@@ -371,9 +377,15 @@ function setPostUpdateSub() {
 						let percentage = Math.floor((parseInt(option.getAttribute("votes")) / fullVotes) * 100 || 0);
 						option.querySelector(".voteLabel").innerText = `${percentage}%`;
 
-						if(poll.getAttribute("voted") != null) {
+						if(poll.getAttribute("voted") != null || (post.getAttribute("userid") == userID && fullVotes > 0)) {
 							option.querySelector(".pollOptionBackground").style.width = `${percentage || .5}%`;
-						}
+						} else if(post.getAttribute("userid") == userID && fullVotes == 0) {
+              option.querySelector(".pollOptionBackground").style = "width:100%;";
+            }
+
+            if(poll.getAttribute("voted") == null && post.getAttribute("userid") == userID && fullVotes > 0) {
+              option.querySelector(".pollOptionBackground").style.background = "var(--contentColor4)";
+            }
 					}
 					break;
       }

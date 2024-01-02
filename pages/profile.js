@@ -303,7 +303,7 @@ pages.profile = async function() {
           let like = userLikes[i];
           let post = posts[like._id.substring(0, 24)];
           if (post != null) {
-            renderPost(postHolder, post, users[post.UserID], { isLiked: (likes[post._id + userID] != null), jumpToFeed: true });
+            renderPost(postHolder, post, users[post.UserID], { isLiked: (likes[post._id + userID] != null), jumpToFeed: true, poll: polls[post._id] });
           }
           lastLikeTime = like.Timestamp || lastLikeTime;
         }
