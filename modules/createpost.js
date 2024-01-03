@@ -14,7 +14,10 @@ modules.createpost = function(holder) {
 	</div>
   <div id="newPostArea" contenteditable="true" placeholder="Ready to Hangout?"></div>
 	<div id="newPostPoll" style="display:none;">
- 		<input placeholder="Poll Title" id="newPostPollTitle" class="settingsInput" maxlength="20">
+ 		<div style="display:flex;align-items:center;">
+     <input placeholder="Poll Title" id="newPostPollTitle" class="settingsInput" maxlength="20">
+     <div id="newPostPollX">&times;</div>
+    </div>
 	 	<div id="newPostPollOptions">
 	 		<div class="newPostPollOptionHolder" style="scale:1;">
 				<input placeholder="Option 1" class="newPostPollOption settingsInput" maxlength="25">
@@ -222,6 +225,9 @@ modules.createpost = function(holder) {
     
     imageInput.click();
   });
+  findI("newPostPollX").addEventListener("click", function() {
+    findI("poll").click()
+  })
 	findI("poll").addEventListener("click", async function() {
 		let alreadyShown = findI("newPostPoll").style.display == "none"?false:true;
 
