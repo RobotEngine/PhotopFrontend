@@ -1,6 +1,6 @@
 let configs = {
   public: {
-    server: "https://photop.exotek.co/",
+    server: "https://api.photop.live/",
     exotek_id: "62f8fac716d8eb8d2f6562ef",
     assets: "https://photop-content.s3.amazonaws.com/",
     proxy: "https://config.proxy.exotektechnolog.repl.co/"
