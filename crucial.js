@@ -16,7 +16,7 @@ let configs = {
 let config = configs["public"]; // ["testing" / "public"]
 let cache = {
 	posts: new Array() // CHANGE IT TO OBJECT (robot request)
-}
+};
 
 const socket = new SimpleSocket({
   project_id: "61b9724ea70f1912d5e0eb11",
