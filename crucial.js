@@ -20,8 +20,7 @@ let cache = {
 
 const socket = new SimpleSocket({
   project_id: "61b9724ea70f1912d5e0eb11",
-  project_token: "client_a05cd40e9f0d2b814249f06fbf97fe0f1d5",
-  socket_url: "wss://test.simplesocket.net/socket/v2"
+  project_token: "client_a05cd40e9f0d2b814249f06fbf97fe0f1d5"
 });
 
 let connectingUI = findI("connectingDisplay");
